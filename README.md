@@ -43,9 +43,13 @@ This backend application serves API for the hiddenGem web where user can find re
     ```
 
 5. Run the application:
-
     ```bash
-    flask --app flaskr run --debug
+    python manage.py run
+    ```
+
+6. Run the tests:
+    ```bash
+    python manage.py test
     ```
 
 ## Configuration
