@@ -6,6 +6,7 @@ load_dotenv()
 db_host = os.getenv("DB_HOST")
 db_user = os.getenv("DB_USER")
 db_password = os.getenv("DB_PASSWORD")
+db_port = os.getenv("DB_PORT")
 debug_mode = os.getenv("DEBUG")
 
 DB_URI = f"mysql://{db_password}@{db_host}:{db_port}/defaultdb?sslmode=REQUIRED"
