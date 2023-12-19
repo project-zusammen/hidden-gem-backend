@@ -42,12 +42,14 @@ This backend application serves API for the hiddenGem web where user can find re
     pip install -r requirements.txt
     ```
 
-5. Run the application:
+5. Copy .env-template file and rename it to .env, contact your administrator to get the credentials
+
+6. Run the application:
     ```bash
     python manage.py run
     ```
 
-6. Run the tests:
+7. Run the tests:
     ```bash
     python manage.py test
     ```
