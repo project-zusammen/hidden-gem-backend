@@ -9,6 +9,11 @@ This backend application serves API for the hiddenGem web where user can find re
 
 ## Features
 
+- See user list
+- See user detail by id
+- Add new user
+- Update user data
+- Delete user
 - See reviews
 - Get recommendations ?
 - ...
@@ -27,23 +32,55 @@ This backend application serves API for the hiddenGem web where user can find re
     git clone https://github.com/your-username/your-repo.git
     ```
 
-2. Install dependencies:
+2. Create virtual environment:
+    ```bash
+    python -m venv venv
+    ```
 
+3. Activate virtual environment:
+    ```bash
+    source venv/bin/activate
+    ```
+
+4. Install dependencies:
     ```bash
     pip install -r requirements.txt
     ```
-
-3. Set up environment variables (if applicable).
-
-4. Run the application:
-
+5.  Initializes Flask-Migrate within your Flask application.
     ```bash
-    python app.py
+    flask db init
+    ```
+6. Creates an automatic migration script
+    ```bash
+    flask db migrate -m "user table"
+    ```
+    The -m flag allows you to add a message or description for this migration. And make sure to run this command every time you add or modify the model database
+
+7. Applies the generated migration script to the database.
+    ```bash
+    flask db upgrade
+    ```
+
+6. Run the application
+    ```bash
+    flask run
+    ```
+
+6. Run the tests:
+    ```bash
+    besok dah..
     ```
 
 ## Configuration
 
-Explain any configuration settings or environment variables that need to be set.
+Create an env file and export it
+```bash
+FLASK_APP=main.py
+DB_HOST=localhost
+DB_DATABASE=your_database
+DB_USERNAME=your_database_name
+DB_PASSWORD=your_database_password
+```
 
 ## Usage
 
@@ -71,3 +108,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Your Name
 - Your Email
 - Any other contact information you'd like to provide.
+
