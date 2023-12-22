@@ -1,0 +1,6 @@
+[run]
+source = hidden_gem_backend
+omit = 
+    tests/*
+    autoapp.py
+
