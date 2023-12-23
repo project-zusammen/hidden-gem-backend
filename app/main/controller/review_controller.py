@@ -10,18 +10,15 @@ review_dto = ReviewDto()
 # Create a Blueprint and Api
 review_bp = Blueprint('review', __name__)
 api = Api(review_bp)
-_review = review_dto.review  # Use the review model from the ReviewDto
 
 @api.route('/')
 class ReviewList(Resource):
     # @api.doc('list_of_reviews')
-    # @api.marshal_list_with(_review, envelope='data')
     def get(self):
         """List all reviews"""
         return get_all_reviews()
 
-    # @api.response(201, 'Review successfully created.')
-    # @api.doc('create a new review')
+    @api.doc('create a new review')
     # @api.expect(_review, validate=True)
     def post(self):
         """Creates a new Review"""
@@ -34,11 +31,7 @@ class ReviewList(Resource):
 @api.response(404, 'Review not found.')
 class Review(Resource):
     @api.doc('get a review')
-    @api.marshal_with(_review)
     def get(self, public_id):
         """Get a review by its identifier"""
         review = get_a_review(public_id)
-        if not review:
-            api.abort(404)
-        else:
-            return review
+        return review

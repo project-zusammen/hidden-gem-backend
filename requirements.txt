@@ -34,3 +34,6 @@ zipp==3.17.0
 python-dotenv==1.0.0
 wheel=0.42.0
 pymysql=1.1.0
+flask_caching=2.1.0
+flask_debugtoolbar=0.14.1
+environs=10.0.0

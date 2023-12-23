@@ -12,6 +12,7 @@ debug_mode = env.str("DEBUG")
 DATABASE_URI = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/defaultdb"
 
 ENV = env.str("FLASK_ENV", default="production")
+print('ENV: ', ENV)
 DEBUG = ENV == "development"
 SQLALCHEMY_DATABASE_URI = DATABASE_URI
 SECRET_KEY = env.str("SECRET_KEY")

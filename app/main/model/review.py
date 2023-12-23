@@ -1,10 +1,11 @@
+import uuid
 from .. import db
 
 class Review(db.Model):
     __tablename__ = "review"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    public_id = db.Column(db.String(100), unique=True)
+    public_id = db.Column(db.String(100), unique=True, nullable=False)
     # user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     # category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     # region_id = db.Column(db.Integer, db.ForeignKey('region.id'), nullable=False)
