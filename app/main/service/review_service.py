@@ -8,13 +8,13 @@ from app.main.model.review import Review
 def create_review(data):
     review = Review(
         public_id=str(uuid.uuid4()),
-        category_id = data.get('category_id'),
-        region_id = data.get('region_id'),
+        # category_id = data.get('category_id'),
+        # region_id = data.get('region_id'),
         title = data.get('title'),
         content = data.get('content'),
         location = data.get('location'),
         created_at=datetime.datetime.utcnow(),
-        updated_at=datetime.datetime.utcnow()
+        updated_at=datetime.datetime.utcnow(),
     )
     review.save()
     response_object = {
@@ -91,13 +91,27 @@ def update_visibility(public_id, visible=True):
 
 
 def get_all_reviews():
-    reviews = Review.query.filter_by(visible=True).all()
-    response_object = {
-        'status': 'success',
-        'message': 'Successfully get reviews.',
-        'data': [review.to_json() for review in reviews]
-    }
-    return response_object, 200
+    try:
+        reviews = Review.query.filter_by(visible=True).all()
+        print('reviews', reviews)
+        # Check if there are no reviews
+        if not reviews:
+            return {'status': 'success', 'message': 'No reviews found', 'data': []}, 200
+
+        # Assuming that the 'to_json()' method is part of your Review model
+        review_data = [review.to_json() for review in reviews]
+
+        response_object = {
+            'status': 'success',
+            'message': 'Successfully retrieved reviews.',
+            'data': review_data
+        }
+        return response_object, 200
+    except Exception as e:
+        # Log the exception for debugging purposes
+        print(f"Error in get_all_reviews: {str(e)}")
+        return {'status': 'error', 'message': 'Internal Server Error'}, 500
+
 
 
 def get_a_review(public_id):

@@ -9,7 +9,7 @@ db_password = os.getenv("DB_PASSWORD")
 db_port = os.getenv("DB_PORT")
 debug_mode = os.getenv("DEBUG")
 
-DB_URI = f"mysql://{db_password}@{db_host}:{db_port}/defaultdb?sslmode=REQUIRED"
+DB_URI = f"mysql://{db_password}@{db_host}:{db_port}/defaultdb"
 
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'my_precious_secret_key')
