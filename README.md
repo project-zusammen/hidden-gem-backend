@@ -46,12 +46,19 @@ This backend application serves API for the hiddenGem web where user can find re
 
 6. Run the application:
     ```bash
-    python manage.py run
+    flask run
     ```
 
 7. Run the tests:
     ```bash
-    python manage.py test
+    flask test
+    ```
+
+8. DB related:
+    ```bash
+    flask db init
+    flask db migrate
+    flask db upgrade
     ```
 
 ## Configuration
