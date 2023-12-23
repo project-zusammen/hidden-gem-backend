@@ -38,7 +38,6 @@ class Review(db.Model):
 
     def serialize(self):
         return {
-            'id': self.id,
             'public_id': self.public_id,
             # 'user_id': self.user_id,
             # 'category_id': self.category_id,

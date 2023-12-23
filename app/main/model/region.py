@@ -22,7 +22,6 @@ class Region(db.Model):
 
     def serialize(self):
         return {
-            'id': self.id,
             'public_id': self.public_id,
             'name': self.name,
             'created_at': self.created_at,
