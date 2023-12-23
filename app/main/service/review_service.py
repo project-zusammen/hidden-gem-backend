@@ -93,13 +93,10 @@ def update_visibility(public_id, visible=True):
 def get_all_reviews():
     try:
         reviews = Review.query.filter_by(visible=True).all()
-        print('reviews', reviews)
-        # Check if there are no reviews
         if not reviews:
             return {'status': 'success', 'message': 'No reviews found', 'data': []}, 200
 
-        # Assuming that the 'to_json()' method is part of your Review model
-        review_data = [review.to_json() for review in reviews]
+        review_data = [review.serialize() for review in reviews]
 
         response_object = {
             'status': 'success',
@@ -108,7 +105,6 @@ def get_all_reviews():
         }
         return response_object, 200
     except Exception as e:
-        # Log the exception for debugging purposes
         print(f"Error in get_all_reviews: {str(e)}")
         return {'status': 'error', 'message': 'Internal Server Error'}, 500
 

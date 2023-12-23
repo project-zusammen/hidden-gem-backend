@@ -19,7 +19,7 @@ class Review(db.Model):
     visible = db.Column(db.Boolean, nullable=False, default=True)
 
 
-    def __init__(self, public_id, title, content, location, created_at, updated_at, visible=True):
+    def __init__(self, public_id, title, content, location, created_at, updated_at, upvotes=0, downvotes=0, visible=True):
         self.public_id = public_id
         # self.user_id = user_id
         # self.category_id = category_id
@@ -29,6 +29,8 @@ class Review(db.Model):
         self.location = location
         self.created_at = created_at
         self.updated_at = updated_at
+        self.upvotes = upvotes
+        self.downvotes = downvotes
         self.visible = visible
     
 
