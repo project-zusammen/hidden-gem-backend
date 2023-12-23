@@ -137,7 +137,8 @@ def delete_review(public_id):
         return response_object, 409
     else:
         review.visible = False
-        db.session.commit()
+        review.save()
+        review = Review.query.filter_by(public_id=public_id).first()
         response_object = {
             'status': 'success',
             'message': 'Successfully deleted.',
