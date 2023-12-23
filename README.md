@@ -24,6 +24,18 @@ This backend application serves API for the hiddenGem web where user can find re
 - Python
 - [Other dependencies]
 
+
+## Configuration
+
+Create an env file and export it
+```bash
+FLASK_APP=main.py
+DB_HOST=localhost
+DB_DATABASE=your_database
+DB_USERNAME=your_database_name
+DB_PASSWORD=your_database_password
+```
+
 ## Installation
 
 1. Clone the repository:
@@ -70,17 +82,6 @@ This backend application serves API for the hiddenGem web where user can find re
     ```bash
     besok dah..
     ```
-
-## Configuration
-
-Create an env file and export it
-```bash
-FLASK_APP=main.py
-DB_HOST=localhost
-DB_DATABASE=your_database
-DB_USERNAME=your_database_name
-DB_PASSWORD=your_database_password
-```
 
 ## Usage
 
