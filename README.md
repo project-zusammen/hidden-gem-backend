@@ -32,7 +32,7 @@ Create an env file and export it
 FLASK_APP=main.py
 DB_HOST=localhost
 DB_DATABASE=your_database
-DB_USERNAME=your_database_name
+DB_USERNAME=your_database_username
 DB_PASSWORD=your_database_password
 ```
 
@@ -85,7 +85,44 @@ DB_PASSWORD=your_database_password
 
 ## Usage
 
-Provide instructions on how to use your application. Include any examples or screenshots that may be helpful.
+1. Add New User (Method = POST): 
+```
+curl --location 'http://127.0.0.1:5000/users' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "username" : "ikan tenggiri",
+    "email": "tenggiri@gmail.com",
+    "password" : "tenggiri123" 
+
+}'
+```
+
+Result: 
+```json
+{
+    "message": "Successfully create user!"
+}
+```
+
+2. Get User Lists (Method = GET): 
+```
+curl --location 'http://127.0.0.1:5000/users'
+```
+
+Result: 
+```json
+{
+    "data": [
+        {
+            "email": "tenggiri@gmail.com",
+            "id": 1,
+            "role": "user",
+            "username": "ikan tenggiri"
+        }
+    ],
+    "message": "Success Get User lists"
+}
+```
 
 ## Contributing
 
