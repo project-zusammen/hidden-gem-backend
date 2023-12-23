@@ -6,15 +6,13 @@ from app import commands
 from app.extensions import (
     bcrypt,
     cache,
-    # csrf_protect,
     db,
+    api,
     debug_toolbar,
-    # flask_static_digest,
-    # login_manager,
     migrate,
 )
 
-from app.main.controller.review_controller import  review_bp
+from app.main.controller.review_controller import ns as review_ns
 
 def create_app(config_object="app.settings"):
     """Create application factory, as explained here: http://flask.pocoo.org/docs/patterns/appfactories/.
@@ -25,12 +23,8 @@ def create_app(config_object="app.settings"):
     app.config.from_object(config_object)
     register_extensions(app)
     register_errorhandlers(app)
-    # register_shellcontext(app)
     register_commands(app)
     configure_logger(app)
-
-    """ Register the Blueprint """
-    app.register_blueprint(review_bp, url_prefix='/review')
 
     return app
 
@@ -40,11 +34,10 @@ def register_extensions(app):
     bcrypt.init_app(app)
     cache.init_app(app)
     db.init_app(app)
-    # csrf_protect.init_app(app)
-    # login_manager.init_app(app)
+    api.init_app(app)
+    api.add_namespace(review_ns)
     debug_toolbar.init_app(app)
     migrate.init_app(app, db)
-    # flask_static_digest.init_app(app)
     return None
 
 
@@ -54,16 +47,6 @@ def register_errorhandlers(app):
     for errcode in [401, 404, 500]:
         app.errorhandler(errcode)
     return None
-
-
-def register_shellcontext(app):
-    """Register shell context objects."""
-
-    def shell_context():
-        """Shell context objects."""
-        return {"db": db, "User": user.models.User}
-
-    app.shell_context_processor(shell_context)
 
 
 def register_commands(app):
