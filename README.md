@@ -27,18 +27,38 @@ This backend application serves API for the hiddenGem web where user can find re
     git clone https://github.com/your-username/your-repo.git
     ```
 
-2. Install dependencies:
+2. Create virtual environment:
+    ```bash
+    python -m venv venv
+    ```
 
+3. Activate virtual environment:
+    ```bash
+    source venv/bin/activate
+    ```
+
+4. Install dependencies:
     ```bash
     pip install -r requirements.txt
     ```
 
-3. Set up environment variables (if applicable).
+5. Copy .env-template file and rename it to .env, contact your administrator to get the credentials
 
-4. Run the application:
-
+6. Run the application:
     ```bash
-    python app.py
+    flask run
+    ```
+
+7. Run the tests:
+    ```bash
+    flask test
+    ```
+
+8. DB related:
+    ```bash
+    flask db init
+    flask db migrate
+    flask db upgrade
     ```
 
 ## Configuration
