@@ -1,9 +1,8 @@
 import uuid
 import datetime
 
-from app.main import db
 from app.main.model.review import Review
-
+from ..model import get_all
 
 def create_review(data):
     review = Review(
@@ -92,7 +91,7 @@ def update_visibility(public_id, visible=True):
 
 def get_all_reviews():
     try:
-        reviews = Review.query.filter_by(visible=True).all()
+        reviews = get_all()
         if not reviews:
             return {'status': 'success', 'message': 'No reviews found', 'data': []}, 200
 
