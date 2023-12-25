@@ -94,5 +94,30 @@ class Review(db.Model):
             return None
         else:
             review.visible = False
+            review.updated_at = datetime.datetime.utcnow()
+            review.save()
+            return review
+    
+
+    def upvote_review(self, public_id, upvote=True):
+        review = self.get_review_by_id(public_id)
+        if not review:
+            return None
+        if upvote:
+            review.upvotes += 1
+        else:
+            review.downvotes += 1
+        review.updated_at = datetime.datetime.utcnow()
+        review.save()
+        return review
+    
+
+    def update_visibility(self, public_id, visible=True):
+        review = self.get_review_by_id(public_id)
+        if not review:
+            return None
+        else:
+            review.visible = visible
+            review.updated_at = datetime.datetime.utcnow()
             review.save()
             return review
