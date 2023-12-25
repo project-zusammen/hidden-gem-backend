@@ -5,7 +5,6 @@ from flask import Flask
 from app import commands
 from app.extensions import (
     bcrypt,
-    cache,
     db,
     api,
     debug_toolbar,
@@ -32,7 +31,6 @@ def create_app(config_object="app.settings"):
 def register_extensions(app):
     """Register Flask extensions."""
     bcrypt.init_app(app)
-    cache.init_app(app)
     db.init_app(app)
     api.init_app(app)
     api.add_namespace(review_ns)
