@@ -1,27 +1,30 @@
-import uuid
-import datetime
+import logging as log
 
 from app.main.model.review import Review
-from ..model import get_all
+
+review_model = Review()
+# from ..model.review import review_model
 
 def create_review(data):
-    review = Review(
-        public_id=str(uuid.uuid4()),
-        # category_id = data.get('category_id'),
-        # region_id = data.get('region_id'),
-        title = data.get('title'),
-        content = data.get('content'),
-        location = data.get('location'),
-        created_at=datetime.datetime.utcnow(),
-        updated_at=datetime.datetime.utcnow(),
-    )
-    review.save()
-    response_object = {
-        'status': 'success',
-        'message': 'Successfully created.',
-        'data': review.serialize()
-    }
-    return response_object, 201
+    # review = review_model.create_review(data)
+    # review.save()
+    # response_object = {
+    #     'status': 'success',
+    #     'message': 'Successfully created.',
+    #     'data': review.serialize()
+    # }
+    # return response_object, 201
+    try:
+        review = review_model.create_review(data)
+        response_object = {
+            'status': 'success',
+            'message': 'Successfully created.',
+            'data': review.serialize()
+        }
+        return response_object, 201
+    except Exception as e:
+        log.error(f"Error in create_review: {str(e)}")
+        return {'status': 'error', 'message': 'Internal Server Error'}, 500
 
 
 def update_review(public_id, data):
@@ -91,7 +94,7 @@ def update_visibility(public_id, visible=True):
 
 def get_all_reviews():
     try:
-        reviews = get_all()
+        reviews = review_model.get_all_reviews()
         if not reviews:
             return {'status': 'success', 'message': 'No reviews found', 'data': []}, 200
 
