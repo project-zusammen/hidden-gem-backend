@@ -11,6 +11,9 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False)
 
+    #Define relationship with other table
+    # comment = db.relationship('Comment', backref='user', lazy=True)
+
 
     def __init__(self, public_id, username, email, password, created_at, updated_at):
         self.public_id = public_id

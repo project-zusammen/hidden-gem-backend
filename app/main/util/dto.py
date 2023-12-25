@@ -12,3 +12,9 @@ class ReviewDto:
         'category_id': fields.String(description='category Identifier'),
         'region_id': fields.String(description='region Identifier')
     })
+
+class CommentDto:
+    comment = api.model('comment', {
+		'content': fields.String(required=True),
+		'review_id': fields.String(required=True)
+	})
