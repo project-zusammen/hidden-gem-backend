@@ -15,6 +15,6 @@ class ReviewDto:
 
 class CommentDto:
     comment = api.model('comment', {
-		'content': fields.String(required=True),
-		'review_id': fields.String(required=True)
+		'review_id': fields.String(required=True),
+		'content': fields.String(required=True)
 	})

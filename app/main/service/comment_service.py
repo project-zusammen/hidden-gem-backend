@@ -26,7 +26,7 @@ def create_comment(data):
     comment = Comment(
         public_id = str(uuid.uuid4()),
         # user_id = data.get('user_id'),
-        # review_id = data.get('review_id'),
+        review_id = data.get('review_id'),
         content = data.get('content'),
         created_at = datetime.datetime.utcnow(),
         updated_at = datetime.datetime.utcnow()

@@ -15,6 +15,9 @@ from app.extensions import (
 from app.main.controller.review_controller import ns as review_ns
 from app.main.controller.comment_controller import ns as comment_ns
 
+from app.main.model.comment import Comment
+
+
 def create_app(config_object="app.settings"):
     """Create application factory, as explained here: http://flask.pocoo.org/docs/patterns/appfactories/.
 
@@ -36,7 +39,7 @@ def register_extensions(app):
     cache.init_app(app)
     db.init_app(app)
     api.init_app(app)
-    api.add_namespace(review_ns)
+    #api.add_namespace(review_ns)
     api.add_namespace(comment_ns)
     debug_toolbar.init_app(app)
     migrate.init_app(app, db)

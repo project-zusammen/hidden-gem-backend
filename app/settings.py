@@ -13,7 +13,7 @@ DATABASE_URI = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/def
 
 ENV = env.str("FLASK_ENV", default="production")
 print('ENV: ', ENV)
-DEBUG = ENV == "development"
+DEBUG = ENV == "dev"
 SQLALCHEMY_DATABASE_URI = DATABASE_URI
 SECRET_KEY = env.str("SECRET_KEY")
 BCRYPT_LOG_ROUNDS = env.int("BCRYPT_LOG_ROUNDS", default=13)
