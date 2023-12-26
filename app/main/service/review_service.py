@@ -1,10 +1,6 @@
 import datetime
 import logging as log
-
-from app.main import db
-from app.main.model.review import Review
-
-review_model = Review()
+from app.main.model.review import review_model
 
 def create_review(data):
     try:

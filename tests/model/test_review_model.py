@@ -10,6 +10,10 @@ review_data = {
     'location': 'Test Location',
 }
 
+def remove_review(review):
+    db.session.delete(review)
+    db.session.commit()
+
 class TestReview(unittest.TestCase):
 
     def setUp(self):
@@ -25,7 +29,6 @@ class TestReview(unittest.TestCase):
 
     def test_create_and_get_review(self):
         # ARRANGE
-
         review = review_model.create_review(review_data)
 
         # ACT
@@ -40,7 +43,6 @@ class TestReview(unittest.TestCase):
     def test_update_review(self):
         # ARRANGE
         review = review_model.create_review(review_data)
-        review.save()
 
         # ACT
         updated_data = {
@@ -49,9 +51,10 @@ class TestReview(unittest.TestCase):
             'location': 'Updated Location',
         }
         updated_review = review_model.update_review(review.public_id, updated_data)
-
+        
         # ASSERT
         self.assertIsNotNone(updated_review)
+        self.assertEqual(review['public_id'], updated_review.public_id)
         self.assertEqual(updated_data['title'], updated_review.title)
         self.assertEqual(updated_data['content'], updated_review.content)
         self.assertEqual(updated_data['location'], updated_review.location)
@@ -59,7 +62,6 @@ class TestReview(unittest.TestCase):
     def test_get_all_reviews(self):
         # ARRANGE
         review = review_model.create_review(review_data)
-        review.save()
 
         # ACT
         retrieved_reviews = review_model.get_all_reviews()
@@ -70,6 +72,58 @@ class TestReview(unittest.TestCase):
         self.assertEqual(review.title, retrieved_reviews[0].title)
         self.assertEqual(review.content, retrieved_reviews[0].content)
         self.assertEqual(review.location, retrieved_reviews[0].location)
+    
+    def test_delete_review(self):
+        # ARRANGE
+        review = review_model.create_review(review_data)
+
+        # ACT
+        deleted_review = review_model.delete_review(review.public_id)
+
+        # ASSERT
+        self.assertIsNotNone(deleted_review)
+        self.assertFalse(deleted_review.visible)
+
+    def test_upvote_review(self):
+        # ARRANGE
+        review = review_model.create_review(review_data)
+        print('review created nih', review)
+
+        # ACT
+        upvoted_review = review_model.upvote_review(review.public_id)
+        print('upvoted_review nih', upvoted_review)
+
+        # ASSERT
+        self.assertIsNotNone(upvoted_review)
+        self.assertEqual(review.upvotes + 1, upvoted_review.upvotes)
+        self.assertEqual(review.downvotes, upvoted_review.downvotes)
+    
+    def test_downvote_review(self):
+        # ARRANGE
+        review = review_model.create_review(review_data)
+
+        # ACT
+        downvoted_review = review_model.upvote_review(public_id=review.public_id, upvote=False)
+
+        remove_review(review)
+
+        # ASSERT
+        self.assertIsNotNone(downvoted_review)
+        self.assertEqual(review.upvotes, downvoted_review.upvotes)
+        self.assertEqual(review.downvotes + 1, downvoted_review.downvotes)
+    
+    def test_update_visibility(self):
+        # ARRANGE
+        review = review_model.create_review(review_data)
+
+        # ACT
+        updated_review = review_model.update_visibility(public_id=review.public_id, visible=False)
+
+        remove_review(review)
+
+        # ASSERT
+        self.assertIsNotNone(updated_review)
+        self.assertFalse(updated_review.visible)
 
 if __name__ == '__main__':
     unittest.main()
