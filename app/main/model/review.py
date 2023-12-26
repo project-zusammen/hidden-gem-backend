@@ -21,8 +21,22 @@ class Review(db.Model):
     visible = db.Column(db.Boolean, nullable=False, default=True)
 
 
+    def __init__(self, public_id, title, content, location, created_at, updated_at, upvotes, downvotes, visible):
+        self.public_id = public_id
+        # self.user_id = user_id
+        # self.category_id = category_id
+        # self.region_id = region_id
+        self.title = title
+        self.content = content
+        self.location = location
+        self.created_at = created_at
+        self.updated_at = updated_at
+        self.upvotes = upvotes
+        self.downvotes = downvotes
+        self.visible = visible
+
     def __repr__(self):
-        return f"<Review(title={self.title}, content={self.content})>"
+        return f"<Review(title={self.title}, content={self.content}), upvotes={self.upvotes}, downvotes={self.downvotes}>"
     
 
     def serialize(self):
@@ -68,9 +82,12 @@ class Review(db.Model):
             location=data.get('location'),
             created_at=datetime.datetime.utcnow(),
             updated_at=datetime.datetime.utcnow(),
+            upvotes=0,
+            downvotes=0,
+            visible=True
         )
         review.save()
-        return review
+        return self.serialize()
 
 
     def update_review(self, public_id, data):
