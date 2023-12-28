@@ -1,8 +1,8 @@
 import uuid
 from unittest import TestCase, mock
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 from app import create_app
-from app.extensions import db
+# from app.extensions import db
 from app.main.service.review_service import (
     create_review,
     update_review,
@@ -23,50 +23,70 @@ class TestReviewService(TestCase):
         cls.app = create_app(config_object="app.test_settings")
         cls.app_context = cls.app.app_context()
         cls.app_context.push()
-        db.create_all()
+        # db.create_all()
 
     @classmethod
     def tearDownClass(cls):
-        db.session.remove()
-        db.drop_all()
+        # db.session.remove()
+        # db.drop_all()
         cls.app_context.pop()
     
-    # def test_get_all_reviews(self):
-    #     # Arrange
-    #     data = [
-    #         {"public_id": "fake_id_1", "title": "Test Review 1", "content": "Content 1", "location": "Location 1"},
-    #         {"public_id": "fake_id_2", "title": "Test Review 2", "content": "Content 2", "location": "Location 2"}
-    #     ]
-    #     with mock.patch('app.main.model.review.review_model.get_all_reviews') as mock_get_all_reviews:
-    #         mock_get_all_reviews.return_value  = [
-    #             MagicMock(serialize=lambda: data[0]),
-    #             MagicMock(serialize=lambda: data[1])
-    #         ]
-
-    #     # Act
-    #     response, status_code = get_all_reviews()
-    #     print('response nih', response)
-    #     result = response['data']
-
-    #     # Assert
-    #     self.assertEqual(status_code, 200)
-    #     self.assertEqual(response['status'], 'success')
-    #     self.assertEqual(response['message'], 'Successfully retrieved reviews.')
-    #     self.assertEqual(len(result), len(data))
-
-    #     mock_review_model.get_all_reviews.assert_called_once()
-
-    #     for i in range(len(result)):
-    #         self.assertEqual(result[i]['public_id'], data[i]['public_id'])
-    #         self.assertEqual(result[i]['title'], data[i]['title'])
-    #         self.assertEqual(result[i]['content'], data[i]['content'])
-    #         self.assertEqual(result[i]['location'], data[i]['location'])
-
-    def test_create_review(self):
+    @patch('app.main.model.review.Review.get_all_reviews')
+    def test_get_all_reviews(self, mock_get_all_reviews):
         # Arrange
-        data = {"title": "Test Review", "content": "This is a content review", "location": "Test Location"}
-        with mock.patch('app.main.model.review.review_model.create_review') as mock_create_review:
-            mock_create_review.return_value = data
+        public_id_1 = generate_fake_public_id()
+        public_id_2 = generate_fake_public_id()
+        data = [
+            {"public_id": public_id_1, "title": "Test Review 1", "content": "Content 1", "location": "Location 1"},
+            {"public_id": public_id_2, "title": "Test Review 2", "content": "Content 2", "location": "Location 2"}
+        ]
+        mock_get_all_reviews.return_value  = data
+
+        # Act
+        response, status_code = get_all_reviews()
+        result = response['data']
+
+        # Assert
+        self.assertEqual(status_code, 200)
+        self.assertEqual(response['status'], 'success')
+        self.assertEqual(response['message'], 'Successfully retrieved reviews.')
+        self.assertEqual(len(result), len(data))
+
+        mock_get_all_reviews.assert_called_once()
+
+        for i in range(len(result)):
+            self.assertEqual(result[i]['public_id'], data[i]['public_id'])
+            self.assertEqual(result[i]['title'], data[i]['title'])
+            self.assertEqual(result[i]['content'], data[i]['content'])
+            self.assertEqual(result[i]['location'], data[i]['location'])
+    
+    @patch('app.main.model.review.Review.get_review_by_id')
+    def test_get_a_review(self, mock_get_review_by_id):
+        # Arrange
+        public_id = generate_fake_public_id()
+        data = {"public_id": public_id, "title": "Test Review", "content": "This is a content review", "location": "Test Location"}
+        mock_get_review_by_id.return_value = data
+
+        # Act
+        response, status_code = get_a_review(public_id)
+        print('response ni', response)
+        result = response['data']
+
+        # Assert
+        self.assertEqual(status_code, 200)
+        self.assertEqual(response['status'], 'success')
+        self.assertEqual(response['message'], 'Successfully get a review.')
+        self.assertEqual(result['public_id'], data['public_id'])
+        self.assertEqual(result['title'], data['title'])
+        self.assertEqual(result['content'], data['content'])
+        self.assertEqual(result['location'], data['location'])
+
+    @patch('app.main.model.review.Review.create_review')
+    def test_create_review(self, mock_create_review):
+        # Arrange
+        public_id = generate_fake_public_id()
+        data = {"public_id": public_id, "title": "Test Review", "content": "This is a content review", "location": "Test Location"}
+        mock_create_review.return_value = data
 
         # Act
         response, status_code = create_review(data)
@@ -80,28 +100,74 @@ class TestReviewService(TestCase):
         self.assertEqual(result['content'], data['content'])
         self.assertEqual(result['location'], data['location'])
     
-    # @patch('app.main.model.review.review_model')
-    # def test_update_review(self, mock_review_model):
+    @patch('app.main.model.review.Review.update_review')
+    def test_update_review(self, mock_update_review):
         # Arrange
-        # fake_public_id = generate_fake_public_id()
-        # data = {"title": "Test Review updated", "content": "This is a content review updated", "location": "Test Location updated"}
-        # data['public_id'] = fake_public_id
-        # mock_review_model.update_review.return_value = data
+        public_id = generate_fake_public_id()
+        data = {"title": "Test Review updated", "content": "This is a content review updated", "location": "Test Location updated"}
+        data['public_id'] = public_id
+        mock_update_review.return_value = data
 
-        # # Act
-        # response, status_code = update_review(fake_public_id, data)
-        # print('response', response)
-        # result = response['data']
+        # Act
+        response, status_code = update_review(public_id, data)
+        result = response['data']
 
-        # # Assert
-        # self.assertEqual(status_code, 201)
-        # self.assertEqual(response['status'], 'success')
-        # self.assertEqual(response['message'], 'Successfully updated.')
-        # self.assertEqual(result['title'], data['title'])
-        # self.assertEqual(result['content'], data['content'])
-        # self.assertEqual(result['location'], data['location'])
+        # Assert
+        self.assertEqual(status_code, 201)
+        self.assertEqual(response['status'], 'success')
+        self.assertEqual(response['message'], 'Successfully updated.')
+        self.assertEqual(result['title'], data['title'])
+        self.assertEqual(result['content'], data['content'])
+        self.assertEqual(result['location'], data['location'])
 
-    # Similar tests for other functions...
+    @patch('app.main.model.review.Review.upvote_review')
+    def test_upvote_review(self, mock_upvote_review):
+        # Arrange
+        public_id = generate_fake_public_id()
+        data = {"public_id": public_id, "title": "Test Review", "content": "This is a content review", "location": "Test Location", "upvotes": 1, "downvotes": 0}
+        mock_upvote_review.return_value = data
 
-if __name__ == '__main__':
-    unittest.main()
+        # Act
+        response, status_code = upvote_review(public_id)
+        result = response['data']
+
+        # Assert
+        self.assertEqual(status_code, 201)
+        self.assertEqual(response['status'], 'success')
+        self.assertEqual(response['message'], 'Successfully upvoted.')
+        self.assertEqual(result['upvotes'], data['upvotes'])
+        self.assertEqual(result['downvotes'], data['downvotes'])
+    
+    @patch('app.main.model.review.Review.update_visibility')
+    def test_update_visibility(self, mock_update_visibility):
+        # Arrange
+        public_id = generate_fake_public_id()
+        data = {"public_id": public_id, "title": "Test Review", "content": "This is a content review", "location": "Test Location", "visible": False}
+        mock_update_visibility.return_value = data
+
+        # Act
+        response, status_code = update_visibility(public_id, False)
+        result = response['data']
+
+        # Assert
+        self.assertEqual(status_code, 201)
+        self.assertEqual(response['status'], 'success')
+        self.assertEqual(response['message'], 'Successfully updated.')
+        self.assertEqual(result['visible'], data['visible'])
+    
+    @patch('app.main.model.review.Review.delete_review')
+    def test_delete_review(self, mock_delete_review):
+        # Arrange
+        public_id = generate_fake_public_id()
+        data = {"public_id": public_id, "title": "Test Review", "content": "This is a content review", "location": "Test Location", "visible": False}
+        mock_delete_review.return_value = data
+
+        # Act
+        response, status_code = delete_review(public_id)
+        result = response['data']
+
+        # Assert
+        self.assertEqual(status_code, 201)
+        self.assertEqual(response['status'], 'success')
+        self.assertEqual(response['message'], 'Successfully deleted.')
+        self.assertEqual(result['visible'], data['visible'])

@@ -1,6 +1,7 @@
-import datetime
 import logging as log
-from app.main.model.review import review_model
+from app.main.model.review import Review
+
+review_model = Review()
 
 def create_review(data):
     try:
@@ -8,7 +9,7 @@ def create_review(data):
         response_object = {
             'status': 'success',
             'message': 'Successfully created.',
-            'data': review.serialize()
+            'data': review
         }
         return response_object, 201
     except Exception as e:
@@ -29,7 +30,7 @@ def update_review(public_id, data):
             response_object = {
                 'status': 'success',
                 'message': 'Successfully updated.',
-                'data': updated_review.serialize()
+                'data': updated_review
             }
             return response_object, 201
     except Exception as e:
@@ -50,7 +51,7 @@ def upvote_review(public_id, upvote=True):
         response_object = {
             'status': 'success',
             'message': 'Successfully upvoted.',
-            'data': updated_review.serialize()
+            'data': updated_review
         }
         return response_object, 201
     except Exception as e:
@@ -71,7 +72,7 @@ def update_visibility(public_id, visible=True):
         response_object = {
             'status': 'success',
             'message': 'Successfully updated.',
-            'data': updated_visibility.serialize()
+            'data': updated_visibility
         }
         return response_object, 201
     except Exception as e:
@@ -84,11 +85,11 @@ def get_all_reviews():
         reviews = review_model.get_all_reviews()
         if not reviews:
             return {'status': 'success', 'message': 'No reviews found', 'data': []}, 200
-        review_data = [review.serialize() for review in reviews]
+
         response_object = {
             'status': 'success',
             'message': 'Successfully retrieved reviews.',
-            'data': review_data
+            'data': reviews
         }
         return response_object, 200
     except Exception as e:
@@ -110,7 +111,7 @@ def get_a_review(public_id):
         response_object = {
             'status': 'success',
             'message': 'Successfully get a review.',
-            'data': review.serialize()
+            'data': review
         }
         return response_object, 200
     except Exception as e:
@@ -130,7 +131,7 @@ def delete_review(public_id):
         response_object = {
             'status': 'success',
             'message': 'Successfully deleted.',
-            'data': review.serialize()
+            'data': review
         }
         return response_object, 201
     except Exception as e:
