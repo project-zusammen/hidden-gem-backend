@@ -1,8 +1,7 @@
 import uuid
-from unittest import TestCase, mock
-from unittest.mock import MagicMock, patch
+from unittest import TestCase
+from unittest.mock import patch
 from app import create_app
-# from app.extensions import db
 from app.main.service.review_service import (
     create_review,
     update_review,
@@ -23,12 +22,9 @@ class TestReviewService(TestCase):
         cls.app = create_app(config_object="app.test_settings")
         cls.app_context = cls.app.app_context()
         cls.app_context.push()
-        # db.create_all()
 
     @classmethod
     def tearDownClass(cls):
-        # db.session.remove()
-        # db.drop_all()
         cls.app_context.pop()
     
     @patch('app.main.model.review.Review.get_all_reviews')
