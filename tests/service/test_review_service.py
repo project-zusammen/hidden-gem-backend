@@ -65,7 +65,6 @@ class TestReviewService(TestCase):
 
         # Act
         response, status_code = get_a_review(public_id)
-        print('response ni', response)
         result = response['data']
 
         # Assert
