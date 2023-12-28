@@ -50,7 +50,8 @@ class Review(db.Model):
 
 
     def get_all_reviews(self):
-        return self.query.filter_by(visible=True).all()
+        reviews = self.query.filter_by(visible=True).all()
+        return [review.serialize() for review in reviews]
 
 
     def get_review_by_id(self, public_id):
@@ -88,7 +89,7 @@ class Review(db.Model):
             review.location = data.get('location')
             review.updated_at = datetime.datetime.utcnow()
             review.save()
-            return review
+            return review.serialize()
     
 
     def delete_review(self, public_id):
@@ -99,7 +100,7 @@ class Review(db.Model):
             review.visible = False
             review.updated_at = datetime.datetime.utcnow()
             review.save()
-            return review
+            return review.serialize()
     
 
     def upvote_review(self, public_id, upvote=True):
@@ -112,7 +113,7 @@ class Review(db.Model):
             review.downvotes += 1
         review.updated_at = datetime.datetime.utcnow()
         review.save()
-        return review
+        return review.serialize()
     
 
     def update_visibility(self, public_id, visible=True):
@@ -123,4 +124,4 @@ class Review(db.Model):
             review.visible = visible
             review.updated_at = datetime.datetime.utcnow()
             review.save()
-            return review
+            return review.serialize()
