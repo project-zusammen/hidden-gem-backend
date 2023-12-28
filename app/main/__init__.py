@@ -13,6 +13,7 @@ from app.extensions import (
 
 from app.main.controller.review_controller import ns as review_ns
 
+
 def create_app(config_object="app.settings"):
     """Create application factory, as explained here: http://flask.pocoo.org/docs/patterns/appfactories/.
 

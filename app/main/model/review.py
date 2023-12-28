@@ -3,6 +3,7 @@ import datetime
 from .. import db
 from ..util.helper import convert_to_local_time
 
+
 class Review(db.Model):
     __tablename__ = "review"
 
@@ -20,49 +21,43 @@ class Review(db.Model):
     downvotes = db.Column(db.Integer)
     visible = db.Column(db.Boolean, nullable=False, default=True)
 
-
     def __repr__(self):
         return f"<Review(title={self.title}, content={self.content}), upvotes={self.upvotes}, downvotes={self.downvotes}>"
-    
 
     def serialize(self):
         created_at = convert_to_local_time(self.created_at)
         updated_at = convert_to_local_time(self.updated_at)
         return {
-            'public_id': self.public_id,
+            "public_id": self.public_id,
             # 'user_id': self.user_id,
             # 'category_id': self.category_id,
             # 'region_id': self.region_id,
-            'title': self.title,
-            'content': self.content,
-            'location': self.location,
-            'created_at': created_at.isoformat() if self.created_at else None,
-            'updated_at': updated_at.isoformat() if self.updated_at else None,
-            'upvotes': self.upvotes,
-            'downvotes': self.downvotes,
-            'visible': self.visible
+            "title": self.title,
+            "content": self.content,
+            "location": self.location,
+            "created_at": created_at.isoformat() if self.created_at else None,
+            "updated_at": updated_at.isoformat() if self.updated_at else None,
+            "upvotes": self.upvotes,
+            "downvotes": self.downvotes,
+            "visible": self.visible,
         }
-    
-    
+
     def save(self):
         db.session.add(self)
         db.session.commit()
-
 
     def get_all_reviews(self):
         reviews = self.query.filter_by(visible=True).all()
         return [review.serialize() for review in reviews]
 
-
     def get_review_by_id(self, public_id):
         return self.query.filter_by(public_id=public_id, visible=True).first()
 
-
     def create_review(self, data):
         self.public_id = str(uuid.uuid4())
-        self.title = data.get('title')
-        self.content = data.get('content')
-        self.location = data.get('location')
+        self.title = data.get("title")
+        self.content = data.get("content")
+        self.location = data.get("location")
 
         if not self.title or not self.content:
             return None
@@ -76,21 +71,19 @@ class Review(db.Model):
         self.save()
         return self.serialize()
 
-
     def update_review(self, public_id, data):
         review = self.get_review_by_id(public_id)
         if not review:
             return None
         else:
-            review.category_id = data.get('category_id')
-            review.region_id = data.get('region_id')
-            review.title = data.get('title')
-            review.content = data.get('content')
-            review.location = data.get('location')
+            review.category_id = data.get("category_id")
+            review.region_id = data.get("region_id")
+            review.title = data.get("title")
+            review.content = data.get("content")
+            review.location = data.get("location")
             review.updated_at = datetime.datetime.utcnow()
             review.save()
             return review.serialize()
-    
 
     def delete_review(self, public_id):
         review = self.get_review_by_id(public_id)
@@ -101,7 +94,6 @@ class Review(db.Model):
             review.updated_at = datetime.datetime.utcnow()
             review.save()
             return review.serialize()
-    
 
     def upvote_review(self, public_id, upvote=True):
         review = self.get_review_by_id(public_id)
@@ -114,7 +106,6 @@ class Review(db.Model):
         review.updated_at = datetime.datetime.utcnow()
         review.save()
         return review.serialize()
-    
 
     def update_visibility(self, public_id, visible=True):
         review = self.get_review_by_id(public_id)
