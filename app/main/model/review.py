@@ -21,20 +21,6 @@ class Review(db.Model):
     visible = db.Column(db.Boolean, nullable=False, default=True)
 
 
-    def __init__(self, public_id, title, content, location, created_at, updated_at, upvotes, downvotes, visible):
-        self.public_id = public_id
-        # self.user_id = user_id
-        # self.category_id = category_id
-        # self.region_id = region_id
-        self.title = title
-        self.content = content
-        self.location = location
-        self.created_at = created_at
-        self.updated_at = updated_at
-        self.upvotes = upvotes
-        self.downvotes = downvotes
-        self.visible = visible
-
     def __repr__(self):
         return f"<Review(title={self.title}, content={self.content}), upvotes={self.upvotes}, downvotes={self.downvotes}>"
     
@@ -72,21 +58,21 @@ class Review(db.Model):
 
 
     def create_review(self, data):
-        review = Review(
-            public_id=str(uuid.uuid4()),
-            # user_id=data.get('user_id'),
-            # category_id=data.get('category_id'),
-            # region_id=data.get('region_id'),
-            title=data.get('title'),
-            content=data.get('content'),
-            location=data.get('location'),
-            created_at=datetime.datetime.utcnow(),
-            updated_at=datetime.datetime.utcnow(),
-            upvotes=0,
-            downvotes=0,
-            visible=True
-        )
-        review.save()
+        self.public_id = str(uuid.uuid4())
+        self.title = data.get('title')
+        self.content = data.get('content')
+        self.location = data.get('location')
+
+        if not self.title or not self.content:
+            return None
+
+        self.created_at = datetime.datetime.utcnow()
+        self.updated_at = datetime.datetime.utcnow()
+        self.upvotes = 0
+        self.downvotes = 0
+        self.visible = True
+
+        self.save()
         return self.serialize()
 
 
