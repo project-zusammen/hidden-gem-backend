@@ -40,7 +40,7 @@ class TestReviewEndpoints(unittest.TestCase):
 
         # ACT
         with self.app.test_client() as client:
-            response = client.get('/api/review', json=expected_data)
+            response = client.post('/api/review', json=expected_data)
             res = json.loads(response.data.decode('utf-8'))
 
         # ASSERT
@@ -64,9 +64,7 @@ class TestReviewEndpoints(unittest.TestCase):
         with self.app.test_client() as client:
             response = client.get('/api/review')
             result = json.loads(response.data.decode('utf-8'))
-            print('result', result)
             res = result.get('data')
-            print('res', res)
             first_review = res[0]
             second_review = res[1]
 
