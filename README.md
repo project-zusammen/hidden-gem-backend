@@ -53,12 +53,26 @@ This backend application serves API for the hiddenGem web where user can find re
     ```bash
     flask test
     ```
+    Run a specific test file:
+    ```bash
+    pytest -k path-to-test-file
+    ```
 
 8. DB related:
     ```bash
     flask db init
     flask db migrate
     flask db upgrade
+    ```
+
+9. Format the python file:
+    ```bash
+    black path-to-file
+    ```
+
+    or in a directory consisting the files:
+    ```bash
+    black .
     ```
 
 ## Configuration
