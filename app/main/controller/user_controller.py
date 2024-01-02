@@ -50,6 +50,6 @@ class User(Resource):
 @ns.param("public_id", "The user identifier")
 class UserStatus(Resource):
     def put(self, public_id):
-        """Update a user"""
+        """Update user status to inactive"""
         _updateduser = update_user_status(public_id)
         return _updateduser
