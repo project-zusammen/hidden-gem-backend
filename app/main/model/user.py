@@ -80,12 +80,12 @@ class User(db.Model):
         
     def delete_user(self, public_id):
         try:
-            user = self.get_user_by_id(public_id)
+            user = self.query.filter_by(public_id=public_id).first()
             if not user:
                 raise Exception("User not found. Invalid ID")
             
             db.session.delete(user)  
             db.session.commit()
-            return "User deleted successfully"
+            return True
         except Exception as e:
             raise e
