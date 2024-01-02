@@ -9,6 +9,7 @@ from ..service.user_service import (
     get_all_users,
     get_a_user,
     update_user,
+    update_user_status,
     delete_user,
 )
 from ...extensions import ns
@@ -43,3 +44,12 @@ class User(Resource):
     def delete(self, public_id):
         """Delete a user"""
         return delete_user(public_id)
+
+## work in progress, need authentication for this endpoint
+@ns.route("/user/<public_id>/status")
+@ns.param("public_id", "The user identifier")
+class UserStatus(Resource):
+    def put(self, public_id):
+        """Update a user"""
+        _updateduser = update_user_status(public_id)
+        return _updateduser

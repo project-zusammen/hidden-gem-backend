@@ -8,6 +8,10 @@ class UserRole(Enum):
     admin = 'admin'
     user = 'user'
 
+class UserStatus(Enum):
+    active = 'active'
+    inactive = 'inactive'
+
 class User(db.Model):
     __tablename__ = "user"
 
@@ -17,6 +21,7 @@ class User(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     role = db.Column(db.Enum(UserRole), nullable=False, default=UserRole.user)
+    status = db.Column(db.Enum(UserStatus), nullable=False, default=UserStatus.active)
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False)
 
@@ -33,6 +38,7 @@ class User(db.Model):
             "created_at": created_at.isoformat() if self.created_at else None,
             "updated_at": updated_at.isoformat() if self.updated_at else None,
             "role":self.role.value,
+            "status":self.status.value,
         }
 
     def save(self):
@@ -59,6 +65,7 @@ class User(db.Model):
             self.email = email
             self.password = password
             self.role = data.get("role")
+            self.status = data.get("status")
             self.created_at = datetime.datetime.utcnow()
             self.updated_at = datetime.datetime.utcnow()
 
@@ -103,6 +110,20 @@ class User(db.Model):
                 user.username = data.get("username")
                 user.email = email
                 user.password = password
+                user.updated_at = datetime.datetime.utcnow()
+
+                db.session.commit()
+                return user.serialize()
+        except Exception as e:
+            raise e
+        
+    def update_user_status(self, public_id):
+        try:
+            user = self.query.filter_by(public_id=public_id).first()
+            if not user:
+                raise Exception("User not found. Invalid ID")
+            else:
+                user.status = "inactive"
                 user.updated_at = datetime.datetime.utcnow()
 
                 db.session.commit()

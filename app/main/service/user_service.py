@@ -32,6 +32,18 @@ def update_user(public_id, data):
         log.error(f"Error in update_user: {str(e)}")
         return error_handler(e)
 
+def update_user_status(public_id):
+    try:
+        updated_user = user_model.update_user_status(public_id)
+        response_object = {
+            "status": "success",
+            "message": "Successfully update status user",
+            "data": updated_user,
+        }
+        return response_object, 201
+    except Exception as e:
+        log.error(f"Error in update_user: {str(e)}")
+        return error_handler(e)
 
 def get_all_users():
     try:
