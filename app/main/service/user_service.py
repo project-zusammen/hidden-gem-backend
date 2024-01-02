@@ -1,5 +1,6 @@
 import logging as log
 from app.main.model.user import User
+from ..util.helper import error_handler
 
 user_model = User()
 
@@ -14,7 +15,7 @@ def register_user(data):
         return response_object, 201
     except Exception as e:
         log.error(f"Error in register_user: {str(e)}")
-        return {"status": "error", "message": "Internal Server Error"}, 500
+        return error_handler(e)
 
 
 # def update_user(public_id, data):

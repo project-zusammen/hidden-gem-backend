@@ -2,8 +2,8 @@ from .. import db
 from enum import Enum
 import uuid
 import datetime
-from ..util.helper import convert_to_local_time
-from werkzeug.security import generate_password_hash, check_password_hash
+from ..util.helper import convert_to_local_time, is_valid_email, hash_password
+
 
 
 class UserRole(Enum):
@@ -48,12 +48,16 @@ class User(db.Model):
     
     def register_user(self, data):
         try:
-            hashed_password = generate_password_hash(data.get("password"))
+            password = hash_password(data.get("password"))
 
+            email = data.get("email")
+            if not is_valid_email(email):
+                raise Exception("The email is invalid")
+            
             self.public_id = str(uuid.uuid4())
             self.username = data.get("username")
-            self.email = data.get("email")
-            self.password = hashed_password
+            self.email = email
+            self.password = password
             self.role = data.get("role")
             self.created_at = datetime.datetime.utcnow()
             self.updated_at = datetime.datetime.utcnow()
@@ -62,5 +66,4 @@ class User(db.Model):
             return self.serialize()
 
         except Exception as e:
-            print(f"An error occurred: {e}")
             raise e
