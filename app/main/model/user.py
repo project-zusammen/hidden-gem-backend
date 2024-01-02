@@ -12,6 +12,10 @@ class UserStatus(Enum):
     active = 'active'
     inactive = 'inactive'
 
+class UserRole(Enum):
+    admin = 'admin'
+    user = 'user'
+
 class User(db.Model):
     __tablename__ = "user"
 

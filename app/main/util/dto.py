@@ -45,3 +45,13 @@ class UserDto:
             "visible": fields.Boolean(description="visible")
         }
     )
+
+class UserDto:
+    user = api.model(
+        "user",
+        {
+            "username": fields.String(required=True, description="username"),
+            "email": fields.String(required=True, description="user email"),
+            "password": fields.String(required=True, description="user password")
+        },
+    )
