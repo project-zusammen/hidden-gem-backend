@@ -81,8 +81,7 @@ def delete_user(public_id):
         user = user_model.delete_user(public_id)
         response_object = {
             "status": "success",
-            "message": "Successfully deleted.",
-            "data": user,
+            "message": "Successfully delete user",
         }
         return response_object, 201
     except Exception as e:
