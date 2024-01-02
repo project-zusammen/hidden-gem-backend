@@ -3,6 +3,7 @@ from enum import Enum
 import uuid
 import datetime
 from ..util.helper import convert_to_local_time
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class UserRole(Enum):
@@ -46,13 +47,20 @@ class User(db.Model):
         return [user.serialize() for user in users]
     
     def register_user(self, data):
-        self.public_id = str(uuid.uuid4())
-        self.username = data.get("username")
-        self.email = data.get("email")
-        self.password = data.get("password")
-        self.role = data.get("role")
-        self.created_at = datetime.datetime.utcnow()
-        self.updated_at = datetime.datetime.utcnow()
+        try:
+            hashed_password = generate_password_hash(data.get("password"))
 
-        self.save()
-        return self.serialize()
+            self.public_id = str(uuid.uuid4())
+            self.username = data.get("username")
+            self.email = data.get("email")
+            self.password = hashed_password
+            self.role = data.get("role")
+            self.created_at = datetime.datetime.utcnow()
+            self.updated_at = datetime.datetime.utcnow()
+
+            self.save()
+            return self.serialize()
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            raise e

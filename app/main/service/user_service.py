@@ -5,11 +5,11 @@ user_model = User()
 
 def register_user(data):
     try:
-        user = user_model.register_user(data)  
+        result = user_model.register_user(data)  
         response_object = {
             "status": "success",
             "message": "Register User Success.",
-            "data": user,
+            "data": result,
         }
         return response_object, 201
     except Exception as e:
