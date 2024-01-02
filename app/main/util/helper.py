@@ -2,6 +2,7 @@ from datetime import datetime
 import time
 import email_validator
 from werkzeug.security import generate_password_hash, check_password_hash
+import logging as log
 
 def convert_to_local_time(utc_datetime):
     now_timestamp = time.time()
@@ -29,6 +30,9 @@ def error_handler(error):
     elif "Duplicate entry" in error_message:
         message = f"Insert data failed : Data already exist, cannot duplicate data"
     
+    elif "User not found" in error_message:
+        message = f"Error get user : {error_message}"
+        
     else: 
         message = "Internal Server Error"
 
