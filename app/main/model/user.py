@@ -4,8 +4,6 @@ import uuid
 import datetime
 from ..util.helper import convert_to_local_time, is_valid_email, hash_password
 
-
-
 class UserRole(Enum):
     admin = 'admin'
     user = 'user'
@@ -26,7 +24,6 @@ class User(db.Model):
         return f"<User(username={self.username}, email={self.email})>"
 
     def serialize(self):
-        print("serialize")
         created_at = convert_to_local_time(self.created_at)
         updated_at = convert_to_local_time(self.updated_at)
         return {
@@ -43,9 +40,12 @@ class User(db.Model):
         db.session.commit()
 
     def get_all_users(self):
-        users = self.query.all()
-        return [user.serialize() for user in users]
-    
+        try:
+            users = self.query.all()
+            return [user.serialize() for user in users]
+        except Exception as e:
+            raise e
+        
     def register_user(self, data):
         try:
             password = hash_password(data.get("password"))
@@ -65,5 +65,27 @@ class User(db.Model):
             self.save()
             return self.serialize()
 
+        except Exception as e:
+            raise e
+        
+    def get_user_by_id(self, public_id):
+        try:
+            user = self.query.filter_by(public_id=public_id).first()
+            if not user:
+                raise Exception("User not found. Invalid ID")
+            else:
+                return user.serialize()
+        except Exception as e:
+            raise e
+        
+    def delete_user(self, public_id):
+        try:
+            user = self.get_user_by_id(public_id)
+            if not user:
+                raise Exception("User not found. Invalid ID")
+            
+            db.session.delete(user)  
+            db.session.commit()
+            return "User deleted successfully"
         except Exception as e:
             raise e
