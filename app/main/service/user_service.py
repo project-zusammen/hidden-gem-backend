@@ -19,22 +19,18 @@ def register_user(data):
         return error_handler(e)
 
 
-# def update_user(public_id, data):
-#     try:
-#         updated_user = user_model.update_user(public_id, data)
-#         if not update_user:
-#             response_object = {"status": "fail", "message": "User does not exist."}
-#             return response_object, 409
-#         else:
-#             response_object = {
-#                 "status": "success",
-#                 "message": "Successfully update user",
-#                 "data": updated_user,
-#             }
-#             return response_object, 201
-#     except Exception as e:
-#         log.error(f"Error in update_user: {str(e)}")
-#         return {"status": "error", "message": "Internal Server Error"}, 500
+def update_user(public_id, data):
+    try:
+        updated_user = user_model.update_user(public_id, data)
+        response_object = {
+            "status": "success",
+            "message": "Successfully update user",
+            "data": updated_user,
+        }
+        return response_object, 201
+    except Exception as e:
+        log.error(f"Error in update_user: {str(e)}")
+        return error_handler(e)
 
 
 def get_all_users():

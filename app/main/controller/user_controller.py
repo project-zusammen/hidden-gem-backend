@@ -8,7 +8,7 @@ from ..service.user_service import (
     register_user,
     get_all_users,
     get_a_user,
-    # update_user,
+    update_user,
     delete_user,
 )
 from ...extensions import ns
@@ -34,11 +34,11 @@ class User(Resource):
         user = get_a_user(public_id)
         return user
 
-#     @ns.expect(_user, validate=True)
-#     def put(self, public_id):
-#         """Update a user"""
-#         _updateduser = update_user(public_id, ns.payload)
-#         return _updateduser
+    @ns.expect(_user, validate=True)
+    def put(self, public_id):
+        """Update a user"""
+        _updateduser = update_user(public_id, ns.payload)
+        return _updateduser
 
     def delete(self, public_id):
         """Delete a user"""

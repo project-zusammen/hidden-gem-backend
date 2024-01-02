@@ -89,3 +89,23 @@ class User(db.Model):
             return True
         except Exception as e:
             raise e
+    
+    def update_user(self, public_id, data):
+        try:
+            user = self.query.filter_by(public_id=public_id).first()
+            if not user:
+                raise Exception("User not found. Invalid ID")
+            else:
+                password = hash_password(data.get("password"))
+                email = data.get("email")
+                if not is_valid_email(email):
+                    raise Exception("The email is invalid")
+                user.username = data.get("username")
+                user.email = email
+                user.password = password
+                user.updated_at = datetime.datetime.utcnow()
+
+                db.session.commit()
+                return user.serialize()
+        except Exception as e:
+            raise e
