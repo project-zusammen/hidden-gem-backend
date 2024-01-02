@@ -27,9 +27,12 @@ def error_handler(error):
     if "The email is invalid" in error_message:
         message = f"Registration failed : {error_message}"
 
+    elif "This email has already registered" in error_message:
+        message = f"register user failed : Your email is already registered"
+    
     elif "Duplicate entry" in error_message:
         message = f"Insert data failed : Data already exist, cannot duplicate data"
-    
+
     elif "User not found" in error_message:
         message = f"Error get user : {error_message}"
         
