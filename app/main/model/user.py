@@ -55,10 +55,12 @@ class User(db.Model):
     def register_user(self, data):
         try:
             password = hash_password(data.get("password"))
-
             email = data.get("email")
             if not is_valid_email(email):
                 raise Exception("The email is invalid")
+            user = self.query.filter_by(email=email).first()
+            if user:
+                raise Exception("This email has already registered")
             
             self.public_id = str(uuid.uuid4())
             self.username = data.get("username")
