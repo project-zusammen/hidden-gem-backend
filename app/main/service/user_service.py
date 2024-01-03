@@ -31,20 +31,8 @@ def update_user(public_id, data):
     except Exception as e:
         log.error(f"Error in update_user: {str(e)}")
         return error_handler(e)
-<<<<<<< HEAD
     
-=======
-
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 0b82903 (Update: modifying update status endpoint to receive status input)
-def update_user_status(public_id, data):
-=======
 def updated_user_status(public_id):
->>>>>>> bcfd8ef (Update: rename function on update endpoint)
-=======
-def update_user_status(public_id, data):
->>>>>>> 2145c43 (Update: modifying update status endpoint to receive status input)
     try:
         updated_user = user_model.update_user_status(public_id, data)
         response_object = {
@@ -106,36 +94,7 @@ def user_auth(data):
         response_object = {
             "status": "success",
             "message": "Login Success",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> e205b53 (Add: User authentication)
             "token" : auth
-=======
-            "token" : auth,
-            "data" : data
-<<<<<<< HEAD
->>>>>>> 0969de1 (Add: User authentication)
-=======
-            "token" : auth
->>>>>>> d1abaf4 (Update: make endpoint update status require login)
-=======
->>>>>>> f858a73 (Add: User authentication)
->>>>>>> e205b53 (Add: User authentication)
-=======
-            "token" : auth
->>>>>>> 92aca57 (Add: User authentication endpoint dto)
-=======
-            "token" : auth,
-            "data" : data
->>>>>>> c89b9b6 (Add: User authentication)
-=======
-            "token" : auth
->>>>>>> 51d6297 (Update: make endpoint update status require login)
         }
         return response_object, 201
     except Exception as e:

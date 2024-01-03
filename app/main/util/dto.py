@@ -39,19 +39,19 @@ class UserDto:
             "email": fields.String(required=True, description="user email"),
             "password": fields.String(required=True, description="user password")
         },
-    )
-    status = api.model(
-        "status",
-        {
-            "banned": fields.Boolean(required=True, description="user status that want to be updated"),
-        }
-    )
+    ),
     login = api.model(
         "login",
         {
             "email": fields.String(required=True, description="user email for login"),
             "password": fields.String(required=True, description="user password for login")
         },
+    )
+    status = api.model(
+        "status",
+        {
+            "banned": fields.Boolean(required=True, description="user status that want to be updated"),
+        }
     )
 
 
