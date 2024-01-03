@@ -12,8 +12,8 @@ from ..service.user_service import (
     register_user,
     get_all_users,
     get_a_user,
-    update_user,
-    update_user_status,
+    updated_user,
+    updated_user_status,
     delete_user,
     user_auth
 )
@@ -51,7 +51,6 @@ class User(Resource):
         """Update a user"""
         updated_user = update_user(public_id, ns.payload)
         return updated_user
-
     def delete(self, public_id):
         """Delete a user"""
         return delete_user(public_id)
@@ -73,6 +72,7 @@ class UserStatus(Resource):
         """Update user status"""
         updated_user = updated_user_status(public_id, ns.payload)
         return updated_user
+    
 @ns.route("/user/login")
 class UserLogin(Resource):
     @ns.expect(_login, validate=True)
