@@ -19,7 +19,7 @@ def register_user(data):
         return error_handler(e)
 
 
-def update_user(public_id, data):
+def updated_user(public_id, data):
     try:
         updated_user = user_model.update_user(public_id, data)
         response_object = {

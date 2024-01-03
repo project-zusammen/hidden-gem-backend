@@ -15,7 +15,7 @@ from ..service.user_service import (
     register_user,
     get_all_users,
     get_a_user,
-    update_user,
+    updated_user,
     update_user_status,
     delete_user,
     user_auth
@@ -73,19 +73,8 @@ class UserStatus(Resource):
                 "result" : "error",
                 "message": "Access denied: You are not authorized for this operation"
             }
-<<<<<<< HEAD
-        
-    def put(self, public_id):
         """Update user status"""
-        updated_user = updated_user_status(public_id, ns.payload)
-=======
-<<<<<<< HEAD
-        """Update user status"""
-=======
-        """Update user status to inactive"""
->>>>>>> c5a2fa1 (Add: User authentication endpoint dto)
         updated_user = update_user_status(public_id, ns.payload)
->>>>>>> 152936e (Add: User authentication endpoint dto)
         return updated_user
     
 @ns.route("/user/login")
