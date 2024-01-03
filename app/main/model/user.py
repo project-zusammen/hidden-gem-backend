@@ -138,7 +138,6 @@ class User(db.Model):
                 return user.serialize()
         except Exception as e:
             raise e
-<<<<<<< HEAD
         
     def login_serialize(self):
         return {
@@ -163,6 +162,7 @@ class User(db.Model):
                 raise Exception("User not found. Please enter a valid email address")
 
             if check_password_hash(user['password'], data.get('password')):
+<<<<<<< HEAD
 =======
     
     def user_auth(self, data):
@@ -174,6 +174,8 @@ class User(db.Model):
             if check_password_hash(data.get['password'], user['password']):
 >>>>>>> f858a73 (Add: User authentication)
 >>>>>>> 17dd6c1 (Add: User authentication)
+=======
+>>>>>>> 152936e (Add: User authentication endpoint dto)
                 return create_token(user)    
             else:
                 raise Exception("Incorrect password. Please try again")
