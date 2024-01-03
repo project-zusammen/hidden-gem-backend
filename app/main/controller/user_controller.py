@@ -15,7 +15,7 @@ from ..service.user_service import (
     register_user,
     get_all_users,
     get_a_user,
-    update_user,
+    updated_user,
     update_user_status,
     delete_user,
     user_auth
