@@ -1,8 +1,10 @@
-from ..util.dto import UserDto
+from ..util.dto import UserDto, LoginDto
 
 user_dto = UserDto()
+login_dto = LoginDto()
+
 _user = user_dto.user
-_login = user_dto.login
+_login = login_dto.login
 
 from flask_restx import Resource
 from ..service.user_service import (
@@ -15,7 +17,7 @@ from ..service.user_service import (
     user_auth
 )
 from ...extensions import ns
-# from ..util.token_verify import token_required
+from ..util.token_verify import token_required
 
 @ns.route("/signup")
 class UserList(Resource):
@@ -26,18 +28,20 @@ class UserList(Resource):
     
 @ns.route("/user")
 class UserList(Resource):
-    def get(self):
+    @ns.doc(security='bearer')
+    @token_required
+    def get(self, decoded_token):
         """List all users"""
         return get_all_users()
 
 @ns.route("/user/<public_id>")
 @ns.param("public_id", "The user identifier")
-# @token_required
 class User(Resource):
-    def get(self, public_id):
+    @ns.doc(security='bearer')
+    @token_required
+    def get(self, decoded_token, public_id):
         """Get a user by its identifier"""
-        user = get_a_user(public_id)
-        return user
+        return get_a_user(public_id)
 
     @ns.expect(_user, validate=True)
     def put(self, public_id):
