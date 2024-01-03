@@ -68,7 +68,7 @@ class UserStatus(Resource):
                 "message": "Access denied: You are not authorized for this operation"
             }
         """Update user status to inactive"""
-        updated_user = update_user_status(public_id, ns.payload)
+        updated_user = updated_user_status(public_id, ns.payload)
         return updated_user
     
 @ns.route("/user/login")

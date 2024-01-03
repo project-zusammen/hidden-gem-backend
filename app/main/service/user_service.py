@@ -32,7 +32,11 @@ def updated_user(public_id, data):
         log.error(f"Error in update_user: {str(e)}")
         return error_handler(e)
 
+<<<<<<< HEAD
 def update_user_status(public_id, data):
+=======
+def updated_user_status(public_id):
+>>>>>>> bcfd8ef (Update: rename function on update endpoint)
     try:
         updated_user = user_model.update_user_status(public_id, data)
         response_object = {
