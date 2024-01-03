@@ -169,7 +169,11 @@ class User(db.Model):
                 raise Exception("User not found. Invalid ID")
             
             if check_password_hash(data.get['password'], user['password']):
+<<<<<<< HEAD
 >>>>>>> 0969de1 (Add: User authentication)
+=======
+>>>>>>> f858a73 (Add: User authentication)
+>>>>>>> e205b53 (Add: User authentication)
                 return create_token(user)    
             else:
                 raise Exception("Incorrect password. Please try again")

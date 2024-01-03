@@ -100,14 +100,21 @@ def user_auth(data):
             "message": "Login Success",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> e205b53 (Add: User authentication)
             "token" : auth
 =======
             "token" : auth,
             "data" : data
+<<<<<<< HEAD
 >>>>>>> 0969de1 (Add: User authentication)
 =======
             "token" : auth
 >>>>>>> d1abaf4 (Update: make endpoint update status require login)
+=======
+>>>>>>> f858a73 (Add: User authentication)
+>>>>>>> e205b53 (Add: User authentication)
         }
         return response_object, 201
     except Exception as e:
