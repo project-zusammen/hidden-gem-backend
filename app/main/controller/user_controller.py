@@ -5,17 +5,14 @@ user_dto = UserDto()
 _user = user_dto.user
 _login = user_dto.login
 _userStatus = user_dto.status
-_login = user_dto.login
-_userStatus = user_dto.status
-_login = user_dto.login
 
 from flask_restx import Resource
 from ..service.user_service import (
     register_user,
     get_all_users,
     get_a_user,
-    update_user,
-    update_user_status,
+    updated_user,
+    updated_user_status,
     delete_user,
     user_auth
 )
@@ -24,6 +21,7 @@ from ..util.token_verify import token_required
 
 @ns.route("/user/signup")
 class UserSignUp(Resource):
+
     @ns.expect(_user, validate=True)
     def post(self):
         """Register a new user"""
@@ -61,8 +59,6 @@ class User(Resource):
 class UserStatus(Resource):
     @ns.doc(security='bearer')
     @ns.expect(_userStatus, validate=True)
-    @ns.doc(security='bearer')
-    @ns.expect(_userStatus, validate=True)
     @token_required
     def put(self, decoded_token, public_id):
         role = decoded_token['role']
@@ -72,7 +68,7 @@ class UserStatus(Resource):
                 "message": "Access denied: You are not authorized for this operation"
             }
         """Update user status"""
-        updated_user = update_user_status(public_id, ns.payload)
+        updated_user = updated_user_status(public_id, ns.payload)
         return updated_user
     
 @ns.route("/user/login")

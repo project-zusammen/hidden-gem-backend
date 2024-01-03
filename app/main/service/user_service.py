@@ -35,8 +35,12 @@ def updated_user(public_id, data):
     
 =======
 
+<<<<<<< HEAD
 >>>>>>> 0b82903 (Update: modifying update status endpoint to receive status input)
 def update_user_status(public_id, data):
+=======
+def updated_user_status(public_id):
+>>>>>>> bcfd8ef (Update: rename function on update endpoint)
     try:
         updated_user = user_model.update_user_status(public_id, data)
         response_object = {
