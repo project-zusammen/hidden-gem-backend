@@ -19,7 +19,7 @@ def register_user(data):
         return error_handler(e)
 
 
-def update_user(public_id, data):
+def updated_user(public_id, data):
     try:
         updated_user = user_model.update_user(public_id, data)
         response_object = {
@@ -32,7 +32,7 @@ def update_user(public_id, data):
         log.error(f"Error in update_user: {str(e)}")
         return error_handler(e)
 
-def update_user_status(public_id):
+def updated_user_status(public_id):
     try:
         updated_user = user_model.update_user_status(public_id)
         response_object = {
