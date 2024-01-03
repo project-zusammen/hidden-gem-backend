@@ -88,3 +88,16 @@ def delete_user(public_id):
         log.error(f"Error in delete_user: {str(e)}")
         return error_handler(e)
 
+def user_auth(data):
+    try:
+        auth = user_model.user_auth(data)
+        response_object = {
+            "status": "success",
+            "message": "Login Success",
+            "token" : auth,
+            "data" : data
+        }
+        return response_object, 201
+    except Exception as e:
+        log.error(f"Login Error: {str(e)}")
+        return error_handler(e)

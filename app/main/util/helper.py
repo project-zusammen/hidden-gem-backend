@@ -1,8 +1,15 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 import email_validator
 from werkzeug.security import generate_password_hash, check_password_hash
 import logging as log
+import jwt
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+secretKey = os.getenv("SECRET_KEY")
 
 def convert_to_local_time(utc_datetime):
     now_timestamp = time.time()
@@ -43,3 +50,15 @@ def error_handler(error):
         "status": "error", 
         "message": message
     }, 500
+
+def create_token(user):
+    from app.main.model.user import User
+    
+    token = jwt.encode({
+        'public_id': user['public_id'],
+        'role': user['role'],
+        'username': user['username'],
+        'status': user['status'],
+        'exp' : datetime.utcnow() + timedelta(minutes = 60)
+    }, secretKey)
+    return token

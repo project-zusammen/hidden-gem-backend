@@ -2,6 +2,7 @@ from ..util.dto import UserDto
 
 user_dto = UserDto()
 _user = user_dto.user
+_login = user_dto.login
 
 from flask_restx import Resource
 from ..service.user_service import (
@@ -11,8 +12,10 @@ from ..service.user_service import (
     update_user,
     update_user_status,
     delete_user,
+    user_auth
 )
 from ...extensions import ns
+# from ..util.token_verify import token_required
 
 @ns.route("/signup")
 class UserList(Resource):
@@ -29,6 +32,7 @@ class UserList(Resource):
 
 @ns.route("/user/<public_id>")
 @ns.param("public_id", "The user identifier")
+# @token_required
 class User(Resource):
     def get(self, public_id):
         """Get a user by its identifier"""
@@ -53,3 +57,10 @@ class UserStatus(Resource):
         """Update user status to inactive"""
         _updateduser = update_user_status(public_id)
         return _updateduser
+    
+@ns.route("/user/login")
+class UserLogin(Resource):
+    @ns.expect(_login, validate=True)
+    def post(self):
+        """User Authentication"""
+        return user_auth(ns.payload)

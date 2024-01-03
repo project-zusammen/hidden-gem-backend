@@ -2,7 +2,8 @@ from .. import db
 from enum import Enum
 import uuid
 import datetime
-from ..util.helper import convert_to_local_time, is_valid_email, hash_password
+from ..util.helper import convert_to_local_time, is_valid_email, create_token
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class UserRole(Enum):
     admin = 'admin'
@@ -54,7 +55,7 @@ class User(db.Model):
         
     def register_user(self, data):
         try:
-            password = hash_password(data.get("password"))
+            password = generate_password_hash(data.get("password"))
             email = data.get("email")
             if not is_valid_email(email):
                 raise Exception("The email is invalid")
@@ -105,7 +106,7 @@ class User(db.Model):
             if not user:
                 raise Exception("User not found. Invalid ID")
             else:
-                password = hash_password(data.get("password"))
+                password = generate_password_hash(data.get("password"))
                 email = data.get("email")
                 if not is_valid_email(email):
                     raise Exception("The email is invalid")
@@ -130,5 +131,19 @@ class User(db.Model):
 
                 db.session.commit()
                 return user.serialize()
+        except Exception as e:
+            raise e
+    
+    def user_auth(self, data):
+        try:
+            user = self.query.filter_by(email=data.get['email']).first()
+            if not user:
+                raise Exception("User not found. Invalid ID")
+            
+            if check_password_hash(data.get['password'], user['password']):
+                return create_token(user)    
+            else:
+                raise Exception("Incorrect password. Please try again")
+        
         except Exception as e:
             raise e
