@@ -55,7 +55,9 @@ def create_token(user):
     from app.main.model.user import User
     
     token = jwt.encode({
+        'id': user['id'],
         'public_id': user['public_id'],
+        'email': user['email'],
         'role': user['role'],
         'username': user['username'],
         'status': user['status'],
