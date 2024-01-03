@@ -19,7 +19,7 @@ def register_user(data):
         return error_handler(e)
 
 
-def update_user(public_id, data):
+def updated_user(public_id, data):
     try:
         updated_user = user_model.update_user(public_id, data)
         response_object = {
@@ -31,16 +31,8 @@ def update_user(public_id, data):
     except Exception as e:
         log.error(f"Error in update_user: {str(e)}")
         return error_handler(e)
-
-<<<<<<< HEAD
-<<<<<<< HEAD
+    
 def update_user_status(public_id, data):
-=======
-def updated_user_status(public_id):
->>>>>>> bcfd8ef (Update: rename function on update endpoint)
-=======
-def update_user_status(public_id, data):
->>>>>>> 2145c43 (Update: modifying update status endpoint to receive status input)
     try:
         updated_user = user_model.update_user_status(public_id, data)
         response_object = {
