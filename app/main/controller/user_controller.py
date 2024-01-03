@@ -36,6 +36,7 @@ class UserList(Resource):
 # example of an endpoint that required a token or login first
 @ns.route("/user/<public_id>")
 @ns.param("public_id", "The user identifier")
+# @token_required
 class User(Resource):
     @ns.doc(security='bearer')
     @token_required
