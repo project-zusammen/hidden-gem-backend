@@ -94,12 +94,7 @@ def user_auth(data):
         response_object = {
             "status": "success",
             "message": "Login Success",
-<<<<<<< HEAD
             "token" : auth
-=======
-            "token" : auth,
-            "data" : data
->>>>>>> f858a73 (Add: User authentication)
         }
         return response_object, 201
     except Exception as e:

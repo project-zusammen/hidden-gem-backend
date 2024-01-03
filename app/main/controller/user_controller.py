@@ -61,6 +61,7 @@ class User(Resource):
 @ns.param("public_id", "The user identifier")
 class UserStatus(Resource):
     @ns.doc(security='bearer')
+    @ns.expect(_userStatus, validate=True)
     @token_required
     def put(self, decoded_token, public_id):
         role = decoded_token['role']
@@ -70,8 +71,8 @@ class UserStatus(Resource):
                 "message": "Access denied: You are not authorized for this operation"
             }
         """Update user status to inactive"""
-        _updateduser = updated_user_status(public_id)
-        return _updateduser
+        updated_user = update_user_status(public_id, ns.payload)
+        return updated_user
     
 @ns.route("/user/login")
 class UserLogin(Resource):
