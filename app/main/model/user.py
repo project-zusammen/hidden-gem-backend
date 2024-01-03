@@ -133,14 +133,27 @@ class User(db.Model):
                 return user.serialize()
         except Exception as e:
             raise e
+        
+    def login_serialize(self):
+        return {
+            "id": self.id,
+            "public_id": self.public_id,
+            "username": self.username,
+            "email": self.email,
+            "password": self.password,
+            "role":self.role.value,
+            "status":self.status.value,
+        }
     
     def user_auth(self, data):
         try:
-            user = self.query.filter_by(email=data.get['email']).first()
+            user = self.query.filter_by(email=data.get('email')).first()
+            user = user.login_serialize()
+            print(user)
             if not user:
                 raise Exception("User not found. Invalid ID")
-            
-            if check_password_hash(data.get['password'], user['password']):
+
+            if check_password_hash(user['password'], data.get('password')):
                 return create_token(user)    
             else:
                 raise Exception("Incorrect password. Please try again")
