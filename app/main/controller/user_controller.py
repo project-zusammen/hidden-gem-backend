@@ -11,8 +11,8 @@ from ..service.user_service import (
     register_user,
     get_all_users,
     get_a_user,
-    update_user,
-    update_user_status,
+    updated_user,
+    updated_user_status,
     delete_user,
     user_auth
 )
@@ -46,7 +46,7 @@ class User(Resource):
     @ns.expect(_user, validate=True)
     def put(self, public_id):
         """Update a user"""
-        _updateduser = update_user(public_id, ns.payload)
+        _updateduser = updated_user(public_id, ns.payload)
         return _updateduser
 
     def delete(self, public_id):
@@ -59,7 +59,7 @@ class User(Resource):
 class UserStatus(Resource):
     def put(self, public_id):
         """Update user status to inactive"""
-        _updateduser = update_user_status(public_id)
+        _updateduser = updated_user_status(public_id)
         return _updateduser
     
 @ns.route("/user/login")
