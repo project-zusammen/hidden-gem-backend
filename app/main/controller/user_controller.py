@@ -66,6 +66,7 @@ class UserStatus(Resource):
     @ns.doc(security='bearer')
     @ns.expect(_userStatus, validate=True)
     @ns.doc(security='bearer')
+    @ns.expect(_userStatus, validate=True)
     @token_required
     def put(self, decoded_token, public_id):
         role = decoded_token['role']

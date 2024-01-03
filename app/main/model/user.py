@@ -138,7 +138,6 @@ class User(db.Model):
                 return user.serialize()
         except Exception as e:
             raise e
-<<<<<<< HEAD
         
     def login_serialize(self):
         return {
@@ -165,8 +164,11 @@ class User(db.Model):
             if check_password_hash(user['password'], data.get('password')):
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 7dad1d7 (Add: User authentication)
+=======
+>>>>>>> 10416a7 (Add: User authentication endpoint dto)
 =======
     
     def user_auth(self, data):
@@ -178,12 +180,18 @@ class User(db.Model):
             if check_password_hash(data.get['password'], user['password']):
 <<<<<<< HEAD
 >>>>>>> f858a73 (Add: User authentication)
+<<<<<<< HEAD
 >>>>>>> 17dd6c1 (Add: User authentication)
 =======
 >>>>>>> 152936e (Add: User authentication endpoint dto)
 =======
 >>>>>>> 0969de1 (Add: User authentication)
 >>>>>>> 7dad1d7 (Add: User authentication)
+=======
+>>>>>>> e205b53 (Add: User authentication)
+=======
+>>>>>>> 92aca57 (Add: User authentication endpoint dto)
+>>>>>>> 10416a7 (Add: User authentication endpoint dto)
                 return create_token(user)    
             else:
                 raise Exception("Incorrect password. Please try again")

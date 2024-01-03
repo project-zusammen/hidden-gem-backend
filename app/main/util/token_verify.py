@@ -4,9 +4,12 @@ from dotenv import load_dotenv
 from flask import request, jsonify
 from functools import wraps
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 from app.main.model.user import User
 >>>>>>> 0969de1 (Add: User authentication)
+=======
+>>>>>>> 92aca57 (Add: User authentication endpoint dto)
 
 from app.main.model.user import User
 
