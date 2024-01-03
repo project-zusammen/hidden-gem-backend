@@ -101,6 +101,7 @@ def user_auth(data):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> e205b53 (Add: User authentication)
             "token" : auth
@@ -115,6 +116,9 @@ def user_auth(data):
 =======
 >>>>>>> f858a73 (Add: User authentication)
 >>>>>>> e205b53 (Add: User authentication)
+=======
+            "token" : auth
+>>>>>>> 92aca57 (Add: User authentication endpoint dto)
         }
         return response_object, 201
     except Exception as e:

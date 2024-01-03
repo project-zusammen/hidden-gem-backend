@@ -26,7 +26,7 @@ class UserDto:
             "email": fields.String(required=True, description="user email"),
             "password": fields.String(required=True, description="user password")
         },
-    ),
+    )
     login = api.model(
         "login",
         {
@@ -34,6 +34,7 @@ class UserDto:
             "password": fields.String(required=True, description="user password for login")
         },
     )
+<<<<<<< HEAD
 
 class LoginDto:
     login = api.model(
@@ -43,6 +44,10 @@ class LoginDto:
             "password": fields.String(required=True, description="user password for login")
         },
     )
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> 92aca57 (Add: User authentication endpoint dto)
     login = api.model(
         "login",
         {
@@ -55,4 +60,28 @@ class LoginDto:
         {
             "banned": fields.Boolean(required=True, description="user status that want to be updated"),
         }
+<<<<<<< HEAD
     )
+=======
+    )
+=======
+
+<<<<<<< HEAD
+>>>>>>> 31c359a (Add: User authentication endpoint)
+=======
+=======
+=======
+>>>>>>> c5a2fa1 (Add: User authentication endpoint dto)
+    status = api.model(
+        "status",
+        {
+            "banned": fields.Boolean(required=True, description="username"),
+        }
+    )
+<<<<<<< HEAD
+>>>>>>> 2145c43 (Update: modifying update status endpoint to receive status input)
+>>>>>>> e1472c5 (Update: modifying update status endpoint to receive status input)
+=======
+
+>>>>>>> c5a2fa1 (Add: User authentication endpoint dto)
+>>>>>>> 92aca57 (Add: User authentication endpoint dto)
