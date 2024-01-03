@@ -26,7 +26,9 @@ class UserDto:
             "email": fields.String(required=True, description="user email"),
             "password": fields.String(required=True, description="user password")
         },
-    ),
+    )
+
+class LoginDto:
     login = api.model(
         "login",
         {
@@ -34,3 +36,4 @@ class UserDto:
             "password": fields.String(required=True, description="user password for login")
         },
     )
+
