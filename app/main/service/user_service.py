@@ -31,8 +31,8 @@ def updated_user(public_id, data):
     except Exception as e:
         log.error(f"Error in update_user: {str(e)}")
         return error_handler(e)
-    
-def updated_user_status(public_id):
+
+def update_user_status(public_id, data):
     try:
         updated_user = user_model.update_user_status(public_id, data)
         response_object = {
