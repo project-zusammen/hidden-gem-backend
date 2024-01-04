@@ -149,9 +149,9 @@ class User(db.Model):
         try:
             user = self.query.filter_by(email=data.get('email')).first()
             user = user.login_serialize()
-            print(user)
+
             if not user:
-                raise Exception("User not found. Invalid ID")
+                raise Exception("User not found. Please enter a valid email address")
 
             if check_password_hash(user['password'], data.get('password')):
                 return create_token(user)    

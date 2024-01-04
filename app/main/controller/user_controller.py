@@ -1,10 +1,9 @@
-from ..util.dto import UserDto, LoginDto
+from ..util.dto import UserDto
 
 user_dto = UserDto()
-login_dto = LoginDto()
 
 _user = user_dto.user
-_login = login_dto.login
+_login = user_dto.login
 
 from flask_restx import Resource
 from ..service.user_service import (
@@ -19,8 +18,8 @@ from ..service.user_service import (
 from ...extensions import ns
 from ..util.token_verify import token_required
 
-@ns.route("/signup")
-class UserList(Resource):
+@ns.route("/user/signup")
+class UserSignUp(Resource):
     @ns.expect(_user, validate=True)
     def post(self):
         """Register a new user"""
@@ -28,12 +27,11 @@ class UserList(Resource):
     
 @ns.route("/user")
 class UserList(Resource):
-    @ns.doc(security='bearer')
-    @token_required
-    def get(self, decoded_token):
+    def get(self):
         """List all users"""
         return get_all_users()
 
+# example of an endpoint that required a token or login first
 @ns.route("/user/<public_id>")
 @ns.param("public_id", "The user identifier")
 class User(Resource):
@@ -57,7 +55,15 @@ class User(Resource):
 @ns.route("/user/<public_id>/status")
 @ns.param("public_id", "The user identifier")
 class UserStatus(Resource):
-    def put(self, public_id):
+    @ns.doc(security='bearer')
+    @token_required
+    def put(self, decoded_token, public_id):
+        role = decoded_token['role']
+        if role != "admin":
+            return {
+                "result" : "error",
+                "message": "Access denied: You are not authorized for this operation"
+            }
         """Update user status to inactive"""
         _updateduser = updated_user_status(public_id)
         return _updateduser
