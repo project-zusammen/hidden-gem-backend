@@ -1,12 +1,11 @@
-from ..util.dto import UserDto, LoginDto
+from ..util.dto import UserDto
 
 user_dto = UserDto()
-login_dto = LoginDto()
 
 _user = user_dto.user
 _login = user_dto.login
 _userStatus = user_dto.status
-_login = login_dto.login
+_login = user_dto.login
 
 from flask_restx import Resource
 from ..service.user_service import (
@@ -30,9 +29,7 @@ class UserSignUp(Resource):
     
 @ns.route("/user")
 class UserList(Resource):
-    @ns.doc(security='bearer')
-    @token_required
-    def get(self, decoded_token):
+    def get(self):
         """List all users"""
         return get_all_users()
 
