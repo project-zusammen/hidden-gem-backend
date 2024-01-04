@@ -18,6 +18,20 @@ class ReviewDto:
         },
     )
 
+    upvote = api.model(
+        "upvote",
+        {
+            "upvote": fields.Boolean(description="upvote")
+        }
+    )
+
+    visible = api.model(
+        "visible",
+        {
+            "visible": fields.Boolean(description="visible")
+        }
+    )
+
 class UserDto:
     user = api.model(
         "user",
@@ -27,28 +41,6 @@ class UserDto:
             "password": fields.String(required=True, description="user password")
         },
     )
-<<<<<<< HEAD
-    login = api.model(
-        "login",
-        {
-            "email": fields.String(required=True, description="user email for login"),
-            "password": fields.String(required=True, description="user password for login")
-        },
-    )
-<<<<<<< HEAD
-
-class LoginDto:
-    login = api.model(
-        "login",
-        {
-            "email": fields.String(required=True, description="user email for login"),
-            "password": fields.String(required=True, description="user password for login")
-        },
-    )
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 92aca57 (Add: User authentication endpoint dto)
     login = api.model(
         "login",
         {
@@ -61,33 +53,4 @@ class LoginDto:
         {
             "banned": fields.Boolean(required=True, description="user status that want to be updated"),
         }
-<<<<<<< HEAD
     )
-=======
-    )
-=======
-
-<<<<<<< HEAD
->>>>>>> 31c359a (Add: User authentication endpoint)
-=======
-=======
-=======
->>>>>>> c5a2fa1 (Add: User authentication endpoint dto)
-=======
->>>>>>> 2145c43 (Update: modifying update status endpoint to receive status input)
-    status = api.model(
-        "status",
-        {
-            "banned": fields.Boolean(required=True, description="user status that want to be updated"),
-        }
-    )
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 2145c43 (Update: modifying update status endpoint to receive status input)
->>>>>>> e1472c5 (Update: modifying update status endpoint to receive status input)
-=======
-
->>>>>>> c5a2fa1 (Add: User authentication endpoint dto)
->>>>>>> 92aca57 (Add: User authentication endpoint dto)
-=======
->>>>>>> 2145c43 (Update: modifying update status endpoint to receive status input)
