@@ -40,6 +40,7 @@ class UserDto:
             "password": fields.String(required=True, description="user password")
         },
     )
+<<<<<<< HEAD
     login = api.model(
         "login",
         {
@@ -47,6 +48,9 @@ class UserDto:
             "password": fields.String(required=True, description="user password for login")
         },
     )
+=======
+<<<<<<< HEAD
+>>>>>>> b1805f9 (Update: login dto)
     status = api.model(
         "status",
         {
@@ -55,6 +59,8 @@ class UserDto:
     )
 
 class LoginDto:
+=======
+>>>>>>> fde05b1 (Update: login dto)
     login = api.model(
         "login",
         {
