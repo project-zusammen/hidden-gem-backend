@@ -16,7 +16,7 @@ def token_required(f):
         if 'X-API-KEY' in request.headers:
             token = request.headers.get('X-API-KEY')
         if not token:
-            return {'message': 'Token is missing !!'}, 401
+            return {'message': 'Access Denied: Unauthorized operation. Please log in to proceed.'}, 401
 
         try:
             # decoding the payload to fetch the stored details
@@ -25,10 +25,10 @@ def token_required(f):
             return f(decoded_token=data,*args, **kwargs)
 
         except jwt.ExpiredSignatureError:
-            return {'message': 'Token has expired !!'}, 401
+            return {'message': 'Your current session has expired. Please log in again to continue.'}, 401
         except Exception as e:
             print(f"Error: {str(e)}")
-            return {'message': 'Token is invalid !!'}, 401
+            return {'message': 'Access Denied: Token is invalid'}, 401
 
     return decorated
 
