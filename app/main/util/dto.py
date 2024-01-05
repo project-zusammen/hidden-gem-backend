@@ -27,6 +27,7 @@ class UserDto:
             "password": fields.String(required=True, description="user password")
         },
     )
+<<<<<<< HEAD
     login = api.model(
         "login",
         {
@@ -35,3 +36,11 @@ class UserDto:
         },
     )
 
+=======
+    status = api.model(
+        "status",
+        {
+            "banned": fields.Boolean(required=True, description="username"),
+        }
+    )
+>>>>>>> 2145c43 (Update: modifying update status endpoint to receive status input)
