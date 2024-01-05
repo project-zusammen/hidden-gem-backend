@@ -119,13 +119,18 @@ class User(db.Model):
         except Exception as e:
             raise e
         
-    def update_user_status(self, public_id):
+    def update_user_status(self, public_id, data):
         try:
             user = self.query.filter_by(public_id=public_id).first()
             if not user:
                 raise Exception("User not found. Invalid ID")
             else:
-                user.status = "inactive"
+                isBanned = data.get("banned")
+                if isBanned:
+                    status = "inactive"
+                else:
+                    status = "active"
+                user.status = status
                 user.updated_at = datetime.datetime.utcnow()
 
                 db.session.commit()

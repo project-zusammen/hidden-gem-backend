@@ -27,3 +27,9 @@ class UserDto:
             "password": fields.String(required=True, description="user password")
         },
     )
+    status = api.model(
+        "status",
+        {
+            "banned": fields.Boolean(required=True, description="username"),
+        }
+    )

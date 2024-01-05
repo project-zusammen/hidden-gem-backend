@@ -2,6 +2,7 @@ from ..util.dto import UserDto
 
 user_dto = UserDto()
 _user = user_dto.user
+_userStatus = user_dto.status
 
 from flask_restx import Resource
 from ..service.user_service import (
@@ -49,7 +50,8 @@ class User(Resource):
 @ns.route("/user/<public_id>/status")
 @ns.param("public_id", "The user identifier")
 class UserStatus(Resource):
+    @ns.expect(_userStatus, validate=True)
     def put(self, public_id):
-        """Update user status to inactive"""
-        updated_user = update_user_status(public_id)
+        """Update user status"""
+        updated_user = update_user_status(public_id, ns.payload)
         return updated_user
