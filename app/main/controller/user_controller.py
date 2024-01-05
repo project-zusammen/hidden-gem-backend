@@ -6,6 +6,7 @@ _user = user_dto.user
 _login = user_dto.login
 _userStatus = user_dto.status
 _login = user_dto.login
+_userStatus = user_dto.status
 
 from flask_restx import Resource
 from ..service.user_service import (

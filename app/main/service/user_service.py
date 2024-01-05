@@ -31,7 +31,11 @@ def update_user(public_id, data):
     except Exception as e:
         log.error(f"Error in update_user: {str(e)}")
         return error_handler(e)
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> 0b82903 (Update: modifying update status endpoint to receive status input)
 def update_user_status(public_id, data):
     try:
         updated_user = user_model.update_user_status(public_id, data)
