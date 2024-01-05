@@ -138,7 +138,6 @@ class User(db.Model):
                 return user.serialize()
         except Exception as e:
             raise e
-<<<<<<< HEAD
         
     def login_serialize(self):
         return {
@@ -150,21 +149,7 @@ class User(db.Model):
             "role":self.role.value,
             "status":self.status.value,
         }
-    
-    def user_auth(self, data):
-        try:
-            user = self.query.filter_by(email=data.get('email')).first()
-            user = user.login_serialize()
 
-            if not user:
-                raise Exception("User not found. Please enter a valid email address")
-
-            if check_password_hash(user['password'], data.get('password')):
-<<<<<<< HEAD
-=======
-=======
->>>>>>> c89b9b6 (Add: User authentication)
-    
     def user_auth(self, data):
         try:
             user = self.query.filter_by(email=data.get['email']).first()
@@ -172,16 +157,6 @@ class User(db.Model):
                 raise Exception("User not found. Invalid ID")
             
             if check_password_hash(data.get['password'], user['password']):
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 0969de1 (Add: User authentication)
-=======
->>>>>>> f858a73 (Add: User authentication)
->>>>>>> e205b53 (Add: User authentication)
-=======
->>>>>>> 92aca57 (Add: User authentication endpoint dto)
-=======
->>>>>>> c89b9b6 (Add: User authentication)
                 return create_token(user)    
             else:
                 raise Exception("Incorrect password. Please try again")
