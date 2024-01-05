@@ -8,7 +8,7 @@ from ..service.user_service import (
     register_user,
     get_all_users,
     get_a_user,
-    updated_user,
+    update_user,
     update_user_status,
     delete_user,
 )
@@ -38,7 +38,7 @@ class User(Resource):
     @ns.expect(_user, validate=True)
     def put(self, public_id):
         """Update a user"""
-        _updateduser = updated_user(public_id, ns.payload)
+        _updateduser = update_user(public_id, ns.payload)
         return _updateduser
 
     def delete(self, public_id):
