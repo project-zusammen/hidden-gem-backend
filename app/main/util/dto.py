@@ -27,6 +27,7 @@ class UserDto:
             "password": fields.String(required=True, description="user password")
         },
     )
+<<<<<<< HEAD
     login = api.model(
         "login",
         {
@@ -72,6 +73,8 @@ class LoginDto:
 =======
 =======
 >>>>>>> c5a2fa1 (Add: User authentication endpoint dto)
+=======
+>>>>>>> 2145c43 (Update: modifying update status endpoint to receive status input)
     status = api.model(
         "status",
         {
@@ -79,9 +82,12 @@ class LoginDto:
         }
     )
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 2145c43 (Update: modifying update status endpoint to receive status input)
 >>>>>>> e1472c5 (Update: modifying update status endpoint to receive status input)
 =======
 
 >>>>>>> c5a2fa1 (Add: User authentication endpoint dto)
 >>>>>>> 92aca57 (Add: User authentication endpoint dto)
+=======
+>>>>>>> 2145c43 (Update: modifying update status endpoint to receive status input)
