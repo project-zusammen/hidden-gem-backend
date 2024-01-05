@@ -9,7 +9,7 @@ from ..service.user_service import (
     get_all_users,
     get_a_user,
     updated_user,
-    updated_user_status,
+    update_user_status,
     delete_user,
 )
 from ...extensions import ns
@@ -51,5 +51,5 @@ class User(Resource):
 class UserStatus(Resource):
     def put(self, public_id):
         """Update user status to inactive"""
-        _updateduser = updated_user_status(public_id)
-        return _updateduser
+        updated_user = update_user_status(public_id)
+        return updated_user
