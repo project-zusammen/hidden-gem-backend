@@ -147,3 +147,47 @@ class TestReviewEndpoints(TestCase):
         self.assertEqual(expected_response.get("content"), res.get("content"))
         self.assertEqual(expected_response.get("location"), res.get("location"))
         mock_delete_review.assert_called_once()
+    
+    @patch("app.main.controller.review_controller.upvote_review")
+    def test_upvote_review(self, mock_upvote_review):
+        # ARRANGE
+        public_id = "test-public_id"
+        review_data["public_id"] = public_id
+        expected_response = {
+            "status" : "success",
+            "message" : "Successfully updated." ,
+            "data" : review_data,
+        }
+        mock_upvote_review.return_value = expected_response
+        # ACT
+        with self.app.test_client() as client:
+            response = client.put(f"/api/review/{public_id}/vote", json=review_data)
+            res = json.loads(response.data.decode("utf-8"))
+
+        # ASSERT
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_response.get("upvotes"), res.get("upvote"))
+        self.assertEqual(expected_response.get("downvotes"), res.get("downvote"))
+        mock_upvote_review.assert_called_once()
+
+    @patch("app.main.controller.review_controller.update_visibility")
+    def test_visibility_review(self, mock_visibility_review):
+        # ARRANGE
+        public_id = "test-public_id"
+        review_data["public_id"] = public_id
+        expected_response = {
+            "status" : "success",
+            "message" : "Successfully updated." ,
+            "data" : review_data,
+        }
+        mock_visibility_review.return_value = expected_response
+        # ACT
+        with self.app.test_client() as client:
+            response = client.put(f"/api/review/{public_id}/status", json=review_data)
+            res = json.loads(response.data.decode("utf-8"))
+
+        # ASSERT
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_response.get("visible"), res.get("visible"))
+        mock_visibility_review.assert_called_once()
+        

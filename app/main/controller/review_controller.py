@@ -64,7 +64,7 @@ class ReviewUpvote(Resource):
 class ReviewVisible(Resource):    
     @ns.expect(_visible)
     def put(self, public_id):
-        """Give visibility status"""
+        """Update visibility status"""
         visible = ns.payload.get("visible")
         updated_visibility= update_visibility(public_id, visible)
         return updated_visibility
