@@ -39,8 +39,8 @@ class User(Resource):
     @ns.expect(_user, validate=True)
     def put(self, public_id):
         """Update a user"""
-        _updateduser = update_user(public_id, ns.payload)
-        return _updateduser
+        updated_user = update_user(public_id, ns.payload)
+        return updated_user
 
     def delete(self, public_id):
         """Delete a user"""
