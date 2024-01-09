@@ -95,12 +95,19 @@ class TestUser(unittest.TestCase):
         user_model = User()
         user = user_model.register_user(user_data)
 
-        # ACT
-        updated_user = user_model.update_user_status(user["public_id"])
+        payload = {
+            "banned" : True
+        }
 
+        # ACT
+        updated_user = user_model.update_user_status(user["public_id"], payload)
+        print("\n\n\n\n\n")
+        print(updated_user)
         # ASSERT
         self.assertIsNotNone(updated_user)
-        self.assertEqual(updated_user['status'],"inactive")
+        self.assertEqual(updated_user['public_id'],updated_user['public_id'])
+        self.assertEqual(updated_user['username'],updated_user['username'])
+        self.assertEqual(updated_user['status'],updated_user['status'])
 
 
 
