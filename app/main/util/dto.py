@@ -17,3 +17,17 @@ class ReviewDto:
             "region_id": fields.String(description="region Identifier"),
         },
     )
+
+    upvote = api.model(
+        "upvote",
+        {
+            "upvote": fields.Boolean(description="upvote")
+        }
+    )
+
+    visible = api.model(
+        "visible",
+        {
+            "visible": fields.Boolean(description="visible")
+        }
+    )
