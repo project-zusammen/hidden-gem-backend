@@ -17,3 +17,19 @@ class ReviewDto:
             "region_id": fields.String(description="region Identifier"),
         },
     )
+
+class UserDto:
+    user = api.model(
+        "user",
+        {
+            "username": fields.String(required=True, description="username"),
+            "email": fields.String(required=True, description="user email"),
+            "password": fields.String(required=True, description="user password")
+        },
+    )
+    status = api.model(
+        "status",
+        {
+            "banned": fields.Boolean(required=True, description="user status that want to be updated"),
+        }
+    )
