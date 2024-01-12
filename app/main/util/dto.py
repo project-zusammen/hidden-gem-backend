@@ -30,6 +30,17 @@ class UserDto:
     status = api.model(
         "status",
         {
-            "banned": fields.Boolean(required=True, description="user status that want to be updated"),
+            "banned": fields.Boolean(required=True, description="user status that want to be updated")
+        }
+    upvote = api.model(
+        "upvote",
+        {
+            "upvote": fields.Boolean(description="upvote")
+        }
+    )
+    visible = api.model(
+        "visible",
+        {
+            "visible": fields.Boolean(description="visible")
         }
     )

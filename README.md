@@ -57,6 +57,10 @@ This backend application serves API for the hiddenGem web where user can find re
     ```bash
     pytest -k path-to-test-file
     ```
+    Run a specific test file while seeing the print statement:
+    ```bash
+    pytest -k path-to-test-file -s
+    ```
 
 8. DB related:
     ```bash
