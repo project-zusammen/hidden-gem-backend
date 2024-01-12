@@ -17,6 +17,7 @@ jobs:
       DEFAULT_DB_NAME: ${{ secrets.DEFAULT_DB_NAME }}
       TEST_DB_NAME: ${{ secrets.TEST_DB_NAME }}
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      DEBUG: ${{ secrets.DEBUG }}
 
 
     steps:
