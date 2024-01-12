@@ -19,7 +19,6 @@ jobs:
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
       DEBUG: ${{ secrets.DEBUG }}
 
-
     steps:
     - name: Print Environment Variables
         run: |
