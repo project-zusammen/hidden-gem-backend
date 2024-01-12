@@ -49,7 +49,7 @@ def update_user_status(public_id, data):
         updated_user = user_model.update_user_status(public_id, data)
         response_object = {
             "status": "success",
-            "message": "Successfully update status user",
+            "message": "Successfully update user status",
             "data": updated_user,
         }
         return response_object, 201

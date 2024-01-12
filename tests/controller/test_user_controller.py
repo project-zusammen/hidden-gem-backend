@@ -164,7 +164,7 @@ class TestUserEndpoints(TestCase):
         }
         expected_response = {
             "status": "success",
-            "message": "Successfully update status user",
+            "message": "Successfully update user status",
             "data": user_data,
         }
         mock_update_user.return_value = expected_response
