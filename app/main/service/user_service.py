@@ -21,8 +21,7 @@ def register_user(data):
 
 def update_user(public_id, data, user_id):
     try:
-        _ = user_model.check_user_authorization(public_id, user_id)
-        updated_user = user_model.update_user(public_id, data)
+        updated_user = user_model.update_user(public_id, data, user_id)
         response_object = {
             "status": "success",
             "message": "Successfully update user",
@@ -65,8 +64,7 @@ def get_all_users():
 
 def get_a_user(public_id, user_id):
     try:
-        _ = user_model.check_user_authorization(public_id, user_id)
-        user = user_model.get_user_by_id(public_id)
+        user = user_model.get_user_by_id(public_id, user_id)
         response_object = {
             "status": "success",
             "message": "Successfully get a user.",
@@ -80,8 +78,7 @@ def get_a_user(public_id, user_id):
 
 def delete_user(public_id, user_id):
     try:
-        _ = user_model.check_user_authorization(public_id, user_id)
-        _ = user_model.delete_user(public_id)
+        _ = user_model.delete_user(public_id, user_id)
         response_object = {
             "status": "success",
             "message": "Successfully delete user",

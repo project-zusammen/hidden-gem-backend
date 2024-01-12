@@ -79,35 +79,38 @@ class User(db.Model):
         except Exception as e:
             raise e
         
-    def get_user_by_id(self, public_id):
+    def get_user_by_id(self, public_id, user_id):
         try:
             user = self.query.filter_by(public_id=public_id).first()
             if not user:
                 raise Exception("User not found. Invalid ID")
-            else:
+            authorized_user = self.check_user_authorization(public_id, user_id)
+            if authorized_user:
                 return user.serialize()
         except Exception as e:
             raise e
         
-    def delete_user(self, public_id):
+    def delete_user(self, public_id, user_id):
         try:
             user = self.query.filter_by(public_id=public_id).first()
             if not user:
                 raise Exception("User not found. Please enter a valid id")
-            
-            # user.deleted_at = datetime.datetime.utcnow() soft delete
-            db.session.delete(user)  
-            db.session.commit()
-            return True
+            authorized_user = self.check_user_authorization(public_id, user_id)
+            if authorized_user:
+                # user.deleted_at = datetime.datetime.utcnow() soft delete
+                db.session.delete(user)  
+                db.session.commit()
+                return True
         except Exception as e:
             raise e
     
-    def update_user(self, public_id, data):
+    def update_user(self, public_id, data, user_id):
         try:
             user = self.query.filter_by(public_id=public_id).first()
             if not user:
                 raise Exception("User not found. Invalid ID")
-            else:
+            authorized_user = self.check_user_authorization(public_id, user_id)
+            if authorized_user:
                 password = generate_password_hash(data.get("password"))
                 email = data.get("email")
                 if not is_valid_email(email):
