@@ -45,20 +45,3 @@ class UserDto:
             "banned": fields.Boolean(required=True, description="user status that want to be updated")
         }
     )
-
-
-class UserDto:
-    user = api.model(
-        "user",
-        {
-            "username": fields.String(required=True, description="username"),
-            "email": fields.String(required=True, description="user email"),
-            "password": fields.String(required=True, description="user password")
-        },
-    )
-    status = api.model(
-        "status",
-        {
-            "banned": fields.Boolean(required=True, description="user status that want to be updated")
-        }
-    )
