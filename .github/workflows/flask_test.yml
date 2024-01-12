@@ -21,6 +21,13 @@ jobs:
 
 
     steps:
+    - name: Print Environment Variables
+        run: |
+          echo "DEFAULT_DB_NAME=${DEFAULT_DB_NAME}"
+          echo "TEST_DB_NAME=${TEST_DB_NAME}"
+          echo "DEBUG=${DEBUG}"
+          echo "DB_PORT=${DB_PORT}"
+
     - name: Checkout code
       uses: actions/checkout@v2
 
