@@ -2,13 +2,15 @@ import uuid
 from unittest import TestCase
 from unittest.mock import patch
 from app import create_app
+from app.main.util.helper import create_token
 from app.main.service.user_service import (
     get_all_users,
     get_a_user,
     register_user,
     delete_user,
     update_user,
-    update_user_status
+    update_user_status,
+    user_auth
 )
 
 def generate_fake_public_id():
@@ -71,6 +73,7 @@ class TestUserService(TestCase):
     def test_get_a_user(self, mock_get_user_by_id):
         # Arrange
         public_id = generate_fake_public_id()
+        user_id = 1
         data = {
             "public_id": public_id,
             "username": "ikan tenggiri",
@@ -81,7 +84,7 @@ class TestUserService(TestCase):
         mock_get_user_by_id.return_value = data
 
         # Act
-        response, status_code = get_a_user(public_id)
+        response, status_code = get_a_user(public_id, user_id)
         result = response["data"]
 
         # Assert
@@ -125,6 +128,7 @@ class TestUserService(TestCase):
     def test_update_user(self, mock_update_user):
         # Arrange
         public_id = generate_fake_public_id()
+        user_id = 1
         data = {
             "public_id": public_id,
             "username": "ikan tenggiri",
@@ -135,7 +139,7 @@ class TestUserService(TestCase):
         mock_update_user.return_value = data
 
         # Act
-        response, status_code = update_user(public_id, data)
+        response, status_code = update_user(public_id, data,user_id)
         result = response["data"]
 
         # Assert
@@ -182,12 +186,42 @@ class TestUserService(TestCase):
     def test_delete_user(self, mock_delete_user):
         # Arrange
         public_id = generate_fake_public_id()
+        user_id = 1
         mock_delete_user.return_value = True
 
         # Act
-        response, status_code = delete_user(public_id)
+        response, status_code = delete_user(public_id,user_id)
 
         # Assert
         self.assertEqual(status_code, 201)
         self.assertEqual(response["status"], "success")
         self.assertEqual(response["message"], "Successfully delete user")
+
+    @patch("app.main.model.user.User.user_auth")
+    def test_user_auth(self, mock_user_auth):
+        # Arrange
+        credentials = {
+            "email": "aqiz@gmail.com",
+            "password": "password"
+        }
+        token_payload = {
+            "id":1,
+            "public_id": "c47560e6-619f-4867-8ea7-213709aea349",
+            "username": "aqiz",
+            "email": "aqiz@gmail.com",
+            "password": "password",
+            "role": "admin",
+            "status": "active"
+        }
+        token = create_token(token_payload)
+        mock_user_auth.return_value = token
+
+        # Act
+        response, status_code = user_auth(credentials)
+
+        # Assert
+        self.assertEqual(status_code, 201)
+        self.assertEqual(response["status"], "success")
+        self.assertEqual(response["message"], "Login Success")
+        self.assertEqual(response["token"], token)
+    
