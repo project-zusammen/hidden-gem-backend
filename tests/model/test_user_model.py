@@ -101,8 +101,6 @@ class TestUser(unittest.TestCase):
 
         # ACT
         updated_user = user_model.update_user_status(user["public_id"], payload)
-        print("\n\n\n\n\n")
-        print(updated_user)
         # ASSERT
         self.assertIsNotNone(updated_user)
         self.assertEqual(updated_user['public_id'],updated_user['public_id'])

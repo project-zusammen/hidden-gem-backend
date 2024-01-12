@@ -32,6 +32,7 @@ class UserDto:
         {
             "banned": fields.Boolean(required=True, description="user status that want to be updated")
         }
+    )
     upvote = api.model(
         "upvote",
         {

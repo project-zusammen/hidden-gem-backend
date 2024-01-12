@@ -171,7 +171,7 @@ class TestUserService(TestCase):
         # Assert
         self.assertEqual(status_code, 201)
         self.assertEqual(response["status"], "success")
-        self.assertEqual(response["message"], "Successfully update status user")
+        self.assertEqual(response["message"], "Successfully update user status")
         self.assertEqual(result["public_id"], data["public_id"])
         self.assertEqual(result["username"], data["username"])
         self.assertEqual(result["role"], data["role"])
