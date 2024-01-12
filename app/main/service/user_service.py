@@ -32,11 +32,7 @@ def update_user(public_id, data, user_id):
     except Exception as e:
         log.error(f"Error in update_user: {str(e)}")
         return error_handler(e)
-<<<<<<< HEAD
-
-=======
     
->>>>>>> c034a09 (Add: user authentication)
 def update_user_status(public_id, data):
     try:
         updated_user = user_model.update_user_status(public_id, data)
@@ -101,37 +97,8 @@ def user_auth(data):
         response_object = {
             "status": "success",
             "message": "Login Success",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> e205b53 (Add: User authentication)
->>>>>>> 10416a7 (Add: User authentication endpoint dto)
-            "token" : auth
-=======
             "token" : auth,
             "data" : data
->>>>>>> 0969de1 (Add: User authentication)
-=======
-            "token" : auth
->>>>>>> d1abaf4 (Update: make endpoint update status require login)
-<<<<<<< HEAD
-=======
-=======
->>>>>>> f858a73 (Add: User authentication)
->>>>>>> e205b53 (Add: User authentication)
-=======
-            "token" : auth
->>>>>>> 92aca57 (Add: User authentication endpoint dto)
->>>>>>> 10416a7 (Add: User authentication endpoint dto)
-=======
-            "token" : auth,
-            "data" : data
->>>>>>> c034a09 (Add: user authentication)
         }
         return response_object, 201
     except Exception as e:

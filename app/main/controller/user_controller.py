@@ -6,16 +6,13 @@ user_dto = UserDto()
 _user = user_dto.user
 _login = user_dto.login
 _userStatus = user_dto.status
-_login = user_dto.login
-_userStatus = user_dto.status
-_login = user_dto.login
 
 from flask_restx import Resource
 from ..service.user_service import (
     register_user,
     get_all_users,
     get_a_user,
-    updated_user,
+    update_user,
     update_user_status,
     delete_user,
     user_auth
