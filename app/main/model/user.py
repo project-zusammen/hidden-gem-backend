@@ -89,14 +89,11 @@ class User(db.Model):
         except Exception as e:
             raise e
         
-    def delete_user(self, public_id, user_id):
+    def delete_user(self, public_id):
         try:
             user = self.query.filter_by(public_id=public_id).first()
-            check_user = user.serialize_entire_data()
             if not user:
                 raise Exception("User not found. Please enter a valid id")
-            if check_user['id'] != user_id:
-                raise Exception("Access denied")
             
             # user.deleted_at = datetime.datetime.utcnow() soft delete
             db.session.delete(user)  
@@ -158,12 +155,13 @@ class User(db.Model):
     
     def user_auth(self, data):
         try:
-            user = self.query.filter_by(email=data.get['email']).first()
+            user = self.query.filter_by(email=data.get('email')).first()
             if not user:
                 raise Exception("User not found. Invalid ID")
             
-            if check_password_hash(data.get['password'], user['password']):
-                return create_token(user)    
+            user_data = user.serialize_entire_data()
+            if check_password_hash(user_data['password'], data.get('password')):
+                return create_token(user_data)    
             else:
                 raise Exception("Incorrect password. Please try again")
         
@@ -173,10 +171,11 @@ class User(db.Model):
     def check_user_authorization(self, public_id, user_id):
         try:
             user = self.query.filter_by(public_id=public_id).first()
-            user = user.serialize_entire_data()
             if not user:
                 raise Exception("User not found. Please enter a valid id")
-            if user['id'] != user_id:
+            
+            check_user = user.serialize_entire_data()
+            if check_user['id'] != user_id:
                 raise Exception("Access denied")
             else:
                 return True

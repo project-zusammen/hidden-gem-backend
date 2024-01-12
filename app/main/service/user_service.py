@@ -81,7 +81,7 @@ def get_a_user(public_id, user_id):
 def delete_user(public_id, user_id):
     try:
         _ = user_model.check_user_authorization(public_id, user_id)
-        _ = user_model.delete_user(public_id, user_id)
+        _ = user_model.delete_user(public_id)
         response_object = {
             "status": "success",
             "message": "Successfully delete user",
@@ -97,8 +97,7 @@ def user_auth(data):
         response_object = {
             "status": "success",
             "message": "Login Success",
-            "token" : auth,
-            "data" : data
+            "token" : auth
         }
         return response_object, 201
     except Exception as e:

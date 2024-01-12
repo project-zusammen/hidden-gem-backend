@@ -49,9 +49,6 @@ def error_handler(error):
     
     elif "Access denied" in error_message:
         message = f"Access denied: You are not authorized for this operation"
-    
-    elif "Incorrect password" in error_message:
-        message = f"Error login: {error_message}"
        
     else: 
         message = "Internal Server Error"
