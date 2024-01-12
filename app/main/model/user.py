@@ -25,6 +25,7 @@ class User(db.Model):
     status = db.Column(db.Enum(UserStatus), nullable=False, default=UserStatus.active)
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False)
+    deleted_at = db.Column(db.DateTime, default=None, nullable=True)
 
     def __repr__(self):
         return f"<User(username={self.username}, email={self.email})>"
@@ -88,12 +89,16 @@ class User(db.Model):
         except Exception as e:
             raise e
         
-    def delete_user(self, public_id):
+    def delete_user(self, public_id, user_id):
         try:
             user = self.query.filter_by(public_id=public_id).first()
+            check_user = user.serialize_entire_data()
             if not user:
-                raise Exception("User not found. Invalid ID")
+                raise Exception("User not found. Please enter a valid id")
+            if check_user['id'] != user_id:
+                raise Exception("Access denied")
             
+            # user.deleted_at = datetime.datetime.utcnow() soft delete
             db.session.delete(user)  
             db.session.commit()
             return True
@@ -138,8 +143,9 @@ class User(db.Model):
                 return user.serialize()
         except Exception as e:
             raise e
-        
-    def login_serialize(self):
+    
+    # please never return this
+    def serialize_entire_data(self):
         return {
             "id": self.id,
             "public_id": self.public_id,
@@ -149,27 +155,6 @@ class User(db.Model):
             "role":self.role.value,
             "status":self.status.value,
         }
-
-    def user_auth(self, data):
-        try:
-            user = self.query.filter_by(email=data.get['email']).first()
-            if not user:
-<<<<<<< HEAD
-                raise Exception("User not found. Invalid ID")
-            
-            if check_password_hash(data.get['password'], user['password']):
-=======
-                raise Exception("User not found. Please enter a valid email address")
-
-            if check_password_hash(user['password'], data.get('password')):
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 7dad1d7 (Add: User authentication)
-=======
->>>>>>> 10416a7 (Add: User authentication endpoint dto)
-=======
     
     def user_auth(self, data):
         try:
@@ -178,23 +163,22 @@ class User(db.Model):
                 raise Exception("User not found. Invalid ID")
             
             if check_password_hash(data.get['password'], user['password']):
-<<<<<<< HEAD
->>>>>>> f858a73 (Add: User authentication)
-<<<<<<< HEAD
->>>>>>> 17dd6c1 (Add: User authentication)
-=======
->>>>>>> 152936e (Add: User authentication endpoint dto)
-=======
->>>>>>> 0969de1 (Add: User authentication)
->>>>>>> 7dad1d7 (Add: User authentication)
-=======
->>>>>>> e205b53 (Add: User authentication)
-=======
->>>>>>> 92aca57 (Add: User authentication endpoint dto)
->>>>>>> 10416a7 (Add: User authentication endpoint dto)
                 return create_token(user)    
             else:
                 raise Exception("Incorrect password. Please try again")
         
+        except Exception as e:
+            raise e
+    
+    def check_user_authorization(self, public_id, user_id):
+        try:
+            user = self.query.filter_by(public_id=public_id).first()
+            user = user.serialize_entire_data()
+            if not user:
+                raise Exception("User not found. Please enter a valid id")
+            if user['id'] != user_id:
+                raise Exception("Access denied")
+            else:
+                return True
         except Exception as e:
             raise e

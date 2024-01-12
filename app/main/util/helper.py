@@ -28,6 +28,7 @@ def is_valid_email(email):
     except email_validator.EmailNotValidError:
         return False
     
+    
 def error_handler(error):
     message = ""
     error_message = str(error)
@@ -35,7 +36,7 @@ def error_handler(error):
         message = f"Registration failed : {error_message}"
 
     elif "This email has already registered" in error_message:
-        message = f"register user failed : Your email is already registered"
+        message = f"Register user failed : Your email is already registered"
     
     elif "Duplicate entry" in error_message:
         message = f"Insert data failed : Data already exist, cannot duplicate data"
@@ -45,6 +46,13 @@ def error_handler(error):
     
     elif "Incorrect password" in error_message:
         message = f"Login Failed : {error_message}"
+    
+    elif "Access denied" in error_message:
+        message = f"Access denied: You are not authorized for this operation"
+    
+    elif "Incorrect password" in error_message:
+        message = f"Error login: {error_message}"
+       
     else: 
         message = "Internal Server Error"
 
@@ -54,8 +62,6 @@ def error_handler(error):
     }, 500
 
 def create_token(user):
-    from app.main.model.user import User
-    
     token = jwt.encode({
         'id': user['id'],
         'public_id': user['public_id'],
@@ -63,6 +69,6 @@ def create_token(user):
         'role': user['role'],
         'username': user['username'],
         'status': user['status'],
-        'exp' : datetime.utcnow() + timedelta(minutes = 60)
+        'exp' : datetime.utcnow() + timedelta(days=1)
     }, secretKey)
     return token
