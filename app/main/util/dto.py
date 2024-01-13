@@ -45,3 +45,12 @@ class UserDto:
             "banned": fields.Boolean(required=True, description="user status that want to be updated")
         }
     )
+
+class BookmarkDto:
+    bookmark = api.model(
+        "bookmark",
+        {
+            "user_id": fields.String(required=True, description="user id "),
+            "review_id": fields.String(required=True, description="review id"),
+        },
+    )
