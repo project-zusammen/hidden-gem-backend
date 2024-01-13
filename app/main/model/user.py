@@ -24,7 +24,8 @@ class User(db.Model):
     status = db.Column(db.Enum(UserStatus), nullable=False, default=UserStatus.active)
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False)
-
+    deleted_at = db.Column(db.DateTime, default=None, nullable=True)
+    
     def __repr__(self):
         return f"<User(username={self.username}, email={self.email})>"
 
