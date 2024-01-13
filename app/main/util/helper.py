@@ -1,6 +1,8 @@
 from datetime import datetime
 import time
-
+import email_validator
+from werkzeug.security import generate_password_hash, check_password_hash
+import logging as log
 
 def convert_to_local_time(utc_datetime):
     now_timestamp = time.time()
@@ -8,3 +10,36 @@ def convert_to_local_time(utc_datetime):
         now_timestamp
     )
     return utc_datetime + offset
+
+def hash_password(password):
+    return generate_password_hash(password)
+
+def is_valid_email(email):
+    try:
+        email_validator.validate_email(email)
+        return True
+    except email_validator.EmailNotValidError:
+        return False
+    
+def error_handler(error):
+    message = ""
+    error_message = str(error)
+    if "The email is invalid" in error_message:
+        message = f"Registration failed : {error_message}"
+
+    elif "This email has already registered" in error_message:
+        message = f"register user failed : Your email is already registered"
+    
+    elif "Duplicate entry" in error_message:
+        message = f"Insert data failed : Data already exist, cannot duplicate data"
+
+    elif "User not found" in error_message:
+        message = f"Error get user : {error_message}"
+        
+    else: 
+        message = "Internal Server Error"
+
+    return {
+        "status": "error", 
+        "message": message
+    }, 500
