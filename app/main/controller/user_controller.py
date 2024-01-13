@@ -22,7 +22,6 @@ from ..util.token_verify import token_required
 
 @ns.route("/user/signup")
 class UserSignUp(Resource):
-
     @ns.expect(_user, validate=True)
     def post(self):
         """Register a new user"""
