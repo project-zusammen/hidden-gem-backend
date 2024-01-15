@@ -67,7 +67,6 @@ class TestUserEndpoints(TestCase):
         with self.app.test_client() as client:
             response = client.get("/api/user", headers={"X-API-KEY":token})
             result = response.get_json()["data"]
-
             first_user = result[0]
 
         # ASSERT

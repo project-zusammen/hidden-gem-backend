@@ -4,12 +4,18 @@ import uuid
 import datetime
 from ..util.helper import convert_to_local_time, is_valid_email, create_token
 from werkzeug.security import generate_password_hash, check_password_hash
+
+
 class UserRole(Enum):
-    admin = 'admin'
-    user = 'user'
+    admin = "admin"
+    user = "user"
+
+
 class UserStatus(Enum):
-    active = 'active'
-    inactive = 'inactive'
+    active = "active"
+    inactive = "inactive"
+
+
 class User(db.Model):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -22,8 +28,10 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False)
     deleted_at = db.Column(db.DateTime, default=None, nullable=True)
+
     def __repr__(self):
         return f"<User(username={self.username}, email={self.email})>"
+
     def serialize(self):
         created_at = convert_to_local_time(self.created_at)
         updated_at = convert_to_local_time(self.updated_at)
@@ -33,19 +41,21 @@ class User(db.Model):
             "email": self.email,
             "created_at": created_at.isoformat() if self.created_at else None,
             "updated_at": updated_at.isoformat() if self.updated_at else None,
-            "role":self.role.value,
-            "status":self.status.value,
+            "role": self.role.value,
+            "status": self.status.value,
         }
+
     def save(self):
         db.session.add(self)
         db.session.commit()
+
     def get_all_users(self):
         try:
             users = self.query.all()
             return [user.serialize() for user in users]
         except Exception as e:
             raise e
-        
+
     def register_user(self, data):
         try:
             password = generate_password_hash(data.get("password"))
@@ -55,7 +65,7 @@ class User(db.Model):
             user = self.query.filter_by(email=email).first()
             if user:
                 raise Exception("This email has already registered")
-            
+
             self.public_id = str(uuid.uuid4())
             self.username = data.get("username")
             self.email = email
@@ -88,7 +98,7 @@ class User(db.Model):
             authorized_user = self.check_user_authorization(public_id, user_id)
             if authorized_user:
                 # user.deleted_at = datetime.datetime.utcnow() soft delete
-                db.session.delete(user)  
+                db.session.delete(user)
                 db.session.commit()
                 return True
         except Exception as e:
@@ -113,7 +123,7 @@ class User(db.Model):
                 return user.serialize()
         except Exception as e:
             raise e
-        
+
     def update_user_status(self, public_id, data):
         try:
             user = self.query.filter_by(public_id=public_id).first()
@@ -131,7 +141,7 @@ class User(db.Model):
                 return user.serialize()
         except Exception as e:
             raise e
-    
+
     # please never return this
     def serialize_entire_data(self):
         return {
@@ -140,33 +150,30 @@ class User(db.Model):
             "username": self.username,
             "email": self.email,
             "password": self.password,
-            "role":self.role.value,
-            "status":self.status.value,
+            "role": self.role.value,
+            "status": self.status.value,
         }
-    
+
     def user_auth(self, data):
         try:
-            user = self.query.filter_by(email=data.get('email')).first()
+            user = self.query.filter_by(email=data.get("email")).first()
             if not user:
                 raise Exception("User not found. Invalid ID")
-            
+
             user_data = user.serialize_entire_data()
-            if check_password_hash(user_data['password'], data.get('password')):
-                return create_token(user_data)    
+            if check_password_hash(user_data["password"], data.get("password")):
+                return create_token(user_data)
             else:
                 raise Exception("Incorrect password. Please try again")
-        
+
         except Exception as e:
             raise e
-    
+
     def check_user_authorization(self, public_id, user_id):
         try:
             user = self.query.filter_by(public_id=public_id).first()
-            if not user:
-                raise Exception("User not found. Please enter a valid id")
-            
             check_user = user.serialize_entire_data()
-            if check_user['id'] != user_id:
+            if check_user["id"] != user_id:
                 raise Exception("Access denied")
             else:
                 return True
