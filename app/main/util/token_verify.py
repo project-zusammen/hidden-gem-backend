@@ -1,10 +1,11 @@
 import jwt
 import os
 from dotenv import load_dotenv
-from flask import request, jsonify
+from flask import request
 from functools import wraps
+import logging as log
 
-from app.main.model.user import User
+log.basicConfig(level=log.ERROR)
 
 load_dotenv()
 
@@ -31,7 +32,7 @@ def token_required(f):
                 "message": "Your current session has expired. Please log in again to continue."
             }, 401
         except Exception as e:
-            print(f"Error: {str(e)}")
+            log.error(f"Error: {str(e)}")
             return {"message": "Access Denied: Token is invalid"}, 401
 
     return decorated
