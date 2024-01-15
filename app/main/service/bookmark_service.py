@@ -21,9 +21,11 @@ def create_bookmark(data):
 def get_bookmark_by_userid(user_id):
     try:
         bookmark = bookmark_model.get_bookmark_by_userid(user_id)
+        if len(bookmark) == 0:
+            return {"status": "success", "message": "No bookmarks found", "data": []}, 200
         response_object = {
             "status": "success",
-            "message": "Successfully get a bookmarks.",
+            "message": "Successfully get a bookmark.",
             "data": bookmark,
         }
         return response_object, 200
@@ -33,14 +35,10 @@ def get_bookmark_by_userid(user_id):
 
 def delete_bookmark(public_id):
     try:
-        bookmark = bookmark_model.delete_bookmark(public_id)
-        if not bookmark:
-            response_object = {"status": "fail", "message": "bookmark does not exist."}
-            return response_object, 409
+        _ = bookmark_model.delete_bookmark(public_id)
         response_object = {
             "status": "success",
-            "message": "Successfully deleted.",
-            "data": bookmark,
+            "message": "Successfully deleted."
         }
         return response_object, 201
     except Exception as e:
