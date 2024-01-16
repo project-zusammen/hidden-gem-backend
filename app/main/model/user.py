@@ -50,7 +50,7 @@ class User(db.Model):
 
     def get_all_users(self, page):
         try:
-            limit = 1
+            limit = 50
             if page is not None:
                 offset = (page - 1) * limit
                 users = self.query.limit(limit).offset(offset).all()

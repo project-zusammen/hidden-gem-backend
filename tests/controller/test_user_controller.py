@@ -79,6 +79,48 @@ class TestUserEndpoints(TestCase):
         self.assertEqual(first_user.get("public_id"), expected_data[0].get("public_id"))
         mock_get_all_users.assert_called_once()
 
+    @patch("app.main.controller.user_controller.get_all_users")
+    def test_get_all_users_pagination(self, mock_get_all_users):
+        # ARRANGE
+        expected_data = [
+            {
+                "id" : 1,
+                "public_id": "c47560e6-619f-4867-8ea7-213709aea349",
+                "username": "aqiz",
+                "email": "aqiz@gmail.com",
+                "created_at": "2024-01-03T11:21:23",
+                "updated_at": "2024-01-03T11:21:23",
+                "role": "user",
+                "status": "active"
+            }
+        ]
+        expected_response = {
+            "status": "success",
+            "message": "Successfully get users.",
+            "data": expected_data,
+        }
+
+        mock_get_all_users.return_value = expected_response
+        token = create_token(expected_data[0])
+        page = 1
+        
+        # ACT
+        with self.app.test_client() as client:
+            response = client.get(f"/api/user?page={page}", headers={"X-API-KEY":token})
+            result = response.get_json()["data"]
+            first_user = result[0]
+
+        # ASSERT
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(result, list)
+        self.assertEqual(first_user.get("username"), expected_data[0].get("username"))
+        self.assertEqual(first_user.get("email"), expected_data[0].get("email"))
+        self.assertEqual(first_user.get("role"), expected_data[0].get("role"))
+        self.assertEqual(first_user.get("status"), expected_data[0].get("status"))
+        self.assertEqual(first_user.get("public_id"), expected_data[0].get("public_id"))
+        mock_get_all_users.assert_called_once()
+
+
 
     @patch("app.main.controller.user_controller.get_a_user")
     def test_get_a_user(self, mock_get_a_user):
