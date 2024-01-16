@@ -5,7 +5,6 @@ import datetime
 from ..util.helper import convert_to_local_time, is_valid_email, create_token
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
 class UserRole(Enum):
     admin = "admin"
     user = "user"
@@ -49,9 +48,14 @@ class User(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def get_all_users(self):
+    def get_all_users(self, page):
         try:
-            users = self.query.all()
+            limit = 1
+            if page is not None:
+                offset = (page - 1) * limit
+                users = self.query.limit(limit).offset(offset).all()
+            else:
+                users = self.query.all()
             return [user.serialize() for user in users]
         except Exception as e:
             raise e

@@ -1,5 +1,6 @@
 from ..util.dto import UserDto
 from ..util.helper import error_handler
+from flask import request
 
 user_dto = UserDto()
 _user = user_dto.user
@@ -27,14 +28,14 @@ class UserSignUp(Resource):
         """Register a new user"""
         return register_user(ns.payload)
 
-
 @ns.route("/user")
 class UserList(Resource):
-    @ns.doc(security="bearer")
+    @ns.doc(security="bearer", params={'page': {'description': 'Page number', 'type': 'integer'}}) 
     @token_required
     def get(self, decoded_token):
         """List all users"""
-        return get_all_users()
+        page = request.args.get('page', default=None, type=int)
+        return get_all_users(page)
 
 
 @ns.route("/user/<public_id>")

@@ -49,9 +49,9 @@ def update_user_status(public_id, data):
         return error_handler(e)
 
 
-def get_all_users():
+def get_all_users(page):
     try:
-        users = user_model.get_all_users()
+        users = user_model.get_all_users(page)
         if not users:
             return {"status": "success", "message": "No users found", "data": []}, 200
 
