@@ -52,6 +52,12 @@ class Review(db.Model):
 
     def get_review_by_id(self, public_id):
         return self.query.filter_by(public_id=public_id, visible=True).first()
+    
+    def get_review_public_id(self, id):
+        review = self.query.filter_by(id=id).first()
+        if review:
+            return review.public_id
+        return None
 
     def create_review(self, data):
         self.public_id = str(uuid.uuid4())
