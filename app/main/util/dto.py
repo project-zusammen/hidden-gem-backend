@@ -45,3 +45,11 @@ class UserDto:
             "banned": fields.Boolean(required=True, description="user status that want to be updated")
         }
     )
+
+class CommentDto:
+    comment = api.model(
+		"comment",
+		{
+			"content": fields.String(required=True, description="comment content")
+		}
+	)

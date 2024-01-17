@@ -13,6 +13,7 @@ from app.extensions import (
 
 from app.main.controller.review_controller import ns as review_ns
 from app.main.controller.user_controller import ns as user_ns
+from app.main.controller.comment_controller import ns as comment_ns
 
 
 def create_app(config_object="app.settings"):
@@ -37,6 +38,7 @@ def register_extensions(app):
     api.init_app(app)
     api.add_namespace(review_ns)
     api.add_namespace(user_ns)
+    api.add_namespace(comment_ns)
     debug_toolbar.init_app(app)
     migrate.init_app(app, db)
     return None
