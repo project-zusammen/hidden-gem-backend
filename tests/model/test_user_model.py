@@ -153,8 +153,7 @@ class TestUser(unittest.TestCase):
 
         # ACT
         result = user_model.check_user_authorization(user['public_id'], user_id)
-        print(f"\n\n\n{result}")
-
+        
         # ASSERT
         self.assertIsNotNone(result)
         self.assertEqual(result.public_id,user['public_id'])
