@@ -111,9 +111,9 @@ class TestUser(unittest.TestCase):
 
         # ASSERT
         self.assertIsNotNone(updated_user)
-        self.assertEqual(updated_user['public_id'],updated_user['public_id'])
-        self.assertEqual(updated_user['username'],updated_user['username'])
-        self.assertEqual(updated_user['status'],updated_user['status'])
+        self.assertEqual(updated_user['email'],user_data['email'])
+        self.assertEqual(updated_user['username'],user_data['username'])
+        self.assertEqual(updated_user['status'], "inactive")
     
     def test_user_auth(self):
         # ARRANGE
@@ -153,10 +153,16 @@ class TestUser(unittest.TestCase):
 
         # ACT
         result = user_model.check_user_authorization(user['public_id'], user_id)
-        
+        print(f"\n\n\n{result}")
+
         # ASSERT
         self.assertIsNotNone(result)
-        self.assertEqual(result,True)
+        self.assertEqual(result.public_id,user['public_id'])
+        self.assertEqual(result.username,user['username'])
+        self.assertEqual(result.email,user['email'])
+        self.assertEqual(result.status.value,'active')
+        self.assertEqual(result.role.value,'user')
+    
 
 
 if __name__ == "__main__":

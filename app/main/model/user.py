@@ -85,22 +85,16 @@ class User(db.Model):
 
     def get_user_by_id(self, public_id, user_id):
         try:
-            user = self.query.filter_by(public_id=public_id).first()
-            if not user:
-                raise Exception("User not found. Invalid ID")
-            authorized_user = self.check_user_authorization(public_id, user_id)
-            if authorized_user:
+            user = self.check_user_authorization(public_id, user_id)
+            if user:
                 return user.serialize()
         except Exception as e:
             raise e
 
     def delete_user(self, public_id, user_id):
         try:
-            user = self.query.filter_by(public_id=public_id).first()
-            if not user:
-                raise Exception("User not found. Please enter a valid id")
-            authorized_user = self.check_user_authorization(public_id, user_id)
-            if authorized_user:
+            user = self.check_user_authorization(public_id, user_id)
+            if user:
                 # user.deleted_at = datetime.datetime.utcnow() soft delete
                 db.session.delete(user)
                 db.session.commit()
@@ -110,11 +104,8 @@ class User(db.Model):
 
     def update_user(self, public_id, data, user_id):
         try:
-            user = self.query.filter_by(public_id=public_id).first()
-            if not user:
-                raise Exception("User not found. Invalid ID")
-            authorized_user = self.check_user_authorization(public_id, user_id)
-            if authorized_user:
+            user = self.check_user_authorization(public_id, user_id)
+            if user:
                 password = generate_password_hash(data.get("password"))
                 email = data.get("email")
                 if not is_valid_email(email):
@@ -176,10 +167,12 @@ class User(db.Model):
     def check_user_authorization(self, public_id, user_id):
         try:
             user = self.query.filter_by(public_id=public_id).first()
+            if not user:
+                raise Exception("User not found. Please enter a valid id")
             check_user = user.serialize_entire_data()
             if check_user["id"] != user_id:
                 raise Exception("Access denied")
             else:
-                return True
+                return user
         except Exception as e:
             raise e
