@@ -100,12 +100,8 @@ If you'd like to contribute to the project, please follow these guidelines:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Acknowledgments
+## Link to API contract
 
-- Mention any external libraries, resources, or inspiration you used.
+- https://docs.google.com/document/d/1YdXuNUR40BospbRPdcEWINZyOrAX-VK4dAUCGTUa6FA/edit?usp=sharing
 
-## Contact
 
-- Your Name
-- Your Email
-- Any other contact information you'd like to provide.
