@@ -74,3 +74,35 @@ class Comment(db.Model):
             comment.updated_at = datetime.datetime.utcnow()
             comment.save()
             return comment.serialize()
+    
+    def update_comment(self, public_id, data):
+        comment = self.get_comment_by_id(public_id)
+        if not comment:
+            return None
+        else:
+            comment.content = data.get("content")
+            comment.updated_at = datetime.datetime.utcnow()
+            comment.save()
+            return comment.serialize()
+        
+    def upvote_comment(self, public_id, upvote=True):
+        comment = self.get_comment_by_id(public_id)
+        if not comment:
+            return None
+        if upvote:
+            comment.upvotes += 1
+        else:
+            comment.downvotes += 1
+        comment.updated_at = datetime.datetime.utcnow()
+        comment.save()
+        return comment.serialize()
+    
+    def update_visibility(self, public_id, visible=True):
+        comment = self.query.filter_by(public_id=public_id).first()
+        if not comment:
+            return None
+        else:
+            comment.visible = visible
+            comment.updated_at = datetime.datetime.utcnow()
+            comment.save()
+            return comment.serialize()

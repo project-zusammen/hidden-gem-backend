@@ -50,6 +50,19 @@ class CommentDto:
     comment = api.model(
 		"comment",
 		{
-			"content": fields.String(required=True, description="comment content")
+			"content": fields.String(required=True, description="comment content"),
+            "review_id": fields.String(required=True, description="review Identifier")
 		}
 	)
+    upvote = api.model(
+        "upvote",
+        {
+            "upvote": fields.Boolean(description="upvote")
+        }
+    )
+    visible = api.model(
+        "visible",
+        {
+            "visible": fields.Boolean(description="visible")
+        }
+    )
