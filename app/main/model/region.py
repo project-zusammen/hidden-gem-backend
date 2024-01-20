@@ -9,25 +9,25 @@ class Region(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     public_id = db.Column(db.String(100), unique=True)
-    name = db.Column(db.String(100), unique=True)
+    city = db.Column(db.String(100), unique=True)
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False)
 
-    def __init__(self, public_id, name, created_at, updated_at):
-        self.public_id = public_id
-        self.name = name
-        self.created_at = created_at
-        self.updated_at = updated_at
+    # def __init__(self, public_id, city, created_at, updated_at):
+    #     self.public_id = public_id
+    #     self.city = city
+    #     self.created_at = created_at
+    #     self.updated_at = updated_at
 
     def __repr__(self):
-        return f"<Region(name={self.name})>"
+        return f"<Region(name={self.city})>"
 
     def serialize(self):
         created_at = convert_to_local_time(self.created_at)
         updated_at = convert_to_local_time(self.updated_at)
         return {
             "public_id": self.public_id,
-            "name": self.name,
+            "city": self.city,
             "created_at": created_at.isoformat() if self.created_at else None,
             "updated_at": updated_at.isoformat() if self.updated_at else None,
         }
@@ -39,8 +39,9 @@ class Region(db.Model):
     def create_region(self, region_name):
         try:
             self.public_id = str(uuid.uuid4())
-            self.name = region_name
-
+            self.city = region_name
+            self.created_at = datetime.datetime.utcnow()
+            self.updated_at = datetime.datetime.utcnow()
             self.save()
             return self.serialize()
         except Exception as e:
@@ -49,7 +50,7 @@ class Region(db.Model):
     def get_all_regions(self):
         try:
             regions = self.query.all()
-            return [regions.serialize() for region in regions]
+            return [region.serialize() for region in regions]
         except Exception as e:
             raise e
         
@@ -73,7 +74,7 @@ class Region(db.Model):
             if not region:
                 raise Exception("Region not found")
             else:
-                region.name = new_region
+                region.city = new_region
                 region.updated_at = datetime.datetime.utcnow()
 
                 db.session.commit()

@@ -53,3 +53,13 @@ class UserDto:
             "banned": fields.Boolean(required=True, description="user status that want to be updated"),
         }
     )
+
+class RegionDto:
+    region = api.model(
+        "region",
+        {
+            "city": fields.String(required=True, description="city name for region")
+        }
+    )
+
+    
