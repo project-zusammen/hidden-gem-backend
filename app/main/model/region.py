@@ -13,14 +13,10 @@ class Region(db.Model):
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False)
 
-    # def __init__(self, public_id, city, created_at, updated_at):
-    #     self.public_id = public_id
-    #     self.city = city
-    #     self.created_at = created_at
-    #     self.updated_at = updated_at
+    
 
     def __repr__(self):
-        return f"<Region(name={self.city})>"
+        return f"<Region(city={self.city})>"
 
     def serialize(self):
         created_at = convert_to_local_time(self.created_at)
