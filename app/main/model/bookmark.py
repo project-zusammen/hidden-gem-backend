@@ -2,7 +2,9 @@ from .. import db
 import uuid
 import datetime
 from ..util.helper import convert_to_local_time
-from .user import User
+from .review import Review  
+
+review_instance = Review()
 
 
 class Bookmark(db.Model):
@@ -10,8 +12,8 @@ class Bookmark(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     public_id = db.Column(db.String(100), unique=True)
-    user_id = db.Column(db.String(100), db.ForeignKey("user.public_id"), nullable=False)
-    review_id = db.Column(db.String(100), db.ForeignKey("review.public_id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    review_id = db.Column(db.Integer, db.ForeignKey("review.id"), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False)
     deleted_at = db.Column(db.DateTime, default=None, nullable=True)
@@ -30,46 +32,38 @@ class Bookmark(db.Model):
             "updated_at": updated_at.isoformat() if self.updated_at else None,
         }
 
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def create_bookmark(self, data):
+    def create_bookmark(self, data, user_id):
         try:
+            review_id = review_instance.get_review_id_by_public_id(data.get('review_id'))
             self.public_id = str(uuid.uuid4())
-            self.user_id = data.get("user_id")
-            self.review_id = data.get("review_id")
+            self.user_id = user_id
+            self.review_id = review_id
             self.created_at = datetime.datetime.utcnow()
             self.updated_at = datetime.datetime.utcnow()
-
-            self.save()
+            
+            db.session.add(self)
+            db.session.commit()
             return self.serialize()
 
         except Exception as e:
             raise e
 
-    def get_bookmark_by_userid(self, user_public_id):
+    def get_bookmark_by_userid(self, user_id):
         try:
-            results = self.query.filter_by(user_id=user_public_id)
+            results = self.query.filter_by(user_id=user_id)
             bookmarks = [data.serialize() for data in results]
             return bookmarks
         except Exception as e:
             raise e
 
-    def delete_bookmark(self, public_id, user_id):
+    def delete_bookmark(self, bookmark_id, user_id):
         try:
-            id = (
-                db.session.query(User.id)
-                .join(Bookmark, Bookmark.user_id == User.public_id)
-                .filter(Bookmark.public_id == public_id)
-                .scalar()
-            )
-            if user_id != id:
-                raise Exception("Access denied")
-
-            bookmark = self.query.filter_by(public_id=public_id).first()
+            bookmark = self.query.filter_by(public_id=bookmark_id).first()
             if not bookmark:
                 raise Exception("Bookmark not found. Invalid ID")
+            id = bookmark.user_id
+            if user_id != id:
+                raise Exception("Access denied")
 
             db.session.delete(bookmark)
             db.session.commit()

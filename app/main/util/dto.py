@@ -58,7 +58,6 @@ class BookmarkDto:
     bookmark = api.model(
         "bookmark",
         {
-            "user_id": fields.String(required=True, description="user id "),
             "review_id": fields.String(required=True, description="review id"),
         },
     )

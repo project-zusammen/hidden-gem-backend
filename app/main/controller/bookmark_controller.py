@@ -20,14 +20,15 @@ class CreateBookmark(Resource):
     @ns.expect(_bookmark, validate=True)
     def post(self, decoded_token):
         """Add review to user bookmark"""
-        return create_bookmark(ns.payload)
+        user_id = decoded_token["id"]
+        return create_bookmark(ns.payload, user_id)
 
     @ns.doc(security="bearer")
     @token_required
     def get(self, decoded_token):
         """Get a list of bookmarks owned by the authenticated user."""
-        user_public_id = decoded_token["public_id"]
-        return get_bookmark_by_userid(user_public_id)
+        user_id = decoded_token["id"]
+        return get_bookmark_by_userid(user_id)
 
 
 @ns.route("/bookmark/<public_id>")

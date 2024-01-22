@@ -5,9 +5,9 @@ from app.main.util.helper import error_handler
 bookmark_model = Bookmark()
 
 
-def create_bookmark(data):
+def create_bookmark(data, user_id):
     try:
-        bookmark = bookmark_model.create_bookmark(data)
+        bookmark = bookmark_model.create_bookmark(data, user_id)
         response_object = {
             "status": "success",
             "message": "Successfully created.",
@@ -19,9 +19,9 @@ def create_bookmark(data):
         return error_handler(e), 500
 
 
-def get_bookmark_by_userid(user_public_id):
+def get_bookmark_by_userid(user_id):
     try:
-        bookmark = bookmark_model.get_bookmark_by_userid(user_public_id)
+        bookmark = bookmark_model.get_bookmark_by_userid(user_id)
         if len(bookmark) == 0:
             return {
                 "status": "success",
@@ -39,9 +39,9 @@ def get_bookmark_by_userid(user_public_id):
         return error_handler(e), 500
 
 
-def delete_bookmark(public_id, user_id):
+def delete_bookmark(bookmark_id, user_id):
     try:
-        _ = bookmark_model.delete_bookmark(public_id, user_id)
+        _ = bookmark_model.delete_bookmark(bookmark_id, user_id)
         response_object = {"status": "success", "message": "Successfully deleted."}
         return response_object, 201
     except Exception as e:

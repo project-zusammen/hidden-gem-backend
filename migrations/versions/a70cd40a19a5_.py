@@ -1,8 +1,8 @@
-"""add bookmark model
+"""empty message
 
-Revision ID: be174f94103e
+Revision ID: a70cd40a19a5
 Revises: 1a1b4ba09824
-Create Date: 2024-01-15 22:45:21.176083
+Create Date: 2024-01-22 11:53:21.565432
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'be174f94103e'
+revision = 'a70cd40a19a5'
 down_revision = '1a1b4ba09824'
 branch_labels = None
 depends_on = None
@@ -21,13 +21,13 @@ def upgrade():
     op.create_table('bookmark',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('public_id', sa.String(length=100), nullable=True),
-    sa.Column('user_id', sa.String(length=100), nullable=False),
-    sa.Column('review_id', sa.String(length=100), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('review_id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.Column('deleted_at', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['review_id'], ['review.public_id'], ),
-    sa.ForeignKeyConstraint(['user_id'], ['user.public_id'], ),
+    sa.ForeignKeyConstraint(['review_id'], ['review.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('public_id')
     )
