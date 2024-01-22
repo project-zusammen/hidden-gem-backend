@@ -57,9 +57,10 @@ class TestUser(unittest.TestCase):
         # ARRANGE
         user_model = User()
         user = user_model.register_user(user_data)
+        page = 1
 
         # ACT
-        retrieved_users = user_model.get_all_users()
+        retrieved_users = user_model.get_all_users(page)
 
         # ASSERT
         self.assertIsNotNone(retrieved_users)
@@ -110,9 +111,9 @@ class TestUser(unittest.TestCase):
 
         # ASSERT
         self.assertIsNotNone(updated_user)
-        self.assertEqual(updated_user['public_id'],updated_user['public_id'])
-        self.assertEqual(updated_user['username'],updated_user['username'])
-        self.assertEqual(updated_user['status'],updated_user['status'])
+        self.assertEqual(updated_user['email'],user_data['email'])
+        self.assertEqual(updated_user['username'],user_data['username'])
+        self.assertEqual(updated_user['status'], "inactive")
     
     def test_user_auth(self):
         # ARRANGE
@@ -155,7 +156,12 @@ class TestUser(unittest.TestCase):
         
         # ASSERT
         self.assertIsNotNone(result)
-        self.assertEqual(result,True)
+        self.assertEqual(result.public_id,user['public_id'])
+        self.assertEqual(result.username,user['username'])
+        self.assertEqual(result.email,user['email'])
+        self.assertEqual(result.status.value,'active')
+        self.assertEqual(result.role.value,'user')
+    
 
 
 if __name__ == "__main__":

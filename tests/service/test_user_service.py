@@ -49,9 +49,9 @@ class TestUserService(TestCase):
             }
         ]
         mock_get_all_users.return_value = data
-
+        page = 1
         # Act
-        response, status_code = get_all_users()
+        response, status_code = get_all_users(page)
         result = response["data"]
 
         # Assert

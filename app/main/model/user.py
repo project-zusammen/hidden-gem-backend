@@ -5,7 +5,6 @@ import datetime
 from ..util.helper import convert_to_local_time, is_valid_email, create_token
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
 class UserRole(Enum):
     admin = "admin"
     user = "user"
@@ -49,9 +48,14 @@ class User(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def get_all_users(self):
+    def get_all_users(self, page):
         try:
-            users = self.query.all()
+            limit = 50
+            if page is not None:
+                offset = (page - 1) * limit
+                users = self.query.limit(limit).offset(offset).all()
+            else:
+                users = self.query.all()
             return [user.serialize() for user in users]
         except Exception as e:
             raise e
@@ -81,22 +85,16 @@ class User(db.Model):
 
     def get_user_by_id(self, public_id, user_id):
         try:
-            user = self.query.filter_by(public_id=public_id).first()
-            if not user:
-                raise Exception("User not found. Invalid ID")
-            authorized_user = self.check_user_authorization(public_id, user_id)
-            if authorized_user:
+            user = self.check_user_authorization(public_id, user_id)
+            if user:
                 return user.serialize()
         except Exception as e:
             raise e
 
     def delete_user(self, public_id, user_id):
         try:
-            user = self.query.filter_by(public_id=public_id).first()
-            if not user:
-                raise Exception("User not found. Please enter a valid id")
-            authorized_user = self.check_user_authorization(public_id, user_id)
-            if authorized_user:
+            user = self.check_user_authorization(public_id, user_id)
+            if user:
                 # user.deleted_at = datetime.datetime.utcnow() soft delete
                 db.session.delete(user)
                 db.session.commit()
@@ -106,11 +104,8 @@ class User(db.Model):
 
     def update_user(self, public_id, data, user_id):
         try:
-            user = self.query.filter_by(public_id=public_id).first()
-            if not user:
-                raise Exception("User not found. Invalid ID")
-            authorized_user = self.check_user_authorization(public_id, user_id)
-            if authorized_user:
+            user = self.check_user_authorization(public_id, user_id)
+            if user:
                 password = generate_password_hash(data.get("password"))
                 email = data.get("email")
                 if not is_valid_email(email):
@@ -172,10 +167,12 @@ class User(db.Model):
     def check_user_authorization(self, public_id, user_id):
         try:
             user = self.query.filter_by(public_id=public_id).first()
+            if not user:
+                raise Exception("User not found. Please enter a valid id")
             check_user = user.serialize_entire_data()
             if check_user["id"] != user_id:
                 raise Exception("Access denied")
             else:
-                return True
+                return user
         except Exception as e:
             raise e

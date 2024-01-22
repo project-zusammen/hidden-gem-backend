@@ -13,6 +13,7 @@ from app.extensions import (
 
 from app.main.controller.review_controller import ns as review_ns
 from app.main.controller.user_controller import ns as user_ns
+from app.main.controller.region_controller import ns as region_ns
 from app.main.controller.bookmark_controller import ns as bookmark_ns
 
 
@@ -38,6 +39,7 @@ def register_extensions(app):
     api.init_app(app)
     api.add_namespace(review_ns)
     api.add_namespace(user_ns)
+    api.add_namespace(region_ns)
     api.add_namespace(bookmark_ns)
     debug_toolbar.init_app(app)
     migrate.init_app(app, db)

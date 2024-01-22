@@ -54,6 +54,14 @@ class UserDto:
         }
     )
 
+class RegionDto:
+    region = api.model(
+        "region",
+        {
+            "city": fields.String(required=True, description="city name for region")
+        }
+    )
+
 class BookmarkDto:
     bookmark = api.model(
         "bookmark",
