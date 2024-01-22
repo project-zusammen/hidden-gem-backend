@@ -5,8 +5,8 @@ from app import create_app
 from app.main.util.helper import create_token
 
 user_data = {
-    "user_id": "66434932-de79-4800-955a-fa09466c5218",
-    "review_id": "4128525d-7851-4562-839d-ff0479384508"
+    "review_id": "4128525d-7851-4562-839d-ff0479384508",
+    "user_id": 1,
 }
 
 class TestBookmarkEndpoints(TestCase):
@@ -45,7 +45,7 @@ class TestBookmarkEndpoints(TestCase):
         # ASSERT
         self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_response["data"], res)
-        mock_create_bookmark.assert_called_once_with(user_data)
+        mock_create_bookmark.assert_called_once_with(user_data, token_payload['id'])
 
 
     @patch("app.main.controller.bookmark_controller.get_bookmark_by_userid")

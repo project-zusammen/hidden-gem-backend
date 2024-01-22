@@ -34,19 +34,20 @@ class TestBookmark(unittest.TestCase):
         # ARRANGE
         review_model = Review()
         created_review = review_model.create_review(review_data)
+        review_id = review_model.get_review_id_by_public_id(created_review['public_id'])
+        data = {
+            'review_id': created_review['public_id']
+        }
         user_model = User()
         new_user = user_model.register_user(user_data)
-        bookmark_data = {
-            "user_id": new_user['public_id'],
-            "review_id": created_review['public_id']
-        }
         bookmark_model = Bookmark()
-        new_bookmark = bookmark_model.create_bookmark(bookmark_data)
+
+        new_bookmark = bookmark_model.create_bookmark(data, 1)
 
         # ASSERT
         self.assertIsNotNone(new_bookmark)
-        self.assertEqual(new_bookmark["user_id"], bookmark_data["user_id"])
-        self.assertEqual(new_bookmark["review_id"], bookmark_data["review_id"])
+        self.assertEqual(new_bookmark["user_id"], 1)
+        self.assertEqual(new_bookmark["review_id"], review_id)
 
     def test_get_bookmark_by_userid(self):
         # ARRANGE
@@ -55,21 +56,20 @@ class TestBookmark(unittest.TestCase):
         user_model = User()
         new_user = user_model.register_user(user_data)
         bookmark_data = {
-            "user_id": new_user['public_id'],
             "review_id": created_review['public_id']
         }
         bookmark_model = Bookmark()
-        new_boomark = bookmark_model.create_bookmark(bookmark_data)
+        new_bookmark = bookmark_model.create_bookmark(bookmark_data, 1)
 
         # ACT
-        retrieved_bookmark = bookmark_model.get_bookmark_by_userid(bookmark_data['user_id'])
+        retrieved_bookmark = bookmark_model.get_bookmark_by_userid(1)
 
         # ASSERT
         self.assertIsNotNone(retrieved_bookmark)
         self.assertEqual(len(retrieved_bookmark), 1)
-        self.assertEqual(new_boomark["review_id"], retrieved_bookmark[0]["review_id"])
-        self.assertEqual(new_boomark["user_id"], retrieved_bookmark[0]["user_id"])
-        self.assertEqual(new_boomark["public_id"], retrieved_bookmark[0]["public_id"])
+        self.assertEqual(new_bookmark["review_id"], retrieved_bookmark[0]["review_id"])
+        self.assertEqual(new_bookmark["user_id"], retrieved_bookmark[0]["user_id"])
+        self.assertEqual(new_bookmark["public_id"], retrieved_bookmark[0]["public_id"])
 
     def test_delete_user(self):
         # ARRANGE
@@ -78,11 +78,10 @@ class TestBookmark(unittest.TestCase):
         user_model = User()
         new_user = user_model.register_user(user_data)
         bookmark_data = {
-            "user_id": new_user['public_id'],
             "review_id": created_review['public_id']
         }
         bookmark_model = Bookmark()
-        new_bookmark = bookmark_model.create_bookmark(bookmark_data)
+        new_bookmark = bookmark_model.create_bookmark(bookmark_data, 1)
 
         # ACT
         deleted_bookmark = bookmark_model.delete_bookmark(new_bookmark['public_id'],1)
