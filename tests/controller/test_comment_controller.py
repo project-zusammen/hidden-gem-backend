@@ -8,6 +8,8 @@ comment_data = {
     "review_id": "1234ABCD"
 }
 
+public_id = "public_id_test"
+
 class TestCommentEndpoints(TestCase):
     def setUp(self):
         self.app = create_app(config_object="app.test_settings")
@@ -30,27 +32,18 @@ class TestCommentEndpoints(TestCase):
         # ACT
         with self.app.test_client() as client:
             response = client.post("/api/comment", json=comment_data)
-            result = response.get_json()
-            result = result.get("data")
+            res = response.get_json()
+            res = res.get("data")
         
         # ASSERT
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(expected_response["data"]["content"], result.get("content"))
+        self.assertEqual(expected_response["data"]["content"], res.get("content"))
         mock_create_comment.assert_called_once()
 
     @patch("app.main.controller.comment_controller.get_all_comments")
     def test_get_all_comments(self, mock_get_all_comments):
         # ARRANGE
-        expected_data = [{
-            "public_id": "2e6d43d8-9b1f-4dfc-8576-08deb8bcba15",
-            "content": "This is a test comment kali ya?",
-            "created_at": "2024-01-18T16:06:35",
-            "updated_at": "2024-01-18T16:29:03",
-            "upvotes": 0,
-            "downvotes": 0,
-            "visible": True
-            }
-        ]
+        expected_data = [comment_data]
         expected_response = {
             "status": "success",
             "message": "Successfully retrieved comments.",
@@ -61,13 +54,124 @@ class TestCommentEndpoints(TestCase):
         # ACT
         with self.app.test_client() as client:
             response = client.get("/api/comment")
-            result = json.loads(response.data.decode("utf-8"))
-            result = result.get("data")
-            first_comment = result[0]
+            res = json.loads(response.data.decode("utf-8"))
+            res = res.get("data")
+            first_comment = res[0]
 
         # ASSERT
         self.assertEqual(response.status_code, 200)
-        self.assertIsInstance(result, list)
+        self.assertIsInstance(res, list)
         self.assertEqual(expected_data[0].get("content"), first_comment.get("content"))
         mock_get_all_comments.assert_called_once()
 
+    @patch("app.main.controller.comment_controller.get_a_comment")
+    def test_get_a_comment(self, mock_get_a_comment):
+        # ARRANGE
+        expected_data = comment_data
+        expected_response = {
+            "status": "success",
+            "message": "Successfully retrieved comment.",
+            "data": expected_data
+        }
+
+        mock_get_a_comment.return_value = expected_response
+
+        # ACT
+        with self.app.test_client() as client:
+            response = client.get(f"/api/comment/{public_id}")
+            res = json.loads(response.data.decode("utf-8"))
+
+        # ASSERT
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_response["data"].get("content"), res["data"].get("content"))
+        mock_get_a_comment.assert_called_once()
+
+    @patch("app.main.controller.comment_controller.delete_comment")
+    def test_delete_comment(self, mock_delete_comment):
+        # ARRANGE
+        expected_response = {
+            "status": "success",
+            "message": "Successfully deleted.",
+            "data": comment_data,
+        }
+
+        mock_delete_comment.return_value = expected_response
+
+        # ACT
+        with self.app.test_client() as client:
+            response = client.delete(f"/api/comment/{public_id}")
+            res = response.get_json()
+
+        # ARRANGE
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_response["data"].get("content"), res["data"].get("content"))
+        self.assertEqual(expected_response["data"].get("review_id"), res["data"].get("review_id"))
+        mock_delete_comment.assert_called_once()
+
+    @patch("app.main.controller.comment_controller.update_comment")
+    def test_update_comment(self, mock_update_comment):
+        # ARRANGE
+        expected_response = {
+            "status": "success",
+            "message": "Comment updated successfully.",
+            "data": comment_data
+        }
+
+        mock_update_comment.return_value = expected_response
+
+        # ACT
+        with self.app.test_client() as client:
+            response = client.put(f"/api/comment/{public_id}", json=comment_data)
+            res = response.get_json()
+
+        # ASSERT
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_response["data"].get("content"), res["data"].get("content"))
+        self.assertEqual(expected_response["data"].get("review_id"), res["data"].get("review_id"))
+        mock_update_comment.assert_called_once()
+
+    @patch("app.main.controller.comment_controller.upvote_comment")
+    def test_upvote_comment(self, mock_upvote_comment):
+        # ARRANGE
+        comment_data["upvotes"] = 1
+        comment_data["downvotes"] = 1
+        expected_response = {
+            "status": "success",
+            "message": "Comment upvoted successfully.",
+            "data": comment_data
+        }
+
+        mock_upvote_comment.return_value = expected_response
+
+        # ACT
+        with self.app.test_client() as client:
+            response = client.put(f"/api/comment/{public_id}/vote", json=comment_data)
+            res = response.get_json()
+
+        # ASSERT
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_response["data"].get("upvotes"), res["data"].get("upvotes"))
+        self.assertEqual(expected_response["data"].get("downvotes"), res["data"].get("downvotes"))
+        mock_upvote_comment.assert_called_once()
+
+    @patch("app.main.controller.comment_controller.update_visibility")
+    def test_update_visibility(self, mock_update_visibility):
+        # ARRANGE
+        comment_data["visible"] = False
+        expected_response = {
+            "status": "success",
+            "message": "Successfully updated.",
+            "data": comment_data,
+        }
+
+        mock_update_visibility.return_value = expected_response
+
+        # ACT
+        with self.app.test_client() as client:
+            response = client.put(f"/api/comment/{public_id}/status", json=comment_data)
+            res = response.get_json()
+
+        # ASSERT
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_response["data"].get("visible"), res["data"].get("visible"))
+        mock_update_visibility.assert_called_once()
