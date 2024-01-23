@@ -13,7 +13,7 @@ from ..service.review_service import (
     update_review,
     delete_review,
     upvote_review,
-    update_visibility
+    update_visibility,
 )
 from ...extensions import ns
 
@@ -51,7 +51,7 @@ class Review(Resource):
 
 @ns.route("/review/<public_id>/vote")
 @ns.param("public_id", "The Review Identifier")
-class ReviewUpvote(Resource):    
+class ReviewUpvote(Resource):
     @ns.expect(_upvote)
     def put(self, public_id):
         """Give upvote or downvote"""
@@ -59,12 +59,13 @@ class ReviewUpvote(Resource):
         upvoted_review = upvote_review(public_id, upvote)
         return upvoted_review
 
+
 @ns.route("/review/<public_id>/status")
 @ns.param("public_id", "The Review Identifier")
-class ReviewVisible(Resource):    
+class ReviewVisible(Resource):
     @ns.expect(_visible)
     def put(self, public_id):
         """Update visibility status"""
         visible = ns.payload.get("visible")
-        updated_visibility= update_visibility(public_id, visible)
+        updated_visibility = update_visibility(public_id, visible)
         return updated_visibility

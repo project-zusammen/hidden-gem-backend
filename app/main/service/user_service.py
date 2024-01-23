@@ -1,13 +1,15 @@
 import logging as log
 from app.main.model.user import User
 from ..util.helper import error_handler
-log.basicConfig(level=log.ERROR) 
+
+log.basicConfig(level=log.ERROR)
 
 user_model = User()
 
+
 def register_user(data):
     try:
-        result = user_model.register_user(data)  
+        result = user_model.register_user(data)
         response_object = {
             "status": "success",
             "message": "Register User Success.",
@@ -32,6 +34,7 @@ def update_user(public_id, data):
         log.error(f"Error in update_user: {str(e)}")
         return error_handler(e)
 
+
 def update_user_status(public_id, data):
     try:
         updated_user = user_model.update_user_status(public_id, data)
@@ -44,6 +47,7 @@ def update_user_status(public_id, data):
     except Exception as e:
         log.error(f"Error in update_user: {str(e)}")
         return error_handler(e)
+
 
 def get_all_users():
     try:
@@ -87,4 +91,3 @@ def delete_user(public_id):
     except Exception as e:
         log.error(f"Error in delete_user: {str(e)}")
         return error_handler(e)
-

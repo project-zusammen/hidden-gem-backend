@@ -15,18 +15,21 @@ from ..service.user_service import (
 )
 from ...extensions import ns
 
+
 @ns.route("/user/signup")
 class UserSignUp(Resource):
     @ns.expect(_user, validate=True)
     def post(self):
         """Register a new user"""
         return register_user(ns.payload)
-    
+
+
 @ns.route("/user")
 class UserList(Resource):
     def get(self):
         """List all users"""
         return get_all_users()
+
 
 @ns.route("/user/<public_id>")
 @ns.param("public_id", "The user identifier")
@@ -45,6 +48,7 @@ class User(Resource):
     def delete(self, public_id):
         """Delete a user"""
         return delete_user(public_id)
+
 
 ## work in progress, need authentication for this endpoint
 @ns.route("/user/<public_id>/status")

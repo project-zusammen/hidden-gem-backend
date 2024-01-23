@@ -20,23 +20,22 @@ class Comment(db.Model):
 
     def __repr__(self):
         return f"<Comment(content={self.content})>"
-    
 
     def serialize(self):
         created_at = convert_to_local_time(self.created_at)
         updated_at = convert_to_local_time(self.updated_at)
         return {
-            'public_id': self.public_id,
+            "public_id": self.public_id,
             # 'user_id': self.user_id,
             # 'comment_id': self.comment_id,
-            'content': self.content,
-            'created_at': created_at.isoformat() if self.created_at else None,
-            'updated_at': updated_at.isoformat() if self.updated_at else None,
-            'upvotes': self.upvotes,
-            'downvotes': self.downvotes,
-            'visible': self.visible
+            "content": self.content,
+            "created_at": created_at.isoformat() if self.created_at else None,
+            "updated_at": updated_at.isoformat() if self.updated_at else None,
+            "upvotes": self.upvotes,
+            "downvotes": self.downvotes,
+            "visible": self.visible,
         }
-    
+
     def save(self):
         db.session.add(self)
         db.session.commit()
@@ -44,9 +43,8 @@ class Comment(db.Model):
     def get_all_comments(self):
         comments = self.query.filter_by(visible=True).all()
         return [comment.serialize() for comment in comments]
-    
-    def create_comment(self, data):
 
+    def create_comment(self, data):
         self.public_id = str(uuid.uuid4())
         self.content = data.get("content")
 
@@ -56,7 +54,7 @@ class Comment(db.Model):
         self.created_at = datetime.datetime.utcnow()
         self.updated_at = datetime.datetime.utcnow()
         self.upvotes = 0
-        self.downvotes = 0 
+        self.downvotes = 0
         self.visible = True
 
         self.save()
@@ -64,7 +62,7 @@ class Comment(db.Model):
 
     def get_comment_by_id(self, public_id):
         return self.query.filter_by(public_id=public_id, visible=True).first()
-    
+
     def delete_comment(self, public_id):
         comment = self.get_comment_by_id(public_id)
         if not comment:
@@ -74,7 +72,7 @@ class Comment(db.Model):
             comment.updated_at = datetime.datetime.utcnow()
             comment.save()
             return comment.serialize()
-    
+
     def update_comment(self, public_id, data):
         comment = self.get_comment_by_id(public_id)
         if not comment:
@@ -84,7 +82,7 @@ class Comment(db.Model):
             comment.updated_at = datetime.datetime.utcnow()
             comment.save()
             return comment.serialize()
-        
+
     def upvote_comment(self, public_id, upvote=True):
         comment = self.get_comment_by_id(public_id)
         if not comment:
@@ -96,7 +94,7 @@ class Comment(db.Model):
         comment.updated_at = datetime.datetime.utcnow()
         comment.save()
         return comment.serialize()
-    
+
     def update_visibility(self, public_id, visible=True):
         comment = self.query.filter_by(public_id=public_id).first()
         if not comment:
