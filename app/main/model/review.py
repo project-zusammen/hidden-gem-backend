@@ -46,8 +46,13 @@ class Review(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def get_all_reviews(self):
-        reviews = self.query.filter_by(visible=True).all()
+    def get_all_reviews(self, page):
+        limit = 50
+        if page is not 0:
+            offset = (page - 1) * limit
+            reviews = self.query.limit(limit).offset(offset).all()
+        else:
+            reviews = self.query.filter_by(visible=True).all()
         return [review.serialize() for review in reviews]
 
     def get_review_by_id(self, public_id):

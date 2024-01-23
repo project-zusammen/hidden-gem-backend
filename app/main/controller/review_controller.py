@@ -1,4 +1,5 @@
 from ..util.dto import ReviewDto
+from flask import request
 
 review_dto = ReviewDto()
 _review = review_dto.review
@@ -20,9 +21,11 @@ from ...extensions import ns
 
 @ns.route("/review")
 class ReviewList(Resource):
+    @ns.doc(params={'page': {'description': 'Page number', 'type': 'integer'}}) 
     def get(self):
         """List all reviews"""
-        return get_all_reviews()
+        page = request.args.get('page', default=0, type=int)
+        return get_all_reviews(page)
 
     @ns.expect(_review, validate=True)
     def post(self):
