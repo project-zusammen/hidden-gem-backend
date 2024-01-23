@@ -11,6 +11,7 @@ load_dotenv()
 secretKey = os.getenv("SECRET_KEY")
 
 
+
 def convert_to_local_time(utc_datetime):
     now_timestamp = time.time()
     offset = datetime.fromtimestamp(now_timestamp) - datetime.utcfromtimestamp(
@@ -56,7 +57,6 @@ def error_handler(error):
         message = "Internal Server Error"
 
     return {"status": "error", "message": message}, 500
-
 
 def create_token(user):
     token = jwt.encode(
