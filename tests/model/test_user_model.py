@@ -133,13 +133,8 @@ class TestUser(unittest.TestCase):
 
         token = create_token(token_payload)
 
-        payload = {
-            'email': user_data['email'],
-            'password':user_data['password']
-        }
-
         # ACT
-        result = user_model.user_auth(payload)
+        result = user_model.user_auth(token_payload)
 
         # ASSERT
         self.assertIsNotNone(result)
