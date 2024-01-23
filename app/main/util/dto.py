@@ -17,9 +17,19 @@ class ReviewDto:
             "region_id": fields.String(description="region Identifier"),
         },
     )
-    upvote = api.model("upvote", {"upvote": fields.Boolean(description="upvote")})
-    visible = api.model("visible", {"visible": fields.Boolean(description="visible")})
+    upvote = api.model(
+        "upvote",
+        {
+            "upvote": fields.Boolean(description="upvote")
+        }
+    )
 
+    visible = api.model(
+        "visible",
+        {
+            "visible": fields.Boolean(description="visible")
+        }
+    )
 
 class UserDto:
     user = api.model(
@@ -28,6 +38,13 @@ class UserDto:
             "username": fields.String(required=True, description="username"),
             "email": fields.String(required=True, description="user email"),
             "password": fields.String(required=True, description="user password"),
+        },
+    )
+    login = api.model(
+        "login",
+        {
+            "email": fields.String(required=True, description="user email for login"),
+            "password": fields.String(required=True, description="user password for login")
         },
     )
     status = api.model(
@@ -50,3 +67,11 @@ class CommentDto:
     )
     upvote = api.model("upvote", {"upvote": fields.Boolean(description="upvote")})
     visible = api.model("visible", {"visible": fields.Boolean(description="visible")})
+
+class RegionDto:
+    region = api.model(
+        "region",
+        {
+            "city": fields.String(required=True, description="city name for region")
+        }
+    )
