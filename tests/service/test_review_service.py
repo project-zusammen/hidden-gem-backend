@@ -48,9 +48,9 @@ class TestReviewService(TestCase):
             },
         ]
         mock_get_all_reviews.return_value = data
-
+        page = 1
         # Act
-        response, status_code = get_all_reviews()
+        response, status_code = get_all_reviews(page)
         result = response["data"]
 
         # Assert

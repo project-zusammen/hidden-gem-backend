@@ -63,7 +63,8 @@ class TestReview(unittest.TestCase):
         review = review_model.create_review(review_data)
 
         # ACT
-        retrieved_reviews = review_model.get_all_reviews()
+        page = 1
+        retrieved_reviews = review_model.get_all_reviews(page)
 
         # ASSERT
         self.assertIsNotNone(retrieved_reviews)
