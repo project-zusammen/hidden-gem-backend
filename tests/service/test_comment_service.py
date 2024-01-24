@@ -5,7 +5,11 @@ from app import create_app
 from app.main.service.comment_service import (
     get_all_comments,
     get_a_comment,
-    create_comment
+    create_comment,
+    delete_comment,
+    update_comment,
+    upvote_comment,
+    update_visibility
 )
 
 def generate_fake_public_id():
@@ -87,3 +91,92 @@ class TestReviewService(TestCase):
         self.assertEqual(result["review_id"], data["review_id"])
 
         mock_create_comment.assert_called_once()
+
+    @patch("app.main.model.comment.Comment.delete_comment")
+    def test_delete_comment(self, mock_delete_comment):
+        # ARRANGE
+        data = comment_1
+        data["visible"] = False
+        mock_delete_comment.return_value = data
+
+        # ACT
+        response, status_code = delete_comment(public_id = generate_fake_public_id())
+        result = response["data"]
+
+        # ASSERT
+        self.assertEqual(status_code, 201)
+        self.assertEqual(response["status"], "success")
+        self.assertEqual(response["message"], "Successfully deleted.")
+        self.assertEqual(result["public_id"], data["public_id"])
+        self.assertEqual(result["content"], data["content"])
+        self.assertEqual(result["review_id"], data["review_id"])
+        self.assertEqual(result["visible"], data["visible"])
+
+        mock_delete_comment.assert_called_once()
+
+    @patch("app.main.model.comment.Comment.update_comment")
+    def test_update_comment(self, mock_update_comment):
+        # ARRANGE
+        comment_updated = {"public_id": generate_fake_public_id(), "content": "Comment Updated", "review_id": "review_id 1"}
+        data = comment_updated
+        mock_update_comment.return_value = data
+
+        # ACT
+        response, status_code = update_comment(public_id=generate_fake_public_id(), data=comment_updated)
+        result = response["data"]
+
+        # ASSERT
+        self.assertEqual(status_code, 201)
+        self.assertEqual(response["status"], "success")
+        self.assertEqual(response["message"], "Successfully updated.")
+        self.assertEqual(result["public_id"], data["public_id"])
+        self.assertEqual(result["content"], data["content"])
+        self.assertEqual(result["review_id"], data["review_id"])
+
+        mock_update_comment.assert_called_once()
+
+    @patch("app.main.model.comment.Comment.upvote_comment")
+    def test_upvote_comment(self, mock_upvote_comment):
+        # ARRANGE
+        data = comment_1
+        data["upvotes"] = 1
+        data["downvotes"] = 1
+        mock_upvote_comment.return_value = data
+
+        # ACT
+        response, status_code = upvote_comment(public_id=generate_fake_public_id(), upvote=True)
+        result = response["data"]
+
+        # ASSERT
+        self.assertEqual(status_code, 201)
+        self.assertEqual(response["status"], "success")
+        self.assertEqual(response["message"], "Successfully upvoted.")
+        self.assertEqual(result["public_id"], data["public_id"])
+        self.assertEqual(result["content"], data["content"])
+        self.assertEqual(result["review_id"], data["review_id"])
+        self.assertEqual(result["upvotes"], data["upvotes"])
+        self.assertEqual(result["downvotes"], data["downvotes"])
+
+        mock_upvote_comment.assert_called_once()
+
+    @patch("app.main.model.comment.Comment.update_visibility")
+    def test_update_visibility(self, mock_update_visibility):
+        # ARRANGE
+        data = comment_1
+        data["visible"] = False
+        mock_update_visibility.return_value = data
+
+        # ACT
+        response, status_code = update_visibility(public_id = generate_fake_public_id(), visible = False)
+        result = response["data"]
+
+        # ASSERT
+        self.assertEqual(status_code, 201)
+        self.assertEqual(response["status"], "success")
+        self.assertEqual(response["message"], "Successfully updated.")
+        self.assertEqual(result["public_id"], data["public_id"])
+        self.assertEqual(result["content"], data["content"])
+        self.assertEqual(result["review_id"], data["review_id"])
+        self.assertEqual(result["visible"], data["visible"])
+
+        mock_update_visibility.assert_called_once()
