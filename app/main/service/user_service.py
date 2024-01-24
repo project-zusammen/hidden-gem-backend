@@ -1,13 +1,15 @@
 import logging as log
 from app.main.model.user import User
 from ..util.helper import error_handler
-log.basicConfig(level=log.ERROR) 
+
+log.basicConfig(level=log.ERROR)
 
 user_model = User()
 
+
 def register_user(data):
     try:
-        result = user_model.register_user(data)  
+        result = user_model.register_user(data)
         response_object = {
             "status": "success",
             "message": "Register User Success.",
@@ -19,9 +21,9 @@ def register_user(data):
         return error_handler(e)
 
 
-def update_user(public_id, data):
+def update_user(public_id, data, user_id):
     try:
-        updated_user = user_model.update_user(public_id, data)
+        updated_user = user_model.update_user(public_id, data, user_id)
         response_object = {
             "status": "success",
             "message": "Successfully update user",
@@ -31,6 +33,7 @@ def update_user(public_id, data):
     except Exception as e:
         log.error(f"Error in update_user: {str(e)}")
         return error_handler(e)
+
 
 def update_user_status(public_id, data):
     try:
@@ -45,9 +48,9 @@ def update_user_status(public_id, data):
         log.error(f"Error in update_user: {str(e)}")
         return error_handler(e)
 
-def get_all_users():
+def get_all_users(page):
     try:
-        users = user_model.get_all_users()
+        users = user_model.get_all_users(page)
         if not users:
             return {"status": "success", "message": "No users found", "data": []}, 200
 
@@ -62,9 +65,9 @@ def get_all_users():
         return error_handler(e)
 
 
-def get_a_user(public_id):
+def get_a_user(public_id, user_id):
     try:
-        user = user_model.get_user_by_id(public_id)
+        user = user_model.get_user_by_id(public_id, user_id)
         response_object = {
             "status": "success",
             "message": "Successfully get a user.",
@@ -76,9 +79,9 @@ def get_a_user(public_id):
         return error_handler(e)
 
 
-def delete_user(public_id):
+def delete_user(public_id, user_id):
     try:
-        user = user_model.delete_user(public_id)
+        _ = user_model.delete_user(public_id, user_id)
         response_object = {
             "status": "success",
             "message": "Successfully delete user",
@@ -88,3 +91,15 @@ def delete_user(public_id):
         log.error(f"Error in delete_user: {str(e)}")
         return error_handler(e)
 
+def user_auth(data):
+    try:
+        auth = user_model.user_auth(data)
+        response_object = {
+            "status": "success",
+            "message": "Login Success",
+            "token": auth,
+        }
+        return response_object, 201
+    except Exception as e:
+        log.error(f"Login Error: {str(e)}")
+        return error_handler(e)

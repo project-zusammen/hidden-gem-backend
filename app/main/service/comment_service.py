@@ -3,11 +3,16 @@ from app.main.model.comment import Comment
 
 comment_model = Comment()
 
+
 def get_all_comments():
     try:
         comments = comment_model.get_all_comments()
         if not comments:
-            return {"status": "success", "message": "No comments found", "data": []}, 200
+            return {
+                "status": "success",
+                "message": "No comments found",
+                "data": [],
+            }, 200
 
         response_object = {
             "status": "success",
@@ -18,7 +23,8 @@ def get_all_comments():
     except Exception as e:
         print(f"Error in get_all_comments: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
-    
+
+
 def get_a_comment(public_id):
     try:
         comment = comment_model.get_comment_by_id(public_id)
@@ -36,7 +42,8 @@ def get_a_comment(public_id):
     except Exception as e:
         log.error(f"Error in get_a_comment: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
-    
+
+
 def create_comment(data):
     try:
         comment = comment_model.create_comment(data)
@@ -49,7 +56,8 @@ def create_comment(data):
     except Exception as e:
         log.error(f"Error in create_comment: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
-    
+
+
 def delete_comment(public_id):
     try:
         comment = comment_model.delete_comment(public_id)
@@ -65,7 +73,8 @@ def delete_comment(public_id):
     except Exception as e:
         log.error(f"Error in delete_comment: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
-    
+
+
 def update_comment(public_id, data):
     try:
         updated_comment = comment_model.update_comment(public_id, data)
@@ -82,7 +91,8 @@ def update_comment(public_id, data):
     except Exception as e:
         log.error(f"Error in update_comment: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
-    
+
+
 def upvote_comment(public_id, upvote=True):
     try:
         upvoted_comment = comment_model.upvote_comment(public_id, upvote)
@@ -99,7 +109,8 @@ def upvote_comment(public_id, upvote=True):
     except Exception as e:
         log.error(f"Error in upvote_comment: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
-    
+
+
 def update_visibility(public_id, visible=True):
     try:
         updated_visibility = comment_model.update_visibility(public_id, visible)
@@ -116,4 +127,3 @@ def update_visibility(public_id, visible=True):
     except Exception as e:
         log.error(f"Error in update_visibility: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
-        
