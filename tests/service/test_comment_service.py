@@ -9,14 +9,25 @@ from app.main.service.comment_service import (
     delete_comment,
     update_comment,
     upvote_comment,
-    update_visibility
+    update_visibility,
 )
+
 
 def generate_fake_public_id():
     return str(uuid.uuid4())
 
-comment_1 = {"public_id": generate_fake_public_id(), "content": "Comment 1", "review_id": "review_id 1"} 
-comment_2 = {"public_id": generate_fake_public_id(), "content": "Comment 2", "review_id": "review_id 2"}
+
+comment_1 = {
+    "public_id": generate_fake_public_id(),
+    "content": "Comment 1",
+    "review_id": "review_id 1",
+}
+comment_2 = {
+    "public_id": generate_fake_public_id(),
+    "content": "Comment 2",
+    "review_id": "review_id 2",
+}
+
 
 class TestReviewService(TestCase):
     @classmethod
@@ -59,7 +70,7 @@ class TestReviewService(TestCase):
         mock_get_comment_by_id.return_value = data
 
         # ACT
-        response, status_code = get_a_comment(public_id = generate_fake_public_id())
+        response, status_code = get_a_comment(public_id=generate_fake_public_id())
         result = response["data"]
 
         # ASSERT
@@ -100,7 +111,7 @@ class TestReviewService(TestCase):
         mock_delete_comment.return_value = data
 
         # ACT
-        response, status_code = delete_comment(public_id = generate_fake_public_id())
+        response, status_code = delete_comment(public_id=generate_fake_public_id())
         result = response["data"]
 
         # ASSERT
@@ -117,12 +128,18 @@ class TestReviewService(TestCase):
     @patch("app.main.model.comment.Comment.update_comment")
     def test_update_comment(self, mock_update_comment):
         # ARRANGE
-        comment_updated = {"public_id": generate_fake_public_id(), "content": "Comment Updated", "review_id": "review_id 1"}
+        comment_updated = {
+            "public_id": generate_fake_public_id(),
+            "content": "Comment Updated",
+            "review_id": "review_id 1",
+        }
         data = comment_updated
         mock_update_comment.return_value = data
 
         # ACT
-        response, status_code = update_comment(public_id=generate_fake_public_id(), data=comment_updated)
+        response, status_code = update_comment(
+            public_id=generate_fake_public_id(), data=comment_updated
+        )
         result = response["data"]
 
         # ASSERT
@@ -144,7 +161,9 @@ class TestReviewService(TestCase):
         mock_upvote_comment.return_value = data
 
         # ACT
-        response, status_code = upvote_comment(public_id=generate_fake_public_id(), upvote=True)
+        response, status_code = upvote_comment(
+            public_id=generate_fake_public_id(), upvote=True
+        )
         result = response["data"]
 
         # ASSERT
@@ -167,7 +186,9 @@ class TestReviewService(TestCase):
         mock_update_visibility.return_value = data
 
         # ACT
-        response, status_code = update_visibility(public_id = generate_fake_public_id(), visible = False)
+        response, status_code = update_visibility(
+            public_id=generate_fake_public_id(), visible=False
+        )
         result = response["data"]
 
         # ASSERT

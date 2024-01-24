@@ -3,12 +3,10 @@ from unittest import TestCase
 from unittest.mock import patch
 from app import create_app
 
-comment_data = {
-    "content": "This is a test comment.",
-    "review_id": "1234ABCD"
-}
+comment_data = {"content": "This is a test comment.", "review_id": "1234ABCD"}
 
 public_id = "public_id_test"
+
 
 class TestCommentEndpoints(TestCase):
     def setUp(self):
@@ -34,7 +32,7 @@ class TestCommentEndpoints(TestCase):
             response = client.post("/api/comment", json=comment_data)
             res = response.get_json()
             res = res.get("data")
-        
+
         # ASSERT
         self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_response["data"]["content"], res.get("content"))
@@ -71,7 +69,7 @@ class TestCommentEndpoints(TestCase):
         expected_response = {
             "status": "success",
             "message": "Successfully retrieved comment.",
-            "data": expected_data
+            "data": expected_data,
         }
 
         mock_get_a_comment.return_value = expected_response
@@ -83,7 +81,9 @@ class TestCommentEndpoints(TestCase):
 
         # ASSERT
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(expected_response["data"].get("content"), res["data"].get("content"))
+        self.assertEqual(
+            expected_response["data"].get("content"), res["data"].get("content")
+        )
         mock_get_a_comment.assert_called_once()
 
     @patch("app.main.controller.comment_controller.delete_comment")
@@ -104,8 +104,12 @@ class TestCommentEndpoints(TestCase):
 
         # ARRANGE
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(expected_response["data"].get("content"), res["data"].get("content"))
-        self.assertEqual(expected_response["data"].get("review_id"), res["data"].get("review_id"))
+        self.assertEqual(
+            expected_response["data"].get("content"), res["data"].get("content")
+        )
+        self.assertEqual(
+            expected_response["data"].get("review_id"), res["data"].get("review_id")
+        )
         mock_delete_comment.assert_called_once()
 
     @patch("app.main.controller.comment_controller.update_comment")
@@ -114,7 +118,7 @@ class TestCommentEndpoints(TestCase):
         expected_response = {
             "status": "success",
             "message": "Comment updated successfully.",
-            "data": comment_data
+            "data": comment_data,
         }
 
         mock_update_comment.return_value = expected_response
@@ -126,8 +130,12 @@ class TestCommentEndpoints(TestCase):
 
         # ASSERT
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(expected_response["data"].get("content"), res["data"].get("content"))
-        self.assertEqual(expected_response["data"].get("review_id"), res["data"].get("review_id"))
+        self.assertEqual(
+            expected_response["data"].get("content"), res["data"].get("content")
+        )
+        self.assertEqual(
+            expected_response["data"].get("review_id"), res["data"].get("review_id")
+        )
         mock_update_comment.assert_called_once()
 
     @patch("app.main.controller.comment_controller.upvote_comment")
@@ -138,7 +146,7 @@ class TestCommentEndpoints(TestCase):
         expected_response = {
             "status": "success",
             "message": "Comment upvoted successfully.",
-            "data": comment_data
+            "data": comment_data,
         }
 
         mock_upvote_comment.return_value = expected_response
@@ -150,8 +158,12 @@ class TestCommentEndpoints(TestCase):
 
         # ASSERT
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(expected_response["data"].get("upvotes"), res["data"].get("upvotes"))
-        self.assertEqual(expected_response["data"].get("downvotes"), res["data"].get("downvotes"))
+        self.assertEqual(
+            expected_response["data"].get("upvotes"), res["data"].get("upvotes")
+        )
+        self.assertEqual(
+            expected_response["data"].get("downvotes"), res["data"].get("downvotes")
+        )
         mock_upvote_comment.assert_called_once()
 
     @patch("app.main.controller.comment_controller.update_visibility")
@@ -173,5 +185,7 @@ class TestCommentEndpoints(TestCase):
 
         # ASSERT
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(expected_response["data"].get("visible"), res["data"].get("visible"))
+        self.assertEqual(
+            expected_response["data"].get("visible"), res["data"].get("visible")
+        )
         mock_update_visibility.assert_called_once()

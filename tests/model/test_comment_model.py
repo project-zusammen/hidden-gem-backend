@@ -4,7 +4,8 @@ from app.main import create_app
 from app.extensions import db
 from app.main.model.comment import Comment
 
-comment_data = {"content": "new comment", "review_id": "review_id"} 
+comment_data = {"content": "new comment", "review_id": "review_id"}
+
 
 class TestComment(unittest.TestCase):
     def setUp(self):
@@ -24,10 +25,10 @@ class TestComment(unittest.TestCase):
         new_comment = comment_model.create_comment(comment_data)
 
         # ACT
-        
+
         # ASSERT
         self.assertIsNotNone(new_comment)
-        self.assertEqual(new_comment["content"], comment_data["content"]) 
+        self.assertEqual(new_comment["content"], comment_data["content"])
 
     def test_get_all_comments(self):
         # ARRANGE
@@ -36,7 +37,7 @@ class TestComment(unittest.TestCase):
 
         # ACT
         retrieved_comments = comment_model.get_all_comments()
-        
+
         # ASSERT
         self.assertIsNotNone(retrieved_comments)
         self.assertEqual(comment_data["content"], retrieved_comments[0]["content"])
@@ -47,8 +48,10 @@ class TestComment(unittest.TestCase):
         comment = comment_model.create_comment(comment_data)
 
         # ACT
-        retrieved_comment = comment_model.get_comment_by_id(public_id=comment["public_id"])
-        
+        retrieved_comment = comment_model.get_comment_by_id(
+            public_id=comment["public_id"]
+        )
+
         # ASSERT
         self.assertIsNotNone(retrieved_comment)
         self.assertEqual(comment_data["content"], retrieved_comment["content"])
@@ -60,7 +63,7 @@ class TestComment(unittest.TestCase):
 
         # ACT
         deleted_comment = comment_model.delete_comment(public_id=comment["public_id"])
-        
+
         # ASSERT
         self.assertIsNotNone(deleted_comment)
         self.assertFalse(deleted_comment["visible"])
@@ -72,7 +75,9 @@ class TestComment(unittest.TestCase):
 
         # ACT
         updated_data = {"content": "updated comment"}
-        updated_comment = comment_model.update_comment(comment["public_id"], updated_data)
+        updated_comment = comment_model.update_comment(
+            comment["public_id"], updated_data
+        )
 
         # ASSERT
         self.assertIsNotNone(updated_comment)
@@ -85,8 +90,12 @@ class TestComment(unittest.TestCase):
         comment = comment_model.create_comment(comment_data)
 
         # ACT
-        upvoted_comment = comment_model.upvote_comment(comment["public_id"], upvote=True)
-        upvoted_comment = comment_model.upvote_comment(comment["public_id"], upvote=False)
+        upvoted_comment = comment_model.upvote_comment(
+            comment["public_id"], upvote=True
+        )
+        upvoted_comment = comment_model.upvote_comment(
+            comment["public_id"], upvote=False
+        )
 
         # ASSERT
         self.assertIsNotNone(upvoted_comment)
@@ -99,11 +108,14 @@ class TestComment(unittest.TestCase):
         comment = comment_model.create_comment(comment_data)
 
         # ACT
-        updated_comment = comment_model.update_visibility(comment["public_id"], visible=False)
-        
+        updated_comment = comment_model.update_visibility(
+            comment["public_id"], visible=False
+        )
+
         # ASSERT
         self.assertIsNotNone(updated_comment)
         self.assertFalse(updated_comment["visible"])
+
 
 if __name__ == "__main__":
     unittest.main()
