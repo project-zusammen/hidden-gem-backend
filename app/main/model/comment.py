@@ -41,12 +41,7 @@ class Comment(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def get_all_comments(self):
-        comments = self.query.filter_by(visible=True).all()
-        return [comment.serialize() for comment in comments]
-    
     def create_comment(self, data):
-
         self.public_id = str(uuid.uuid4())
         self.content = data.get("content")
 
@@ -61,6 +56,10 @@ class Comment(db.Model):
 
         self.save()
         return self.serialize()
+    
+    def get_all_comments(self):
+        comments = self.query.filter_by(visible=True).all()
+        return [comment.serialize() for comment in comments]
 
     def get_comment_by_id(self, public_id):
         return self.query.filter_by(public_id=public_id, visible=True).first().serialize()
