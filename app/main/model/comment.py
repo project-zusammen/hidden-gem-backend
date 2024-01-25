@@ -64,7 +64,6 @@ class Comment(db.Model):
         return self.query.filter_by(public_id=public_id, visible=True).first().serialize()
     
     def delete_comment(self, public_id):
-        # comment = self.get_comment_by_id(public_id)
         comment = self.query.filter_by(public_id=public_id, visible=True).first()
         if not comment:
             return None
@@ -75,7 +74,6 @@ class Comment(db.Model):
             return comment.serialize()
 
     def update_comment(self, public_id, data):
-        # comment = self.get_comment_by_id(public_id)
         comment = self.query.filter_by(public_id=public_id, visible=True).first()
         if not comment:
             return None
