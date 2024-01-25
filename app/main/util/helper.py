@@ -46,7 +46,7 @@ def error_handler(error):
     elif "User not found" in error_message:
         message = f"Error get user : {error_message}"
 
-    elif "Incorrect password" in error_message:
+    elif "Invalid email or password" in error_message:
         message = f"Login Failed : {error_message}"
 
     elif "Access denied" in error_message:
