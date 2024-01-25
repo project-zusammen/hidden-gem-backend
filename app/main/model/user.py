@@ -153,13 +153,13 @@ class User(db.Model):
         try:
             user = self.query.filter_by(email=data.get("email")).first()
             if not user:
-                raise Exception("User not found. Invalid ID")
+                raise Exception("Invalid email or password. Please try again")
 
             user_data = user.serialize_entire_data()
             if check_password_hash(user_data["password"], data.get("password")):
                 return create_token(user_data)
             else:
-                raise Exception("Incorrect password. Please try again")
+                raise Exception("Invalid email or password. Please try again")
 
         except Exception as e:
             raise e
