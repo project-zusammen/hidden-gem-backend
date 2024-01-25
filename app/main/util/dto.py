@@ -75,3 +75,13 @@ class RegionDto:
             "city": fields.String(required=True, description="city name for region")
         }
     )
+
+class AppealDto:
+    comment = api.model(
+        "appeal",
+        {
+            "appeal": fields.String(required=True, description="reason for appeal"),
+            "report_id": fields.String(required=True, description="report Identifier"),
+        },
+    )
+    status = api.model("status", {"status": fields.Boolean(description="status")})
