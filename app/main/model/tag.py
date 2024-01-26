@@ -36,7 +36,7 @@ class Tag(db.Model):
             tag = self.query.filter_by(name=name).first()
             if tag :
                 return {
-                    'id' : tag['id']
+                    'id' : tag.id
                 }
             self.public_id = str(uuid.uuid4())
             self.name = name
