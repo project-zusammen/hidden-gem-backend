@@ -1,5 +1,6 @@
 from .. import db
-
+import uuid
+import datetime
 from ..util.helper import convert_to_local_time
 
 
@@ -19,6 +20,7 @@ class Tag(db.Model):
         created_at = convert_to_local_time(self.created_at)
         updated_at = convert_to_local_time(self.updated_at)
         return {
+            "id": self.id,
             "public_id": self.public_id,
             "name": self.name,
             "created_at": created_at.isoformat() if self.created_at else None,
@@ -28,6 +30,30 @@ class Tag(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
+    
+    def create_tag(self, name):
+        try:
+            tag = self.query.filter_by(name=name).first()
+            if tag :
+                return {
+                    'id' : tag['id']
+                }
+            self.public_id = str(uuid.uuid4())
+            self.name = name
+            self.created_at = datetime.datetime.utcnow()
+            self.updated_at = datetime.datetime.utcnow()
+
+            self.save()
+            return self.serialize()
+        except Exception as e:
+            raise e
+
+    # def get_tag_id_by_name(self, name):
+    #     try:
+    #         result = self.query.filter_by(name=name).first()
+    #         return result.id
+    #     except Exception as e:
+    #         raise e
 
 
 class ReviewTag(db.Model):
@@ -47,6 +73,7 @@ class ReviewTag(db.Model):
         created_at = convert_to_local_time(self.created_at)
         updated_at = convert_to_local_time(self.updated_at)
         return {
+            "id": self.id,
             "public_id": self.public_id,
             "tag_id": self.tag_id,
             "review_id": self.review_id,
@@ -57,3 +84,24 @@ class ReviewTag(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
+
+    def create_review_tag(self, tag_id, review_id):
+        try:
+            self.public_id = str(uuid.uuid4())
+            self.tag_id = tag_id
+            self.review_id = review_id
+            self.created_at = datetime.datetime.utcnow()
+            self.updated_at = datetime.datetime.utcnow()
+
+            self.save()
+            return self.serialize()
+        except Exception as e:
+            raise e
+        
+    # def get_review_by_tag(self, tag_id):
+    #     try:
+    #         results = self.query.filter_by(tag_id=tag_id)
+    #         reviews = [data.serialize() for data in results]
+    #         return reviews
+    #     except Exception as e:
+    #         raise e
