@@ -41,6 +41,7 @@ def register_extensions(app):
     api.add_namespace(region_ns)
     debug_toolbar.init_app(app)
     migrate.init_app(app, db)
+    from app.main.model import category
     return None
 
 
