@@ -48,13 +48,6 @@ class Tag(db.Model):
         except Exception as e:
             raise e
 
-    # def get_tag_id_by_name(self, name):
-    #     try:
-    #         result = self.query.filter_by(name=name).first()
-    #         return result.id
-    #     except Exception as e:
-    #         raise e
-
 
 class ReviewTag(db.Model):
     __tablename__ = "review_tag"
@@ -98,10 +91,3 @@ class ReviewTag(db.Model):
         except Exception as e:
             raise e
         
-    # def get_review_by_tag(self, tag_id):
-    #     try:
-    #         results = self.query.filter_by(tag_id=tag_id)
-    #         reviews = [data.serialize() for data in results]
-    #         return reviews
-    #     except Exception as e:
-    #         raise e
