@@ -52,7 +52,6 @@ class Review(db.Model):
 
     def get_all_reviews(self, page, count, tag_id, category_id, region_id):
         try:
-            print(f'{page}\n{count}\n{tag_id}\n{region_id}\n{category_id}')
             offset = (page - 1) * count
             query = db.session.query(Review).join(ReviewTag, ReviewTag.review_id == Review.id, isouter=True)
 
