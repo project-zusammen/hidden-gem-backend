@@ -4,8 +4,6 @@ from .. import db
 from ..util.helper import convert_to_local_time
 import re
 from .tag import ReviewTag
-from sqlalchemy.orm import joinedload
-from sqlalchemy import func
 
 
 class Review(db.Model):
@@ -53,13 +51,24 @@ class Review(db.Model):
         db.session.commit()
 
     def get_all_reviews(self, page, count, tag_id, category_id, region_id):
-        if page != 0:
+        try:
+            print(f'{page}\n{count}\n{tag_id}\n{region_id}\n{category_id}')
             offset = (page - 1) * count
-            reviews = self.query.filter_by(visible=True).limit(count).offset(offset).all()
-            ## need more handling to retrieve the data by tag, category, region
-        else:
-            reviews = self.query.filter_by(visible=True).all()
-        return [review.serialize() for review in reviews]
+            query = db.session.query(Review).join(ReviewTag, ReviewTag.review_id == Review.id, isouter=True)
+
+            query = query.filter(Review.visible == True)
+            if tag_id:
+                query = query.filter(ReviewTag.tag_id == tag_id)
+            if category_id:
+                query = query.filter(Review.category_id == category_id)
+            if region_id:
+                query = query.filter(Review.region_id == region_id)
+
+            reviews = query.limit(count).offset(offset).all()
+            return [review.serialize() for review in reviews]
+        except Exception as e:
+            raise e
+            
 
     def get_review_by_id(self, public_id):
         return self.query.filter_by(public_id=public_id, visible=True).first()
@@ -158,5 +167,17 @@ class Review(db.Model):
     def get_the_hashtag_from_content(self, content):
         try:
             return re.findall(r'\#\w+', content)
+        except Exception as e:
+            raise e
+    
+    def update_review_tag_id(self, public_id, review_tag_id):
+        try: 
+            review = self.get_review_by_id(public_id)
+            if not review:
+                raise Exception("Review not found. Invalid public_id")
+            else:
+                review.review_tag_id = review_tag_id
+                review.save()
+                return review.serialize()
         except Exception as e:
             raise e
