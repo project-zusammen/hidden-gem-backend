@@ -37,7 +37,7 @@ class UserDto:
         {
             "username": fields.String(required=True, description="username"),
             "email": fields.String(required=True, description="user email"),
-            "password": fields.String(required=True, description="user password")
+            "password": fields.String(required=True, description="user password"),
         },
     )
     login = api.model(
@@ -50,9 +50,23 @@ class UserDto:
     status = api.model(
         "status",
         {
-            "banned": fields.Boolean(required=True, description="user status that want to be updated"),
-        }
+            "banned": fields.Boolean(
+                required=True, description="user status that want to be updated"
+            )
+        },
     )
+
+
+class CommentDto:
+    comment = api.model(
+        "comment",
+        {
+            "content": fields.String(required=True, description="comment content"),
+            "review_id": fields.String(required=True, description="review Identifier"),
+        },
+    )
+    upvote = api.model("upvote", {"upvote": fields.Boolean(description="upvote")})
+    visible = api.model("visible", {"visible": fields.Boolean(description="visible")})
 
 class RegionDto:
     region = api.model(
@@ -61,5 +75,3 @@ class RegionDto:
             "city": fields.String(required=True, description="city name for region")
         }
     )
-
-    
