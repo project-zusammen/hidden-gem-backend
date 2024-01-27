@@ -3,15 +3,20 @@ import datetime
 from .. import db
 from ..util.helper import convert_to_local_time
 import re
+from .tag import ReviewTag
+from sqlalchemy.orm import joinedload
+from sqlalchemy import func
+
 
 class Review(db.Model):
     __tablename__ = "review"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     public_id = db.Column(db.String(100), unique=True, nullable=False)
-    # user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    # category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
-    # region_id = db.Column(db.Integer, db.ForeignKey('region.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    region_id = db.Column(db.Integer, db.ForeignKey('region.id'), nullable=False)
+    review_tag_id = db.Column(db.Integer, db.ForeignKey('review_tag.id'))
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.String(255), nullable=False)
     location = db.Column(db.String(100))
@@ -29,9 +34,10 @@ class Review(db.Model):
         updated_at = convert_to_local_time(self.updated_at)
         return {
             "public_id": self.public_id,
-            # 'user_id': self.user_id,
-            # 'category_id': self.category_id,
-            # 'region_id': self.region_id,
+            'user_id': self.user_id,
+            'category_id': self.category_id,
+            'region_id': self.region_id,
+            'review_tag_id': self.review_tag_id,
             "title": self.title,
             "content": self.content,
             "location": self.location,
@@ -47,11 +53,10 @@ class Review(db.Model):
         db.session.commit()
 
     def get_all_reviews(self, page, count, tag_id, category_id, region_id):
-        
         if page != 0:
             offset = (page - 1) * count
             reviews = self.query.filter_by(visible=True).limit(count).offset(offset).all()
-        ## need more handling to retrieve the data by tag, category, region
+            ## need more handling to retrieve the data by tag, category, region
         else:
             reviews = self.query.filter_by(visible=True).all()
         return [review.serialize() for review in reviews]
@@ -64,7 +69,9 @@ class Review(db.Model):
         self.title = data.get("title")
         self.content = data.get("content")
         self.location = data.get("location")
-
+        self.user_id = data.get("user_id")
+        self.category_id = data.get("category_id")
+        self.region_id = data.get("region_id")
         if not self.title or not self.content:
             return None
 
@@ -123,7 +130,6 @@ class Review(db.Model):
             review.save()
             return review.serialize()
     
-    # please never return this
     def serialize_entire_data(self):
         return {
             "id": self.id,
