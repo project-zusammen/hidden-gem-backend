@@ -116,29 +116,12 @@ class Review(db.Model):
             review.updated_at = datetime.datetime.utcnow()
             review.save()
             return review.serialize()
-        
-    # please never return this
-    def serialize_entire_data(self):
-        return {
-            "id": self.id,
-            "public_id": self.public_id,
-            "title": self.title,
-            "content": self.content,
-            "location": self.location,
-            "upvotes": self.upvotes,
-            "downvotes": self.downvotes,
-            "visible": self.visible,
-            "created_at": self.created_at,
-            "updated_at": self.updated_at,
-        }
 
     def get_review_id_by_public_id(self, public_id):
         try:
             review = self.query.filter_by(public_id=public_id).first()
             if not review:
                 raise Exception("Review not found. Invalid public_id")
-
-            data = review.serialize_entire_data()
-            return data['id']
+            return review.id
         except Exception as e:
             raise e
