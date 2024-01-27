@@ -1,4 +1,6 @@
 venv/
+zusammen/
+zusammen39/
 
 *.pyc
 __pycache__/
