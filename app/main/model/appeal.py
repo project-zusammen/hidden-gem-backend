@@ -14,7 +14,7 @@ class Appeal(db.Model):
     reason = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False)
-    status = db.Column(db.String(20), nullable=False, default="Need Review")
+    status = db.Column(db.String(20), nullable=False, default="Need Reviewed")
 
     def __repr__(self):
         return f"<Appeal(reason={self.reason})>"
@@ -37,3 +37,19 @@ class Appeal(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
+
+    def create_appeal(self, data):
+        self.public_id = str(uuid.uuid4())
+
+        # report_public_id = data.get("item_id")
+        # report_model = Report()
+        # report = report_model.get_report_by_id(report_public_id)
+        # self.item_id = report.id
+
+        self.reason = data.get("reason")
+        self.created_at = datetime.datetime.utcnow()
+        self.updated_at = datetime.datetime.utcnow()
+        self.status = "Need Reviewed"
+
+        self.save()
+        return self.serialize()
