@@ -13,6 +13,8 @@ jobs:
 
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       TEST_DB_USER: ${{ secrets.TEST_DB_USER }}
       TEST_DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
       DB_PORT: ${{ secrets.DB_PORT }}
