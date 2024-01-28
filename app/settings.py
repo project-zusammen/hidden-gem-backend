@@ -7,12 +7,12 @@ db_host = env.str("DB_HOST")
 db_user = env.str("DB_USER")
 db_password = env.str("DB_PASSWORD")
 db_port = env.str("DB_PORT")
-db_name = env.str("DEFAULT_DB_NAME")
+db_name = env.str("DB_NAME")
 debug_mode = env.str("DEBUG")
 
 
 def get_db_uri(db_name):
-    return f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+    return f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
 
 
 DATABASE_URI = get_db_uri(db_name)

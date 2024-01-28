@@ -4,10 +4,10 @@ env = Env()
 env.read_env()
 
 db_host = env.str("DB_HOST")
-db_user = env.str("DB_USER")
-db_password = env.str("DB_PASSWORD")
+db_user = env.str("TEST_DB_USER")
+db_password = env.str("TEST_DB_PASSWORD")
 db_port = env.str("DB_PORT")
-db_name = env.str("TEST_DB_NAME")
+db_name = env.str("DB_NAME")
 debug_mode = env.str("DEBUG")
 
 from .settings import get_db_uri
