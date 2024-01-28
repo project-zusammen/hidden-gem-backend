@@ -11,11 +11,11 @@ db_name = env.str("DB_NAME")
 debug_mode = env.str("DEBUG")
 
 
-def get_db_uri(db_name):
+def get_db_uri(db_user, db_password):
     return f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
 
 
-DATABASE_URI = get_db_uri(db_name)
+DATABASE_URI = get_db_uri(db_user, db_password)
 
 ENV = env.str("FLASK_ENV", default="production")
 DEBUG = ENV == "dev"
