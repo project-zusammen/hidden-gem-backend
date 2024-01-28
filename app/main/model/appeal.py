@@ -2,7 +2,9 @@ import uuid
 import datetime
 from .. import db
 from ..util.helper import convert_to_local_time
+
 # from .Report import Report
+
 
 class Appeal(db.Model):
     __tablename__ = "appeal"
@@ -31,7 +33,7 @@ class Appeal(db.Model):
             "reason": self.reason,
             "created_at": created_at.isoformat() if self.created_at else None,
             "updated_at": updated_at.isoformat() if self.updated_at else None,
-            "status": self.status
+            "status": self.status,
         }
 
     def save(self):

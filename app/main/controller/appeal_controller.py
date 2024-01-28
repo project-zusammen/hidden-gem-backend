@@ -4,10 +4,9 @@ appeal_dto = AppealDto()
 _appeal = appeal_dto.appeal
 
 from flask_restx import Resource
-from ..service.appeal_service import (
-    create_appeal
-)
+from ..service.appeal_service import create_appeal
 from ...extensions import ns
+
 
 @ns.route("/appeal")
 class AppealList(Resource):

@@ -3,6 +3,7 @@ from app.main.model.appeal import Appeal
 
 appeal_model = Appeal()
 
+
 def create_appeal(data):
     try:
         appeal = appeal_model.create_appeal(data)
