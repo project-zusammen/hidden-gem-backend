@@ -41,8 +41,8 @@ class User(db.Model):
             "email": self.email,
             "created_at": created_at.isoformat() if self.created_at else None,
             "updated_at": updated_at.isoformat() if self.updated_at else None,
-            "role": self.role.value,
-            "status": self.status.value,
+            "role": self.role,
+            "status": self.status,
         }
 
     def save(self):
@@ -147,8 +147,8 @@ class User(db.Model):
             "username": self.username,
             "email": self.email,
             "password": self.password,
-            "role": self.role.value,
-            "status": self.status.value,
+            "role": self.role,
+            "status": self.status,
         }
 
     def user_auth(self, data):

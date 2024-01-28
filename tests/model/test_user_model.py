@@ -159,8 +159,8 @@ class TestUser(unittest.TestCase):
         self.assertEqual(result.public_id,user['public_id'])
         self.assertEqual(result.username,user['username'])
         self.assertEqual(result.email,user['email'])
-        self.assertEqual(result.status.value,'active')
-        self.assertEqual(result.role.value,'user')
+        self.assertEqual(result.status,'active')
+        self.assertEqual(result.role,'user')
     
 
 
