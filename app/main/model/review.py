@@ -12,7 +12,7 @@ class Review(db.Model):
     # user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     # category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     # region_id = db.Column(db.Integer, db.ForeignKey('region.id'), nullable=False)
-    title = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.String(100))
     content = db.Column(db.String(255), nullable=False)
     location = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, nullable=False)

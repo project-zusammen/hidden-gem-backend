@@ -53,6 +53,10 @@ This backend application serves API for the hiddenGem web where user can find re
     ```bash
     flask test
     ```
+    or 
+    ```bash
+    pytest
+    ```
     Run a specific test file:
     ```bash
     pytest -k path-to-test-file
@@ -100,12 +104,8 @@ If you'd like to contribute to the project, please follow these guidelines:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Acknowledgments
+## Link to API contract
 
-- Mention any external libraries, resources, or inspiration you used.
+- https://docs.google.com/document/d/1YdXuNUR40BospbRPdcEWINZyOrAX-VK4dAUCGTUa6FA/edit?usp=sharing
 
-## Contact
 
-- Your Name
-- Your Email
-- Any other contact information you'd like to provide.
