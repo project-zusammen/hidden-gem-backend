@@ -61,12 +61,20 @@ class Comment(db.Model):
 
     
     def get_all_comments(self):
-        comments = self.query.filter_by(visible=True).all()
-        return [comment.serialize() for comment in comments]
+        try:
+            comments = self.query.filter_by(visible=True).all()
+            return [comment.serialize() for comment in comments]
+        except Exception as e:
+            raise e
+
 
     def get_comment_by_id(self, public_id):
-        return self.query.filter_by(public_id=public_id, visible=True).first().serialize()
-    
+        comment = self.query.filter_by(public_id=public_id, visible=True).first()
+        try:
+            return comment.serialize()
+        except Exception as e:
+            raise e
+
     def delete_comment(self, public_id):
         comment = self.query.filter_by(public_id=public_id, visible=True).first()
         if not comment:
