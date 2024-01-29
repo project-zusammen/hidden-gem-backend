@@ -59,14 +59,12 @@ class Comment(db.Model):
         except Exception as e:
             raise e
 
-    
     def get_all_comments(self):
         try:
             comments = self.query.filter_by(visible=True).all()
             return [comment.serialize() for comment in comments]
         except Exception as e:
             raise e
-
 
     def get_comment_by_id(self, public_id):
         comment = self.query.filter_by(public_id=public_id, visible=True).first()
@@ -88,7 +86,6 @@ class Comment(db.Model):
         except Exception as e:
             raise e
 
-
     def update_comment(self, public_id, data):
         try:
             comment = self.query.filter_by(public_id=public_id, visible=True).first()
@@ -101,7 +98,6 @@ class Comment(db.Model):
                 return comment.serialize()
         except Exception as e:
             raise e
-
 
     def upvote_comment(self, public_id, upvote=True):
         try:
@@ -119,7 +115,6 @@ class Comment(db.Model):
         except Exception as e:
             raise e
 
-
     def update_visibility(self, public_id, visible=True):
         try:
             comment = self.query.filter_by(public_id=public_id).first()
@@ -132,4 +127,3 @@ class Comment(db.Model):
                 return comment.serialize()
         except Exception as e:
             raise e
-
