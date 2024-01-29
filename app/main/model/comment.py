@@ -41,20 +41,24 @@ class Comment(db.Model):
         db.session.commit()
 
     def create_comment(self, data):
-        self.public_id = str(uuid.uuid4())
-        self.content = data.get("content")
+        try:
+            self.public_id = str(uuid.uuid4())
+            self.content = data.get("content")
 
-        if not self.content:
-            return None
+            if not self.content:
+                raise Exception("Comment content is required")
 
-        self.created_at = datetime.datetime.utcnow()
-        self.updated_at = datetime.datetime.utcnow()
-        self.upvotes = 0
-        self.downvotes = 0
-        self.visible = True
+            self.created_at = datetime.datetime.utcnow()
+            self.updated_at = datetime.datetime.utcnow()
+            self.upvotes = 0
+            self.downvotes = 0
+            self.visible = True
 
-        self.save()
-        return self.serialize()
+            self.save()
+            return self.serialize()
+        except Exception as e:
+            raise e
+
     
     def get_all_comments(self):
         comments = self.query.filter_by(visible=True).all()
