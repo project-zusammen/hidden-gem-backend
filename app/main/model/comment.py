@@ -104,17 +104,21 @@ class Comment(db.Model):
 
 
     def upvote_comment(self, public_id, upvote=True):
-        # comment = self.get_comment_by_id(public_id)
-        comment = self.query.filter_by(public_id=public_id, visible=True).first()
-        if not comment:
-            return None
-        if upvote:
-            comment.upvotes += 1
-        else:
-            comment.downvotes += 1
-        comment.updated_at = datetime.datetime.utcnow()
-        comment.save()
-        return comment.serialize()
+        try:
+            # comment = self.get_comment_by_id(public_id)
+            comment = self.query.filter_by(public_id=public_id, visible=True).first()
+            if not comment:
+                raise Exception("Comment not found")
+            if upvote:
+                comment.upvotes += 1
+            else:
+                comment.downvotes += 1
+            comment.updated_at = datetime.datetime.utcnow()
+            comment.save()
+            return comment.serialize()
+        except Exception as e:
+            raise e
+
 
     def update_visibility(self, public_id, visible=True):
         comment = self.query.filter_by(public_id=public_id).first()
