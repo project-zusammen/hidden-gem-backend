@@ -77,7 +77,7 @@ class Comment(db.Model):
         try:
             comment = self.query.filter_by(public_id=public_id, visible=True).first()
             if not comment:
-                raise Exception("Comment not found. Invalid ID")
+                return None
             else:
                 comment.visible = False
                 comment.updated_at = datetime.datetime.utcnow()
@@ -90,7 +90,7 @@ class Comment(db.Model):
         try:
             comment = self.query.filter_by(public_id=public_id, visible=True).first()
             if not comment:
-                raise Exception("Comment not found. Invalid ID")
+                return None
             else:
                 comment.content = data.get("content")
                 comment.updated_at = datetime.datetime.utcnow()
@@ -103,8 +103,6 @@ class Comment(db.Model):
         try:
             # comment = self.get_comment_by_id(public_id)
             comment = self.query.filter_by(public_id=public_id, visible=True).first()
-            if not comment:
-                raise Exception("Comment not found. Invalid ID")
             if upvote:
                 comment.upvotes += 1
             else:
@@ -119,7 +117,7 @@ class Comment(db.Model):
         try:
             comment = self.query.filter_by(public_id=public_id).first()
             if not comment:
-                raise Exception("Comment not found. Invalid ID")
+                return None
             else:
                 comment.visible = visible
                 comment.updated_at = datetime.datetime.utcnow()
