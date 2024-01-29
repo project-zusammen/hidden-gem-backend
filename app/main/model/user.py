@@ -98,6 +98,15 @@ class User(db.Model):
             user = self.query.filter_by(id=id).first()
             if user:
                 return user.public_id
+            return None
+        except Exception as e:
+            raise e
+
+    def get_user_id(self, public_id):
+        try:
+            user = self.query.filter_by(public_id=public_id).first()
+            if user:
+                return user.id
         except Exception as e:
             raise e
 
