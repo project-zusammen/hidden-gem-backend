@@ -25,9 +25,9 @@ class TestAppeal(unittest.TestCase):
     def test_create_appeal(self):
         # ARRANGE
         appeal_model = Appeal()
-        new_appeal = appeal_model.create_appeal(appeal_data)
 
         # ACT
+        new_appeal = appeal_model.create_appeal(appeal_data)
 
         # ASSERT
         self.assertIsNotNone(new_appeal)
