@@ -41,17 +41,23 @@ class Appeal(db.Model):
         db.session.commit()
 
     def create_appeal(self, data):
-        self.public_id = str(uuid.uuid4())
+        try:
+            self.public_id = str(uuid.uuid4())
 
-        # report_public_id = data.get("item_id")
-        # report_model = Report()
-        # report = report_model.get_report_by_id(report_public_id)
-        # self.item_id = report.id
+            # report_public_id = data.get("item_id")
+            # report_model = Report()
+            # report = report_model.get_report_by_id(report_public_id)
+            # self.item_id = report.id
 
-        self.reason = data.get("reason")
-        self.created_at = datetime.datetime.utcnow()
-        self.updated_at = datetime.datetime.utcnow()
-        self.status = "Need Reviewed"
+            self.reason = data.get("reason")
+            if not self.reason:
+                raise Exception("Appeal explanation is required")
+            self.created_at = datetime.datetime.utcnow()
+            self.updated_at = datetime.datetime.utcnow()
+            self.status = "Need Reviewed"
 
-        self.save()
-        return self.serialize()
+            self.save()
+            return self.serialize()
+        except Exception as e:
+            raise e
+
