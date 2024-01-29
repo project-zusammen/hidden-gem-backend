@@ -2,8 +2,20 @@ import uuid
 from unittest import TestCase
 from unittest.mock import patch
 from app import create_app
+from app.main.util.helper import create_token
+
+user_data = {
+    "id": 1,
+    "public_id": str(uuid.uuid4()),
+    "username": "test_user",
+    "email": "@gmail.com",
+    "password": "test_password",
+    "role": "user",
+    "status": "active",
+}
 
 report_data = {
+    "user_id": user_data["public_id"],
     "type": "review",
     "item_id": str(uuid.uuid4()),
     "reason": "Test Reason",
@@ -30,9 +42,12 @@ class TestReportEndpoints(TestCase):
         }
         mock_create_report.return_value = expected_response
 
+        token = create_token(user_data)
+        headers = {"X-API-KEY": token}
+
         # ACT
         with self.app.test_client() as client:
-            response = client.post("/api/report", json=report_data)
+            response = client.post("/api/report", json=report_data, headers=headers)
             res = response.get_json()
             res = res.get("data")
 
@@ -40,8 +55,24 @@ class TestReportEndpoints(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_response["data"]["type"], res.get("type"))
         self.assertEqual(expected_response["data"]["item_id"], res.get("item_id"))
+        self.assertEqual(expected_response["data"]["user_id"], res.get("user_id"))
         self.assertEqual(expected_response["data"]["reason"], res.get("reason"))
         mock_create_report.assert_called_once()
+    
+    def test_craete_report_missing_token(self):
+        # ARRANGE
+        expected_response = {
+            "message": "Access Denied: Unauthorized operation. Please log in to proceed."
+        }
+
+        # ACT
+        with self.app.test_client() as client:
+            response = client.post("/api/report", json=report_data)
+            res = response.get_json()
+
+        # ASSERT
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(expected_response["message"], res["message"])
     
     @patch("app.main.controller.report_controller.create_report")
     def test_create_report_missing_type(self, mock_create_report):

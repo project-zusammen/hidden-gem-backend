@@ -25,16 +25,18 @@ class TestReviewService(TestCase):
         # Arrange
         public_id = generate_fake_public_id()
         item_id = generate_fake_public_id()
+        user_id = generate_fake_public_id()
         data = {
             "public_id": public_id,
             "type": "review",
             "item_id": item_id,
             "reason": "Test Reason",
+            "user_id": user_id,
         }
         mock_create_report.return_value = data
 
         # Act
-        response, status_code = create_report(data)
+        response, status_code = create_report(data, 2)
         result = response["data"]
 
         # Assert
