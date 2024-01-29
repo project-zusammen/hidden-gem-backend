@@ -76,14 +76,18 @@ class Comment(db.Model):
             raise e
 
     def delete_comment(self, public_id):
-        comment = self.query.filter_by(public_id=public_id, visible=True).first()
-        if not comment:
-            return None
-        else:
-            comment.visible = False
-            comment.updated_at = datetime.datetime.utcnow()
-            comment.save()
-            return comment.serialize()
+        try:
+            comment = self.query.filter_by(public_id=public_id, visible=True).first()
+            if not comment:
+                return None
+            else:
+                comment.visible = False
+                comment.updated_at = datetime.datetime.utcnow()
+                comment.save()
+                return comment.serialize()
+        except Exception as e:
+            raise e
+
 
     def update_comment(self, public_id, data):
         comment = self.query.filter_by(public_id=public_id, visible=True).first()
