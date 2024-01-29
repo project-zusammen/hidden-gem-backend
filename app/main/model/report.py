@@ -3,7 +3,7 @@ import datetime
 from .. import db
 from ..util.helper import convert_to_local_time
 from .review import Review
-
+import logging
 
 class Report(db.Model):
     __tablename__ = "report"
@@ -41,17 +41,21 @@ class Report(db.Model):
         db.session.commit()
 
     def create_report(self, data):
-        self.public_id = str(uuid.uuid4())
-        self.type = data.get("type")
-        
-        review_public_id = data.get("item_id")
-        review_model = Review()
-        review = review_model.get_review_by_id(review_public_id)
-        self.item_id = review.id
-        
-        self.reason = data.get("reason")
-        self.created_at = datetime.datetime.utcnow()
-        self.updated_at = datetime.datetime.utcnow()
+        try:
+            self.public_id = str(uuid.uuid4())
+            self.type = data.get("type")
+            
+            review_public_id = data.get("item_id")
+            review_model = Review()
+            review = review_model.get_review_by_id(review_public_id)
+            self.item_id = review.id
+            
+            self.reason = data.get("reason")
+            self.created_at = datetime.datetime.utcnow()
+            self.updated_at = datetime.datetime.utcnow()
 
-        self.save()
-        return self.serialize()
+            self.save()
+            return self.serialize()
+        except Exception as e:
+            logging.exception("An error occurred while creating a report: %s", str(e))
+            return None
