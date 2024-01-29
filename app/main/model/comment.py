@@ -79,7 +79,7 @@ class Comment(db.Model):
         try:
             comment = self.query.filter_by(public_id=public_id, visible=True).first()
             if not comment:
-                return None
+                raise Exception("Comment not found")
             else:
                 comment.visible = False
                 comment.updated_at = datetime.datetime.utcnow()
@@ -90,14 +90,18 @@ class Comment(db.Model):
 
 
     def update_comment(self, public_id, data):
-        comment = self.query.filter_by(public_id=public_id, visible=True).first()
-        if not comment:
-            return None
-        else:
-            comment.content = data.get("content")
-            comment.updated_at = datetime.datetime.utcnow()
-            comment.save()
-            return comment.serialize()
+        try:
+            comment = self.query.filter_by(public_id=public_id, visible=True).first()
+            if not comment:
+                raise Exception("Comment not found")
+            else:
+                comment.content = data.get("content")
+                comment.updated_at = datetime.datetime.utcnow()
+                comment.save()
+                return comment.serialize()
+        except Exception as e:
+            raise e
+
 
     def upvote_comment(self, public_id, upvote=True):
         # comment = self.get_comment_by_id(public_id)
