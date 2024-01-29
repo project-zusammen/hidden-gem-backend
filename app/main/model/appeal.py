@@ -63,5 +63,8 @@ class Appeal(db.Model):
             raise e
         
     def get_all_appeals(self):
-        appeals = self.query.filter_by(visible=True).all()
-        return [appeal.serialize() for appeal in appeals]
+        try:
+            appeals = self.query.filter_by(visible=True).all()
+            return [appeal.serialize() for appeal in appeals]
+        except Exception as e:
+            raise e
