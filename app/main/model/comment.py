@@ -40,67 +40,90 @@ class Comment(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def get_all_comments(self):
-        comments = self.query.filter_by(visible=True).all()
-        return [comment.serialize() for comment in comments]
-
     def create_comment(self, data):
-        self.public_id = str(uuid.uuid4())
-        self.content = data.get("content")
+        try:
+            self.public_id = str(uuid.uuid4())
+            self.content = data.get("content")
 
-        if not self.content:
-            return None
+            if not self.content:
+                raise Exception("Comment content is required")
 
-        self.created_at = datetime.datetime.utcnow()
-        self.updated_at = datetime.datetime.utcnow()
-        self.upvotes = 0
-        self.downvotes = 0
-        self.visible = True
+            self.created_at = datetime.datetime.utcnow()
+            self.updated_at = datetime.datetime.utcnow()
+            self.upvotes = 0
+            self.downvotes = 0
+            self.visible = True
 
-        self.save()
-        return self.serialize()
+            self.save()
+            return self.serialize()
+        except Exception as e:
+            raise e
+
+    def get_all_comments(self):
+        try:
+            comments = self.query.filter_by(visible=True).all()
+            return [comment.serialize() for comment in comments]
+        except Exception as e:
+            raise e
 
     def get_comment_by_id(self, public_id):
-        return self.query.filter_by(public_id=public_id, visible=True).first()
+        comment = self.query.filter_by(public_id=public_id, visible=True).first()
+        try:
+            return comment.serialize()
+        except Exception as e:
+            raise e
 
     def delete_comment(self, public_id):
-        comment = self.get_comment_by_id(public_id)
-        if not comment:
-            return None
-        else:
-            comment.visible = False
-            comment.updated_at = datetime.datetime.utcnow()
-            comment.save()
-            return comment.serialize()
+        try:
+            comment = self.query.filter_by(public_id=public_id, visible=True).first()
+            if not comment:
+                raise Exception("Comment not found. Invalid ID")
+            else:
+                comment.visible = False
+                comment.updated_at = datetime.datetime.utcnow()
+                comment.save()
+                return comment.serialize()
+        except Exception as e:
+            raise e
 
     def update_comment(self, public_id, data):
-        comment = self.get_comment_by_id(public_id)
-        if not comment:
-            return None
-        else:
-            comment.content = data.get("content")
-            comment.updated_at = datetime.datetime.utcnow()
-            comment.save()
-            return comment.serialize()
+        try:
+            comment = self.query.filter_by(public_id=public_id, visible=True).first()
+            if not comment:
+                raise Exception("Comment not found. Invalid ID")
+            else:
+                comment.content = data.get("content")
+                comment.updated_at = datetime.datetime.utcnow()
+                comment.save()
+                return comment.serialize()
+        except Exception as e:
+            raise e
 
     def upvote_comment(self, public_id, upvote=True):
-        comment = self.get_comment_by_id(public_id)
-        if not comment:
-            return None
-        if upvote:
-            comment.upvotes += 1
-        else:
-            comment.downvotes += 1
-        comment.updated_at = datetime.datetime.utcnow()
-        comment.save()
-        return comment.serialize()
-
-    def update_visibility(self, public_id, visible=True):
-        comment = self.query.filter_by(public_id=public_id).first()
-        if not comment:
-            return None
-        else:
-            comment.visible = visible
+        try:
+            # comment = self.get_comment_by_id(public_id)
+            comment = self.query.filter_by(public_id=public_id, visible=True).first()
+            if not comment:
+                raise Exception("Comment not found. Invalid ID")
+            if upvote:
+                comment.upvotes += 1
+            else:
+                comment.downvotes += 1
             comment.updated_at = datetime.datetime.utcnow()
             comment.save()
             return comment.serialize()
+        except Exception as e:
+            raise e
+
+    def update_visibility(self, public_id, visible=True):
+        try:
+            comment = self.query.filter_by(public_id=public_id).first()
+            if not comment:
+                raise Exception("Comment not found. Invalid ID")
+            else:
+                comment.visible = visible
+                comment.updated_at = datetime.datetime.utcnow()
+                comment.save()
+                return comment.serialize()
+        except Exception as e:
+            raise e
