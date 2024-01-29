@@ -92,6 +92,14 @@ class User(db.Model):
                 return user.serialize()
         except Exception as e:
             raise e
+    
+    def get_user_public_id(self, id):
+        try:
+            user = self.query.filter_by(id=id).first()
+            if user:
+                return user.public_id
+        except Exception as e:
+            raise e
 
     def delete_user(self, public_id, user_id):
         try:

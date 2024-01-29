@@ -3,6 +3,7 @@ import datetime
 from .. import db
 from ..util.helper import convert_to_local_time
 from .review import Review
+from .user import User
 import logging
 
 class Report(db.Model):
@@ -26,9 +27,12 @@ class Report(db.Model):
         review_model = Review()
         item_id = review_model.get_review_public_id(self.item_id)
 
+        user_model = User()
+        user_public_id = user_model.get_user_public_id(self.user_id)
+
         return {
             "public_id": self.public_id,
-            # 'user_id': self.user_id,
+            "user_id": user_public_id,
             "type": self.type,
             "item_id": item_id,
             "reason": self.reason,
