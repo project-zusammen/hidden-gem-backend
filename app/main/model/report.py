@@ -9,7 +9,7 @@ class Report(db.Model):
     __tablename__ = "report"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    # user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     public_id = db.Column(db.String(100), unique=True, nullable=False)
     type = db.Column(db.String(100), nullable=False)
     item_id = db.Column(db.Integer, db.ForeignKey('review.id'), nullable=False)
@@ -43,6 +43,7 @@ class Report(db.Model):
     def create_report(self, data):
         try:
             self.public_id = str(uuid.uuid4())
+            self.user_id = data.get("user_id")
             self.type = data.get("type")
             
             review_public_id = data.get("item_id")

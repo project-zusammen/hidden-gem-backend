@@ -4,8 +4,9 @@ from app.main.model.report import Report
 report_model = Report()
 
 
-def create_report(data):
+def create_report(data, user_id):
     try:
+        data["user_id"] = user_id
         report = report_model.create_report(data)
         response_object = {
             "status": "success",

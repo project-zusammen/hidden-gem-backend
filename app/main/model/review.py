@@ -2,7 +2,7 @@ import uuid
 import datetime
 from .. import db
 from ..util.helper import convert_to_local_time
-
+from .region import Region
 
 class Review(db.Model):
     __tablename__ = "review"
@@ -11,7 +11,7 @@ class Review(db.Model):
     public_id = db.Column(db.String(100), unique=True, nullable=False)
     # user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     # category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
-    # region_id = db.Column(db.Integer, db.ForeignKey('region.id'), nullable=False)
+    region_id = db.Column(db.Integer, db.ForeignKey('region.id'), nullable=False)
     title = db.Column(db.String(100))
     content = db.Column(db.String(255), nullable=False)
     location = db.Column(db.String(100))
@@ -27,11 +27,15 @@ class Review(db.Model):
     def serialize(self):
         created_at = convert_to_local_time(self.created_at)
         updated_at = convert_to_local_time(self.updated_at)
+        
+        region_model = Region()
+        region_public_id = region_model.get_region_public_id(self.region_id)
+
         return {
             "public_id": self.public_id,
             # 'user_id': self.user_id,
             # 'category_id': self.category_id,
-            # 'region_id': self.region_id,
+            "region_id": region_public_id,
             "title": self.title,
             "content": self.content,
             "location": self.location,
@@ -64,9 +68,13 @@ class Review(db.Model):
         self.title = data.get("title")
         self.content = data.get("content")
         self.location = data.get("location")
-
         if not self.title or not self.content:
             return None
+        
+        region_id = data.get("region_id")
+        region_model = Region()
+        region = region_model.get_region_by_id(region_id)
+        self.region_id = region.id
 
         self.created_at = datetime.datetime.utcnow()
         self.updated_at = datetime.datetime.utcnow()
