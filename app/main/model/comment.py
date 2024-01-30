@@ -63,6 +63,12 @@ class Comment(db.Model):
     def get_comment_by_id(self, public_id):
         return self.query.filter_by(public_id=public_id, visible=True).first()
 
+    def get_comment_public_id(self, id):
+        comment = self.query.filter_by(id=id).first()
+        if comment:
+            return comment.public_id
+        return None
+
     def delete_comment(self, public_id):
         comment = self.get_comment_by_id(public_id)
         if not comment:
