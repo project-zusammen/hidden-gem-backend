@@ -101,7 +101,6 @@ class Comment(db.Model):
 
     def upvote_comment(self, public_id, upvote=True):
         try:
-            # comment = self.get_comment_by_id(public_id)
             comment = self.query.filter_by(public_id=public_id, visible=True).first()
             if upvote:
                 comment.upvotes += 1
