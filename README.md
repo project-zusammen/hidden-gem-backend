@@ -53,6 +53,10 @@ This backend application serves API for the hiddenGem web where user can find re
     ```bash
     flask test
     ```
+    or 
+    ```bash
+    pytest
+    ```
     Run a specific test file:
     ```bash
     pytest -k path-to-test-file
