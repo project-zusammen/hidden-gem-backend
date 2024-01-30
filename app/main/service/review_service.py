@@ -15,7 +15,6 @@ def create_review(data):
             for hashtag in hashtags:
                 tag = tag_model.create_tag(hashtag)
                 review_tag = review_tag_model.create_review_tag(tag['id'], review_id)
-                update_review = review_model.update_review_tag_id(review['public_id'], review_tag['id'])
         response_object = {
             "status": "success",
             "message": "Successfully created.",
@@ -94,7 +93,7 @@ def get_all_reviews(page, count, tag_id, category_id, region_id):
         }
         return response_object, 200
     except Exception as e:
-        print(f"Error in get_all_reviews: {str(e)}")
+        log.error(f"Error in get_all_reviews: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
 
 

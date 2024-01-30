@@ -11,10 +11,9 @@ class Review(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     public_id = db.Column(db.String(100), unique=True, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
-    region_id = db.Column(db.Integer, db.ForeignKey('region.id'), nullable=False)
-    review_tag_id = db.Column(db.Integer, db.ForeignKey('review_tag.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', name="fk_review_user"), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id', name="fk_review_category"))
+    region_id = db.Column(db.Integer, db.ForeignKey('region.id', name="fk_review_region"), nullable=False)
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.String(255), nullable=False)
     location = db.Column(db.String(100))
@@ -35,7 +34,6 @@ class Review(db.Model):
             'user_id': self.user_id,
             'category_id': self.category_id,
             'region_id': self.region_id,
-            'review_tag_id': self.review_tag_id,
             "title": self.title,
             "content": self.content,
             "location": self.location,
@@ -137,29 +135,13 @@ class Review(db.Model):
             review.updated_at = datetime.datetime.utcnow()
             review.save()
             return review.serialize()
-    
-    def serialize_entire_data(self):
-        return {
-            "id": self.id,
-            "public_id": self.public_id,
-            "title": self.title,
-            "content": self.content,
-            "location": self.location,
-            "upvotes": self.upvotes,
-            "downvotes": self.downvotes,
-            "visible": self.visible,
-            "created_at": self.created_at,
-            "updated_at": self.updated_at,
-        }
 
     def get_review_id_by_public_id(self, public_id):
         try:
             review = self.query.filter_by(public_id=public_id).first()
             if not review:
                 raise Exception("Review not found. Invalid public_id")
-
-            data = review.serialize_entire_data()
-            return data['id']
+            return review.id
         except Exception as e:
             raise e
 
@@ -169,14 +151,3 @@ class Review(db.Model):
         except Exception as e:
             raise e
     
-    def update_review_tag_id(self, public_id, review_tag_id):
-        try: 
-            review = self.get_review_by_id(public_id)
-            if not review:
-                raise Exception("Review not found. Invalid public_id")
-            else:
-                review.review_tag_id = review_tag_id
-                review.save()
-                return review.serialize()
-        except Exception as e:
-            raise e

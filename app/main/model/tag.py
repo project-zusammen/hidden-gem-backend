@@ -54,8 +54,8 @@ class ReviewTag(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     public_id = db.Column(db.String(100), unique=True)
-    review_id = db.Column(db.Integer, db.ForeignKey("review.id"), nullable=False)
-    tag_id = db.Column(db.Integer, db.ForeignKey("tag.id"), nullable=False)
+    review_id = db.Column(db.Integer, db.ForeignKey("review.id", name="fk_review_tag_review"), nullable=False)
+    tag_id = db.Column(db.Integer, db.ForeignKey("tag.id", name="fk_review_tag_tag"), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False)
 
