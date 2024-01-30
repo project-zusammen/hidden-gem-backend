@@ -73,8 +73,7 @@ class Review(db.Model):
         
         region_id = data.get("region_id")
         region_model = Region()
-        region = region_model.get_region_by_id(region_id)
-        self.region_id = region.id
+        self.region_id = region_model.get_region_by_id(region_id)
 
         self.created_at = datetime.datetime.utcnow()
         self.updated_at = datetime.datetime.utcnow()
@@ -90,8 +89,10 @@ class Review(db.Model):
         if not review:
             return None
         else:
-            review.category_id = data.get("category_id")
-            review.region_id = data.get("region_id")
+            region_id = data.get("region_id")
+            region_model = Region()
+            review.region_id = region_model.get_region_by_id(region_id)
+            
             review.title = data.get("title")
             review.content = data.get("content")
             review.location = data.get("location")
