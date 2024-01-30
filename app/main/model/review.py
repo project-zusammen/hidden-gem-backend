@@ -119,7 +119,7 @@ class Review(db.Model):
     
     def get_review_id_by_public_id(self, public_id):
         try:
-            review = self.query.filter_by(public_id=public_id).first()
+            review = self.query.filter_by(public_id=public_id, visible=True).first()
             if not review:
                 raise Exception("Review not found. Invalid public_id")
             return review.id
