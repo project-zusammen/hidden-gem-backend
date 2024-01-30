@@ -125,7 +125,6 @@ class TestReviewService(TestCase):
 
         # Act
         response, status_code = create_review(data)
-        print(f'\n\n\n{response}\n\n')
         result = response["data"]
 
         # Assert
