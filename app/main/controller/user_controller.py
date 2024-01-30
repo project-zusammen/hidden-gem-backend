@@ -28,13 +28,17 @@ class UserSignUp(Resource):
         """Register a new user"""
         return register_user(ns.payload)
 
+
 @ns.route("/user")
 class UserList(Resource):
-    @ns.doc(security="bearer", params={'page': {'description': 'Page number', 'type': 'integer'}}) 
+    @ns.doc(
+        security="bearer",
+        params={"page": {"description": "Page number", "type": "integer"}},
+    )
     @token_required
     def get(self, decoded_token):
         """List all users"""
-        page = request.args.get('page', default=None, type=int)
+        page = request.args.get("page", default=None, type=int)
         return get_all_users(page)
 
 

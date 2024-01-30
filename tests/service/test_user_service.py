@@ -10,11 +10,13 @@ from app.main.service.user_service import (
     delete_user,
     update_user,
     update_user_status,
-    user_auth
+    user_auth,
 )
+
 
 def generate_fake_public_id():
     return str(uuid.uuid4())
+
 
 class TestUserService(TestCase):
     @classmethod
@@ -38,15 +40,15 @@ class TestUserService(TestCase):
                 "username": "ikan tenggiri",
                 "email": "tenggiri@gmail.com",
                 "role": "user",
-                "status": "active"
+                "status": "active",
             },
             {
                 "public_id": public_id_2,
                 "username": "ikan gabus",
                 "email": "gabus@gmail.com",
                 "role": "user",
-                "status": "active"
-            }
+                "status": "active",
+            },
         ]
         mock_get_all_users.return_value = data
         page = 1
@@ -79,7 +81,7 @@ class TestUserService(TestCase):
             "username": "ikan tenggiri",
             "email": "tenggiri@gmail.com",
             "role": "user",
-            "status": "active"
+            "status": "active",
         }
         mock_get_user_by_id.return_value = data
 
@@ -106,7 +108,7 @@ class TestUserService(TestCase):
             "username": "ikan tenggiri",
             "email": "tenggiri@gmail.com",
             "role": "user",
-            "status": "active"
+            "status": "active",
         }
         mock_register_user.return_value = data
 
@@ -134,12 +136,12 @@ class TestUserService(TestCase):
             "username": "ikan tenggiri",
             "email": "tenggiri@gmail.com",
             "role": "user",
-            "status": "active"
+            "status": "active",
         }
         mock_update_user.return_value = data
 
         # Act
-        response, status_code = update_user(public_id, data,user_id)
+        response, status_code = update_user(public_id, data, user_id)
         result = response["data"]
 
         # Assert
@@ -151,7 +153,7 @@ class TestUserService(TestCase):
         self.assertEqual(result["role"], data["role"])
         self.assertEqual(result["email"], data["email"])
         self.assertEqual(result["status"], data["status"])
-    
+
     @patch("app.main.model.user.User.update_user_status")
     def test_update_user_status(self, mock_update_user_status):
         # Arrange
@@ -161,11 +163,9 @@ class TestUserService(TestCase):
             "username": "ikan tenggiri",
             "email": "tenggiri@gmail.com",
             "role": "user",
-            "status": "inactive"
+            "status": "inactive",
         }
-        payload = {
-            "banned": True
-        }
+        payload = {"banned": True}
         mock_update_user_status.return_value = data
 
         # Act
@@ -190,7 +190,7 @@ class TestUserService(TestCase):
         mock_delete_user.return_value = True
 
         # Act
-        response, status_code = delete_user(public_id,user_id)
+        response, status_code = delete_user(public_id, user_id)
 
         # Assert
         self.assertEqual(status_code, 201)
@@ -200,18 +200,15 @@ class TestUserService(TestCase):
     @patch("app.main.model.user.User.user_auth")
     def test_user_auth(self, mock_user_auth):
         # Arrange
-        credentials = {
-            "email": "aqiz@gmail.com",
-            "password": "password"
-        }
+        credentials = {"email": "aqiz@gmail.com", "password": "password"}
         token_payload = {
-            "id":1,
+            "id": 1,
             "public_id": "c47560e6-619f-4867-8ea7-213709aea349",
             "username": "aqiz",
             "email": "aqiz@gmail.com",
             "password": "password",
             "role": "admin",
-            "status": "active"
+            "status": "active",
         }
         token = create_token(token_payload)
         mock_user_auth.return_value = token
@@ -224,4 +221,3 @@ class TestUserService(TestCase):
         self.assertEqual(response["status"], "success")
         self.assertEqual(response["message"], "Login Success")
         self.assertEqual(response["token"], token)
-    

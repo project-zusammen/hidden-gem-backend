@@ -5,11 +5,8 @@ from app.main.model.user import User
 from app.main.util.helper import create_token
 
 
-user_data = {
-    "username": "aqiz",
-    "email": "aqiz@gmail.com",
-    "password": "Aqiz123!"
-}
+user_data = {"username": "aqiz", "email": "aqiz@gmail.com", "password": "Aqiz123!"}
+
 
 class TestUser(unittest.TestCase):
     def setUp(self):
@@ -43,7 +40,7 @@ class TestUser(unittest.TestCase):
         updated_data = {
             "username": "aqiz edited",
             "email": "aqiz_edited@gmail.com",
-            "password": "Aqiz12345!"
+            "password": "Aqiz12345!",
         }
         updated_user = user_model.update_user(user["public_id"], updated_data, user_id)
 
@@ -83,7 +80,7 @@ class TestUser(unittest.TestCase):
         self.assertEqual(user["public_id"], retrieved_users["public_id"])
         self.assertEqual(user["username"], retrieved_users["username"])
         self.assertEqual(user["email"], retrieved_users["email"])
-        
+
     def test_delete_user(self):
         # ARRANGE
         user_model = User()
@@ -91,44 +88,42 @@ class TestUser(unittest.TestCase):
         user_id = 1
 
         # ACT
-        deleted_user = user_model.delete_user(user["public_id"],user_id)
+        deleted_user = user_model.delete_user(user["public_id"], user_id)
 
         # ASSERT
         self.assertIsNotNone(deleted_user)
-        self.assertEqual(deleted_user,True)
+        self.assertEqual(deleted_user, True)
 
     def test_update_user_status(self):
         # ARRANGE
         user_model = User()
         user = user_model.register_user(user_data)
 
-        payload = {
-            "banned" : True
-        }
+        payload = {"banned": True}
 
         # ACT
         updated_user = user_model.update_user_status(user["public_id"], payload)
 
         # ASSERT
         self.assertIsNotNone(updated_user)
-        self.assertEqual(updated_user['email'],user_data['email'])
-        self.assertEqual(updated_user['username'],user_data['username'])
-        self.assertEqual(updated_user['status'], "inactive")
-    
+        self.assertEqual(updated_user["email"], user_data["email"])
+        self.assertEqual(updated_user["username"], user_data["username"])
+        self.assertEqual(updated_user["status"], "inactive")
+
     def test_user_auth(self):
         # ARRANGE
         user_model = User()
         user = user_model.register_user(user_data)
         user_id = 1
-        user = user_model.get_user_by_id(user['public_id'], user_id)
+        user = user_model.get_user_by_id(user["public_id"], user_id)
         token_payload = {
-            "id":user_id,
-            "public_id": user['public_id'],
-            "username": user['username'],
-            "email": user['email'],
-            "password": user_data['password'],
-            "role": user['role'],
-            "status": user['status']
+            "id": user_id,
+            "public_id": user["public_id"],
+            "username": user["username"],
+            "email": user["email"],
+            "password": user_data["password"],
+            "role": user["role"],
+            "status": user["status"],
         }
 
         token = create_token(token_payload)
@@ -138,8 +133,8 @@ class TestUser(unittest.TestCase):
 
         # ASSERT
         self.assertIsNotNone(result)
-        self.assertEqual(result,token)
-    
+        self.assertEqual(result, token)
+
     def test_check_user_authorization(self):
         # ARRANGE
         user_model = User()
@@ -147,16 +142,15 @@ class TestUser(unittest.TestCase):
         user = user_model.register_user(user_data)
 
         # ACT
-        result = user_model.check_user_authorization(user['public_id'], user_id)
-        
+        result = user_model.check_user_authorization(user["public_id"], user_id)
+
         # ASSERT
         self.assertIsNotNone(result)
-        self.assertEqual(result.public_id,user['public_id'])
-        self.assertEqual(result.username,user['username'])
-        self.assertEqual(result.email,user['email'])
-        self.assertEqual(result.status.value,'active')
-        self.assertEqual(result.role.value,'user')
-    
+        self.assertEqual(result.public_id, user["public_id"])
+        self.assertEqual(result.username, user["username"])
+        self.assertEqual(result.email, user["email"])
+        self.assertEqual(result.status.value, "active")
+        self.assertEqual(result.role.value, "user")
 
 
 if __name__ == "__main__":

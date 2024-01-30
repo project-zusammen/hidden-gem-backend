@@ -30,14 +30,12 @@ class Tag(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
-    
+
     def create_tag(self, name):
         try:
             tag = self.query.filter_by(name=name).first()
-            if tag :
-                return {
-                    'id' : tag.id
-                }
+            if tag:
+                return {"id": tag.id}
             self.public_id = str(uuid.uuid4())
             self.name = name
             self.created_at = datetime.datetime.utcnow()
@@ -54,8 +52,14 @@ class ReviewTag(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     public_id = db.Column(db.String(100), unique=True)
-    review_id = db.Column(db.Integer, db.ForeignKey("review.id", name="fk_review_tag_review"), nullable=False)
-    tag_id = db.Column(db.Integer, db.ForeignKey("tag.id", name="fk_review_tag_tag"), nullable=False)
+    review_id = db.Column(
+        db.Integer,
+        db.ForeignKey("review.id", name="fk_review_tag_review"),
+        nullable=False,
+    )
+    tag_id = db.Column(
+        db.Integer, db.ForeignKey("tag.id", name="fk_review_tag_tag"), nullable=False
+    )
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False)
 
@@ -90,4 +94,3 @@ class ReviewTag(db.Model):
             return self.serialize()
         except Exception as e:
             raise e
-        

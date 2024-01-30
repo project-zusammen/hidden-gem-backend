@@ -11,9 +11,15 @@ class Review(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     public_id = db.Column(db.String(100), unique=True, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', name="fk_review_user"), nullable=False)
-    category_id = db.Column(db.Integer, db.ForeignKey('category.id', name="fk_review_category"))
-    region_id = db.Column(db.Integer, db.ForeignKey('region.id', name="fk_review_region"), nullable=False)
+    user_id = db.Column(
+        db.Integer, db.ForeignKey("user.id", name="fk_review_user"), nullable=False
+    )
+    category_id = db.Column(
+        db.Integer, db.ForeignKey("category.id", name="fk_review_category")
+    )
+    region_id = db.Column(
+        db.Integer, db.ForeignKey("region.id", name="fk_review_region"), nullable=False
+    )
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.String(255), nullable=False)
     location = db.Column(db.String(100))
@@ -31,9 +37,9 @@ class Review(db.Model):
         updated_at = convert_to_local_time(self.updated_at)
         return {
             "public_id": self.public_id,
-            'user_id': self.user_id,
-            'category_id': self.category_id,
-            'region_id': self.region_id,
+            "user_id": self.user_id,
+            "category_id": self.category_id,
+            "region_id": self.region_id,
             "title": self.title,
             "content": self.content,
             "location": self.location,
@@ -51,8 +57,9 @@ class Review(db.Model):
     def get_all_reviews(self, page, count, tag_id, category_id, region_id):
         try:
             offset = (page - 1) * count
-            query = db.session.query(Review).join(ReviewTag, ReviewTag.review_id == Review.id, isouter=True)
-
+            query = db.session.query(Review).join(
+                ReviewTag, ReviewTag.review_id == Review.id, isouter=True
+            )
             query = query.filter(Review.visible == True)
             if tag_id:
                 query = query.filter(ReviewTag.tag_id == tag_id)
@@ -65,7 +72,6 @@ class Review(db.Model):
             return [review.serialize() for review in reviews]
         except Exception as e:
             raise e
-            
 
     def get_review_by_id(self, public_id):
         return self.query.filter_by(public_id=public_id, visible=True).first()
@@ -147,7 +153,6 @@ class Review(db.Model):
 
     def get_the_hashtag_from_content(self, content):
         try:
-            return re.findall(r'\#\w+', content)
+            return re.findall(r"\#\w+", content)
         except Exception as e:
             raise e
-    
