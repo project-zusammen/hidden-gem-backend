@@ -13,7 +13,7 @@ class ReviewDto:
             "title": fields.String(required=True, description="review title"),
             "content": fields.String(required=True, description="review content"),
             "location": fields.String(description="review location"),
-            "category_id": fields.String(required=True, description="category Identifier"),
+            "category_id": fields.String(description="category Identifier"),
             "region_id": fields.String(required=True, description="region Identifier"),
         },
     )

@@ -9,6 +9,7 @@ review_data = {
     "title": "Test Review",
     "content": "This is a test review.",
     "location": "Test Location",
+    "region_id": "test-region-id",
 }
 
 
