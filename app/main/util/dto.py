@@ -70,10 +70,10 @@ class RegionDto:
 
 
 class AppealDto:
-    comment = api.model(
+    appeal = api.model(
         "appeal",
         {
-            "appeal": fields.String(required=True, description="reason for appeal"),
+            "reason": fields.String(required=True, description="reason for appeal"),
             "report_id": fields.String(required=True, description="report Identifier"),
         },
     )
