@@ -3,8 +3,6 @@ import datetime
 from .. import db
 from ..util.helper import convert_to_local_time
 
-# from .Report import Report
-
 
 class Appeal(db.Model):
     __tablename__ = "appeal"
