@@ -3,6 +3,7 @@ import datetime
 from .. import db
 from ..util.helper import convert_to_local_time
 from .review import Review
+from .comment import Comment
 from .user import User
 import logging
 
@@ -24,8 +25,13 @@ class Report(db.Model):
     def serialize(self):
         created_at = convert_to_local_time(self.created_at)
         updated_at = convert_to_local_time(self.updated_at)
-        review_model = Review()
-        item_id = review_model.get_review_public_id(self.item_id)
+        
+        if self.type == "comment":
+            comment_model = Comment()
+            item_id = comment_model.get_comment_public_id(self.item_id)
+        else:
+            review_model = Review()
+            item_id = review_model.get_review_public_id(self.item_id)
 
         user_model = User()
         user_public_id = user_model.get_user_public_id(self.user_id)
@@ -49,11 +55,16 @@ class Report(db.Model):
             self.public_id = str(uuid.uuid4())
             self.user_id = data.get("user_id")
             self.type = data.get("type")
-            
-            review_public_id = data.get("item_id")
-            review_model = Review()
-            review = review_model.get_review_by_id(review_public_id)
-            self.item_id = review.id
+            item_id = data.get("item_id")
+
+            if self.type == "comment":
+                comment_model = Comment()
+                comment = comment_model.get_comment_by_id(item_id)
+                self.item_id = comment.id
+            else:
+                review_model = Review()
+                review = review_model.get_review_by_id(item_id)
+                self.item_id = review.id
             
             self.reason = data.get("reason")
             self.created_at = datetime.datetime.utcnow()

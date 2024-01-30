@@ -1,12 +1,12 @@
 import uuid
 import unittest
-from unittest.mock import patch
 from app.extensions import db
 from app.main import create_app
 from app.main.model.report import Report
 from app.main.model.review import Review
 from app.main.model.region import Region
 from app.main.model.user import User
+from app.main.model.comment import Comment
 
 review_data = {
     "title": "Test Review",
@@ -15,7 +15,6 @@ review_data = {
 }
 
 report_data = {
-    "type": "review",
     "reason": "Test Reason",
 }
 
@@ -43,7 +42,7 @@ class TestReport(unittest.TestCase):
         db.drop_all()
         self.app_context.pop()
 
-    def test_create_and_get_report(self):
+    def test_create_and_get_report_on_review(self):
         # ARRANGE
         region_model = Region()
         created_region = region_model.create_region("Test Region")
@@ -53,7 +52,39 @@ class TestReport(unittest.TestCase):
         created_review = review_model.create_review(review_data)
         
         report_model = Report()
+        report_data["type"] = "review"
         report_data["item_id"] = created_review["public_id"]
+        report_data["region_id"] = created_region["public_id"]
+        report_data["user_id"] = user_id
+        
+        # ACT
+        created_report = report_model.create_report(report_data)
+
+        # ASSERT
+        self.assertIsNotNone(created_report)
+        self.assertEqual(created_report["type"], report_data["type"])
+        self.assertEqual(created_report["item_id"], report_data["item_id"])
+        self.assertEqual(created_report["reason"], report_data["reason"])
+    
+    def test_create_and_get_report_on_comment(self):
+        # ARRANGE
+        region_model = Region()
+        created_region = region_model.create_region("Test Region")
+        
+        review_data["region_id"] = created_region["public_id"]
+        review_model = Review()
+        created_review = review_model.create_review(review_data)
+
+        comment_data = {
+            "content": "This is a test comment.",
+            "review_id": created_review["public_id"],
+        }
+        comment_model = Comment()
+        created_comment = comment_model.create_comment(comment_data)
+        
+        report_model = Report()
+        report_data["type"] = "comment"
+        report_data["item_id"] = created_comment["public_id"]
         report_data["region_id"] = created_region["public_id"]
         report_data["user_id"] = user_id
         
