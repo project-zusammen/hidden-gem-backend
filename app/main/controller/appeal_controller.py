@@ -1,7 +1,7 @@
 from ..util.dto import AppealDto
+from ..util.token_verify import token_required
+from ..util.helper import error_handler
 
-appeal_dto = AppealDto()
-_appeal = appeal_dto.appeal
 
 from flask_restx import Resource
 from ..service.appeal_service import (
@@ -11,9 +11,19 @@ from ..service.appeal_service import (
 from ...extensions import ns
 
 
+appeal_dto = AppealDto()
+_appeal = appeal_dto.appeal
+
+
 @ns.route("/appeal")
 class AppealList(Resource):
-    def get(self):
+    @ns.doc(security="bearer")
+    @token_required
+    def get(self, decoded_token):
+        role = decoded_token["role"]
+        if role != "admin":
+            return error_handler("Access denied")
+        
         """List all appeals"""
         return get_all_appeals()
     
