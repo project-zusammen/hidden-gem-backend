@@ -27,7 +27,7 @@ class Appeal(db.Model):
         return {
             "public_id": self.public_id,
             # 'user_id': self.user_id,
-            # 'report_id': self.appeal_id,
+            # 'report_id': self.report_id,
             "reason": self.reason,
             "created_at": created_at.isoformat() if self.created_at else None,
             "updated_at": updated_at.isoformat() if self.updated_at else None,
