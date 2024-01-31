@@ -72,7 +72,6 @@ class Appeal(db.Model):
             appeal = self.query.filter_by(public_id=public_id).first()
             if not appeal:
                 return None
-            appeal.serialize()
             if role != "admin" or appeal.user_id != user_id:
                 raise Exception("Access Denied")
             return appeal.serialize()

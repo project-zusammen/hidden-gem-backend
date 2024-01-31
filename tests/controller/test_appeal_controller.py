@@ -1,11 +1,33 @@
+import uuid
 import json
 from unittest import TestCase
 from unittest.mock import patch
 from app import create_app
+from app.main.util.helper import create_token
+
+user_data = {
+    "id": 1,
+    "public_id": str(uuid.uuid4()),
+    "username": "test_user",
+    "email": "@gmail.com",
+    "password": "test_password",
+    "role": "admin",
+    "status": "active",
+}
+
+report_data = {
+    "id": 1,
+    "public_id": str(uuid.uuid4()),
+    "user_id": user_data["public_id"],
+    "type": "review",
+    "item_id": str(uuid.uuid4()),
+    "reason": "Test Reason",
+}
 
 appeal_data = {
     "reason": "This is a test appeal.",
-    "report_id": "report_id",
+    "report_id": report_data["public_id"],
+    "user_id": user_data["public_id"]
 }
 
 
@@ -38,3 +60,30 @@ class TestAppealEndpoints(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_response["data"]["reason"], res.get("reason"))
         mock_create_appeal.assert_called_once()
+    
+    @patch("app.main.controller.appeal_controller.get_all_appeals")
+    def test_get_all_appeals(self, mock_get_all_appeals):
+        # ARRANGE
+        expected_data = [appeal_data]
+        expected_response = {
+            "status": "success",
+            "message": "Successfully retrieved appeals.",
+            "data": expected_data,
+        }
+        mock_get_all_appeals.return_value = expected_response
+
+        token = create_token(user_data)
+        headers = {"X-API-KEY": token}
+
+        # ACT
+        with self.app.test_client() as client:
+            response = client.get("/api/appeal", headers=headers)
+            res = json.loads(response.data.decode("utf-8"))
+            res = res.get("data")
+            first_appeal = res[0]
+
+        # ASSERT
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(res, list)
+        self.assertEqual(expected_data[0].get("content"), first_appeal.get("content"))
+        mock_get_all_appeals.assert_called_once()
