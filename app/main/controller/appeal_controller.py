@@ -6,7 +6,8 @@ from ..util.helper import error_handler
 from flask_restx import Resource
 from ..service.appeal_service import (
     create_appeal,
-    get_all_appeals
+    get_all_appeals,
+    get_a_appeal
 )
 from ...extensions import ns
 
@@ -31,3 +32,14 @@ class AppealList(Resource):
     def post(self):
         """Creates a new appeal"""
         return create_appeal(ns.payload)
+    
+
+@ns.route("/appeal/<public_id>")
+@ns.param("public_id", "The appeal identifier")
+class Appeal(Resource):
+    def get(self, decoded_token, public_id):
+        user_id = decoded_token["id"]
+        role = decoded_token["role"]
+        """Get a appeal by its identifier"""
+        appeal = get_a_appeal(public_id, user_id, role)
+        return appeal

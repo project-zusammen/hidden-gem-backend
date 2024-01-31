@@ -22,6 +22,25 @@ def get_all_appeals():
     except Exception as e:
         log.error(f"Error in get_all_appeals: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
+    
+def get_a_appeal(public_id, user_id , role):
+    try:
+        appeal = appeal_model.get_appeal_by_id(public_id, user_id, role)
+        if not appeal:
+            return {
+				"status": "success",
+				"message": "Appeal does not exist.",
+			}, 200
+
+        response_object = {
+			"status": "success",
+			"message": "Successfully get a appeal.",
+			"data": appeal,
+		}
+        return response_object, 200
+    except Exception as e:
+        log.error(f"Error in get_a_appeal: {str(e)}")
+        return {"status": "error", "message": "Internal Server Error"}, 500
 
 def create_appeal(data):
     try:
