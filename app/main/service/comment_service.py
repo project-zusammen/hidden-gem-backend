@@ -28,7 +28,6 @@ def get_all_comments():
 def get_a_comment(public_id):
     try:
         comment = comment_model.get_comment_by_id(public_id)
-        comment.serialize()
         if not comment:
             response_object = {"status": "fail", "message": "comment does not exist."}
             return response_object, 409
