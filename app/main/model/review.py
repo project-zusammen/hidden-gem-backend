@@ -4,6 +4,7 @@ from .. import db
 from ..util.helper import convert_to_local_time
 import re
 
+
 class Review(db.Model):
     __tablename__ = "review"
 
@@ -116,7 +117,7 @@ class Review(db.Model):
             review.updated_at = datetime.datetime.utcnow()
             review.save()
             return review.serialize()
-    
+
     def get_review_id_by_public_id(self, public_id):
         try:
             review = self.query.filter_by(public_id=public_id, visible=True).first()
@@ -128,6 +129,6 @@ class Review(db.Model):
 
     def get_the_hashtag_from_content(self, content):
         try:
-            return re.findall(r'\#\w+', content)
+            return re.findall(r"\#\w+", content)
         except Exception as e:
             raise e

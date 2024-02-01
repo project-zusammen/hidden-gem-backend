@@ -97,9 +97,15 @@ class TestReviewEndpoints(TestCase):
 
         # ASSERT
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(expected_response["data"].get("title"), res["data"].get("title"))
-        self.assertEqual(expected_response["data"].get("content"), res["data"].get("content"))
-        self.assertEqual(expected_response["data"].get("location"), res["data"].get("location"))
+        self.assertEqual(
+            expected_response["data"].get("title"), res["data"].get("title")
+        )
+        self.assertEqual(
+            expected_response["data"].get("content"), res["data"].get("content")
+        )
+        self.assertEqual(
+            expected_response["data"].get("location"), res["data"].get("location")
+        )
 
     @patch("app.main.controller.review_controller.update_review")
     def test_update_review(self, mock_update_review):
@@ -119,9 +125,15 @@ class TestReviewEndpoints(TestCase):
 
         # ASSERT
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(expected_response["data"].get("title"), res["data"].get("title"))
-        self.assertEqual(expected_response["data"].get("content"), res["data"].get("content"))
-        self.assertEqual(expected_response["data"].get("location"), res["data"].get("location"))
+        self.assertEqual(
+            expected_response["data"].get("title"), res["data"].get("title")
+        )
+        self.assertEqual(
+            expected_response["data"].get("content"), res["data"].get("content")
+        )
+        self.assertEqual(
+            expected_response["data"].get("location"), res["data"].get("location")
+        )
         mock_update_review.assert_called_once()
 
     @patch("app.main.controller.review_controller.delete_review")
@@ -143,11 +155,17 @@ class TestReviewEndpoints(TestCase):
 
         # ASSERT
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(expected_response["data"].get("title"), res["data"].get("title"))
-        self.assertEqual(expected_response["data"].get("content"), res["data"].get("content"))
-        self.assertEqual(expected_response["data"].get("location"), res["data"].get("location"))
+        self.assertEqual(
+            expected_response["data"].get("title"), res["data"].get("title")
+        )
+        self.assertEqual(
+            expected_response["data"].get("content"), res["data"].get("content")
+        )
+        self.assertEqual(
+            expected_response["data"].get("location"), res["data"].get("location")
+        )
         mock_delete_review.assert_called_once()
-    
+
     @patch("app.main.controller.review_controller.upvote_review")
     def test_upvote_review(self, mock_upvote_review):
         # ARRANGE
@@ -156,9 +174,9 @@ class TestReviewEndpoints(TestCase):
         review_data["upvotes"] = 2
         review_data["downvotes"] = 1
         expected_response = {
-            "status" : "success",
-            "message" : "Successfully updated." ,
-            "data" : review_data,
+            "status": "success",
+            "message": "Successfully updated.",
+            "data": review_data,
         }
         mock_upvote_review.return_value = expected_response
 
@@ -169,8 +187,12 @@ class TestReviewEndpoints(TestCase):
 
         # ASSERT
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(expected_response["data"].get("upvotes"), res["data"].get("upvotes"))
-        self.assertEqual(expected_response["data"].get("downvotes"), res["data"].get("downvotes"))
+        self.assertEqual(
+            expected_response["data"].get("upvotes"), res["data"].get("upvotes")
+        )
+        self.assertEqual(
+            expected_response["data"].get("downvotes"), res["data"].get("downvotes")
+        )
         mock_upvote_review.assert_called_once()
 
     @patch("app.main.controller.review_controller.update_visibility")
@@ -180,12 +202,12 @@ class TestReviewEndpoints(TestCase):
         review_data["public_id"] = public_id
         review_data["visible"] = False
         expected_response = {
-            "status" : "success",
-            "message" : "Successfully updated." ,
-            "data" : review_data,
+            "status": "success",
+            "message": "Successfully updated.",
+            "data": review_data,
         }
         mock_visibility_review.return_value = expected_response
-        
+
         # ACT
         with self.app.test_client() as client:
             response = client.put(f"/api/review/{public_id}/status", json=review_data)
@@ -193,6 +215,7 @@ class TestReviewEndpoints(TestCase):
 
         # ASSERT
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(expected_response["data"].get("visible"), res["data"].get("visible"))
+        self.assertEqual(
+            expected_response["data"].get("visible"), res["data"].get("visible")
+        )
         mock_visibility_review.assert_called_once()
-        

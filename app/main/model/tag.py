@@ -30,14 +30,12 @@ class Tag(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
-    
+
     def create_tag(self, name):
         try:
             tag = self.query.filter_by(name=name).first()
-            if tag :
-                return {
-                    'id' : tag.id
-                }
+            if tag:
+                return {"id": tag.id}
             self.public_id = str(uuid.uuid4())
             self.name = name
             self.created_at = datetime.datetime.utcnow()
@@ -89,4 +87,3 @@ class ReviewTag(db.Model):
             return self.serialize()
         except Exception as e:
             raise e
-        
