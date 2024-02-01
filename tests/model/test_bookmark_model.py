@@ -46,7 +46,7 @@ class TestBookmark(unittest.TestCase):
 
         # ASSERT
         self.assertIsNotNone(new_bookmark)
-        self.assertEqual(new_bookmark["user_id"], 1)
+        self.assertEqual(new_bookmark["user_id"], new_user['public_id'])
         self.assertEqual(new_bookmark["review_id"], review_id)
 
     def test_get_bookmark_by_userid(self):
