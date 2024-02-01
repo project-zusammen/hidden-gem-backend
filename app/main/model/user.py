@@ -6,14 +6,15 @@ from ..util.helper import convert_to_local_time, is_valid_email, create_token
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
-class UserRole(Enum):
-    admin = "admin"
-    user = "user"
+
+# class UserRole(Enum):
+#     admin = "admin"
+#     user = "user"
 
 
-class UserStatus(Enum):
-    active = "active"
-    inactive = "inactive"
+# class UserStatus(Enum):
+#     active = "active"
+#     inactive = "inactive"
 
 
 class User(db.Model):
@@ -23,8 +24,8 @@ class User(db.Model):
     username = db.Column(db.String(100), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.Enum(UserRole), nullable=False, default=UserRole.user)
-    status = db.Column(db.Enum(UserStatus), nullable=False, default=UserStatus.active)
+    role = db.Column(db.String(100), nullable=False)
+    status = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False)
     deleted_at = db.Column(db.DateTime, default=None, nullable=True)
@@ -41,8 +42,8 @@ class User(db.Model):
             "email": self.email,
             "created_at": created_at.isoformat() if self.created_at else None,
             "updated_at": updated_at.isoformat() if self.updated_at else None,
-            "role": self.role.value,
-            "status": self.status.value,
+            "role": self.role,
+            "status": self.status,
         }
 
     def save(self):
@@ -75,14 +76,15 @@ class User(db.Model):
             self.username = data.get("username")
             self.email = email
             self.password = password
-            self.role = data.get("role")
-            self.status = data.get("status")
+            self.role = data.get("role", "user")
+            self.status = data.get("status", "active")
             self.created_at = datetime.datetime.utcnow()
             self.updated_at = datetime.datetime.utcnow()
             self.save()
             return self.serialize()
         except Exception as e:
             raise e
+
 
     def get_user_by_id(self, public_id, user_id):
         try:
@@ -146,8 +148,8 @@ class User(db.Model):
             "username": self.username,
             "email": self.email,
             "password": self.password,
-            "role": self.role.value,
-            "status": self.status.value,
+            "role": self.role,
+            "status": self.status,
         }
 
     def user_auth(self, data):

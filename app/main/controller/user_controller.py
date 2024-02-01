@@ -21,6 +21,7 @@ from ...extensions import ns
 from ..util.token_verify import token_required
 
 
+
 @ns.route("/user/signup")
 class UserSignUp(Resource):
     @ns.expect(_user, validate=True)
@@ -40,6 +41,7 @@ class UserList(Resource):
         """List all users"""
         page = request.args.get("page", default=None, type=int)
         return get_all_users(page)
+
 
 
 @ns.route("/user/<public_id>")
@@ -68,7 +70,7 @@ class User(Resource):
         user_id = decoded_token["id"]
         return delete_user(public_id, user_id)
 
-
+## work in progress, need authentication for this endpoint
 @ns.route("/user/<public_id>/status")
 @ns.param("public_id", "The user identifier")
 class UserStatus(Resource):
@@ -83,7 +85,6 @@ class UserStatus(Resource):
         """Update user status"""
         updated_user = update_user_status(public_id, ns.payload)
         return updated_user
-
 
 @ns.route("/user/login")
 class UserLogin(Resource):

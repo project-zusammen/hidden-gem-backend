@@ -133,8 +133,8 @@ class TestUser(unittest.TestCase):
 
         # ASSERT
         self.assertIsNotNone(result)
-        self.assertEqual(result, token)
-
+        self.assertEqual(result,token)
+    
     def test_check_user_authorization(self):
         # ARRANGE
         user_model = User()
@@ -146,11 +146,12 @@ class TestUser(unittest.TestCase):
 
         # ASSERT
         self.assertIsNotNone(result)
-        self.assertEqual(result.public_id, user["public_id"])
-        self.assertEqual(result.username, user["username"])
-        self.assertEqual(result.email, user["email"])
-        self.assertEqual(result.status.value, "active")
-        self.assertEqual(result.role.value, "user")
+        self.assertEqual(result.public_id,user['public_id'])
+        self.assertEqual(result.username,user['username'])
+        self.assertEqual(result.email,user['email'])
+        self.assertEqual(result.status.value,'active')
+        self.assertEqual(result.role.value,'user')
+    
 
 
 if __name__ == "__main__":
