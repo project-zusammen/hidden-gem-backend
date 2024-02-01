@@ -49,12 +49,11 @@ class User(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def get_all_users(self, page):
+    def get_all_users(self, page, count):
         try:
-            limit = 50
             if page is not None:
-                offset = (page - 1) * limit
-                users = self.query.limit(limit).offset(offset).all()
+                offset = (page - 1) * count
+                users = self.query.limit(count).offset(offset).all()
             else:
                 users = self.query.all()
             return [user.serialize() for user in users]

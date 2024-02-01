@@ -31,14 +31,14 @@ class UserSignUp(Resource):
 
 @ns.route("/user")
 class UserList(Resource):
-    @ns.doc(security="bearer", params={'page': {'description': 'Page number', 'type': 'integer'}}) 
+    @ns.param("page", "Page of data you want to retrieve")
+    @ns.param("count", "How many items you want to include in each page")
     @token_required
     def get(self, decoded_token):
         """List all users"""
-        page = request.args.get('page', default=None, type=int)
-        return get_all_users(page)
-
-
+        page = request.args.get("page", default=1, type=int)
+        count = request.args.get("count", default=50, type=int)
+        return get_all_users(page, count)
 
 @ns.route("/user/<public_id>")
 @ns.param("public_id", "The user identifier")
@@ -66,7 +66,6 @@ class User(Resource):
         user_id = decoded_token["id"]
         return delete_user(public_id, user_id)
 
-## work in progress, need authentication for this endpoint
 @ns.route("/user/<public_id>/status")
 @ns.param("public_id", "The user identifier")
 class UserStatus(Resource):
