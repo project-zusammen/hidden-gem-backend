@@ -3,8 +3,10 @@ import uuid
 import datetime
 from ..util.helper import convert_to_local_time
 from .review import Review  
+from .user import User  
 
 review_instance = Review()
+user_instance = User()
 
 
 class Bookmark(db.Model):
@@ -24,9 +26,10 @@ class Bookmark(db.Model):
     def serialize(self):
         created_at = convert_to_local_time(self.created_at)
         updated_at = convert_to_local_time(self.updated_at)
+        user_public_id = user_instance.get_user_public_id_by_id(self.user_id)
         return {
             "public_id": self.public_id,
-            "user_id": self.user_id,
+            "user_id": user_public_id,
             "review_id": self.review_id,
             "created_at": created_at.isoformat() if self.created_at else None,
             "updated_at": updated_at.isoformat() if self.updated_at else None,
