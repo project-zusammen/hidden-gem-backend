@@ -51,11 +51,8 @@ class User(db.Model):
 
     def get_all_users(self, page, count):
         try:
-            if page is not None:
-                offset = (page - 1) * count
-                users = self.query.limit(count).offset(offset).all()
-            else:
-                users = self.query.all()
+            offset = (page - 1) * count
+            users = self.query.limit(count).offset(offset).all()
             return [user.serialize() for user in users]
         except Exception as e:
             raise e
