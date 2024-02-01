@@ -48,6 +48,7 @@ def update_user_status(public_id, data):
         log.error(f"Error in update_user: {str(e)}")
         return error_handler(e)
 
+
 def get_all_users(page):
     try:
         users = user_model.get_all_users(page)
@@ -90,6 +91,7 @@ def delete_user(public_id, user_id):
     except Exception as e:
         log.error(f"Error in delete_user: {str(e)}")
         return error_handler(e)
+
 
 def user_auth(data):
     try:

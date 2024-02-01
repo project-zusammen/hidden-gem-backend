@@ -4,11 +4,8 @@ from unittest.mock import patch
 from app import create_app
 from app.main.util.helper import create_token
 
-user_data = {
-    "username": "aqiz",
-    "email": "aqiz@gmail.com",
-    "password": "Aqiz123!"
-}
+user_data = {"username": "aqiz", "email": "aqiz@gmail.com", "password": "Aqiz123!"}
+
 
 class TestUserEndpoints(TestCase):
     def setUp(self):
@@ -39,19 +36,19 @@ class TestUserEndpoints(TestCase):
         self.assertEqual(expected_response["data"], res)
         mock_register_user.assert_called_once_with(user_data)
 
-
     @patch("app.main.controller.user_controller.get_all_users")
     def test_get_all_users_success(self, mock_get_all_users):
         # ARRANGE
-        expected_data = [{
-            "id" : 1,
-            "public_id": "c47560e6-619f-4867-8ea7-213709aea349",
-            "username": "aqiz",
-            "email": "aqiz@gmail.com",
-            "created_at": "2024-01-03T11:21:23",
-            "updated_at": "2024-01-03T11:21:23",
-            "role": "user",
-            "status": "active"
+        expected_data = [
+            {
+                "id": 1,
+                "public_id": "c47560e6-619f-4867-8ea7-213709aea349",
+                "username": "aqiz",
+                "email": "aqiz@gmail.com",
+                "created_at": "2024-01-03T11:21:23",
+                "updated_at": "2024-01-03T11:21:23",
+                "role": "user",
+                "status": "active",
             }
         ]
         expected_response = {
@@ -62,10 +59,10 @@ class TestUserEndpoints(TestCase):
 
         mock_get_all_users.return_value = expected_response
         token = create_token(expected_data[0])
-        
+
         # ACT
         with self.app.test_client() as client:
-            response = client.get("/api/user", headers={"X-API-KEY":token})
+            response = client.get("/api/user", headers={"X-API-KEY": token})
             result = response.get_json()["data"]
             first_user = result[0]
 
@@ -84,14 +81,14 @@ class TestUserEndpoints(TestCase):
         # ARRANGE
         expected_data = [
             {
-                "id" : 1,
+                "id": 1,
                 "public_id": "c47560e6-619f-4867-8ea7-213709aea349",
                 "username": "aqiz",
                 "email": "aqiz@gmail.com",
                 "created_at": "2024-01-03T11:21:23",
                 "updated_at": "2024-01-03T11:21:23",
                 "role": "user",
-                "status": "active"
+                "status": "active",
             }
         ]
         expected_response = {
@@ -103,10 +100,12 @@ class TestUserEndpoints(TestCase):
         mock_get_all_users.return_value = expected_response
         token = create_token(expected_data[0])
         page = 1
-        
+
         # ACT
         with self.app.test_client() as client:
-            response = client.get(f"/api/user?page={page}", headers={"X-API-KEY":token})
+            response = client.get(
+                f"/api/user?page={page}", headers={"X-API-KEY": token}
+            )
             result = response.get_json()["data"]
             first_user = result[0]
 
@@ -120,21 +119,20 @@ class TestUserEndpoints(TestCase):
         self.assertEqual(first_user.get("public_id"), expected_data[0].get("public_id"))
         mock_get_all_users.assert_called_once()
 
-
-
     @patch("app.main.controller.user_controller.get_a_user")
     def test_get_a_user(self, mock_get_a_user):
         # ARRANGE
         public_id = "c47560e6-619f-4867-8ea7-213709aea349"
-        expected_data = [{
-            "id":1,
-            "public_id": "c47560e6-619f-4867-8ea7-213709aea349",
-            "username": "aqiz",
-            "email": "aqiz@gmail.com",
-            "created_at": "2024-01-03T11:21:23",
-            "updated_at": "2024-01-03T11:21:23",
-            "role": "user",
-            "status": "active"
+        expected_data = [
+            {
+                "id": 1,
+                "public_id": "c47560e6-619f-4867-8ea7-213709aea349",
+                "username": "aqiz",
+                "email": "aqiz@gmail.com",
+                "created_at": "2024-01-03T11:21:23",
+                "updated_at": "2024-01-03T11:21:23",
+                "role": "user",
+                "status": "active",
             }
         ]
         expected_response = {
@@ -147,7 +145,9 @@ class TestUserEndpoints(TestCase):
 
         # ACT
         with self.app.test_client() as client:
-            response = client.get(f"/api/user/{public_id}", headers={"X-API-KEY":token})
+            response = client.get(
+                f"/api/user/{public_id}", headers={"X-API-KEY": token}
+            )
             res = json.loads(response.data.decode("utf-8"))
 
         # ASSERT
@@ -163,12 +163,12 @@ class TestUserEndpoints(TestCase):
         # ARRANGE
         public_id = "test-public-id"
         token_payload = {
-            "id":1,
+            "id": 1,
             "public_id": "c47560e6-619f-4867-8ea7-213709aea349",
             "username": "aqiz",
             "email": "aqiz@gmail.com",
             "role": "user",
-            "status": "active"
+            "status": "active",
         }
         expected_response = {
             "status": "success",
@@ -180,25 +180,27 @@ class TestUserEndpoints(TestCase):
 
         # ACT
         with self.app.test_client() as client:
-            response = client.put(f"/api/user/{public_id}", json=user_data, headers={"X-API-KEY":token})
+            response = client.put(
+                f"/api/user/{public_id}", json=user_data, headers={"X-API-KEY": token}
+            )
             res = response.get_json()["data"]
 
         # ASSERT
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(expected_response['data']["username"], res.get("username"))
-        self.assertEqual(expected_response['data']["email"], res.get("email"))
+        self.assertEqual(expected_response["data"]["username"], res.get("username"))
+        self.assertEqual(expected_response["data"]["email"], res.get("email"))
         mock_update_user.assert_called_once()
 
     @patch("app.main.controller.user_controller.delete_user")
     def test_delete_user(self, mock_delete_user):
         # ARRANGE
         token_payload = {
-            "id":1,
+            "id": 1,
             "public_id": "c47560e6-619f-4867-8ea7-213709aea349",
             "username": "aqiz",
             "email": "aqiz@gmail.com",
             "role": "user",
-            "status": "active"
+            "status": "active",
         }
         expected_response = {
             "status": "success",
@@ -209,7 +211,9 @@ class TestUserEndpoints(TestCase):
 
         # ACT
         with self.app.test_client() as client:
-            response = client.delete(f"/api/user/{token_payload['public_id']}",headers={"X-API-KEY":token})
+            response = client.delete(
+                f"/api/user/{token_payload['public_id']}", headers={"X-API-KEY": token}
+            )
             res = response.get_json()
 
         # ASSERT
@@ -222,18 +226,18 @@ class TestUserEndpoints(TestCase):
     def test_update_user_status(self, mock_update_user):
         # ARRANGE
         expected_data = {
-            "id":1,
+            "id": 1,
             "public_id": "c47560e6-619f-4867-8ea7-213709aea349",
             "username": "aqiz",
             "email": "aqiz@gmail.com",
             "created_at": "2024-01-03T11:21:23",
             "updated_at": "2024-01-03T11:21:23",
             "role": "admin",
-            "status": "active"
+            "status": "active",
         }
-        public_id = expected_data['public_id']
+        public_id = expected_data["public_id"]
         update_status_payload = {
-            "banned" : True,
+            "banned": True,
         }
         expected_response = {
             "status": "success",
@@ -245,31 +249,35 @@ class TestUserEndpoints(TestCase):
 
         # ACT
         with self.app.test_client() as client:
-            response = client.put(f"/api/user/{public_id}/status", json=update_status_payload, headers={"X-API-KEY":token})
+            response = client.put(
+                f"/api/user/{public_id}/status",
+                json=update_status_payload,
+                headers={"X-API-KEY": token},
+            )
             res = response.get_json()["data"]
 
         # ASSERT
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(expected_response['data']["username"], res.get("username"))
-        self.assertEqual(expected_response['data']["email"], res.get("email"))
+        self.assertEqual(expected_response["data"]["username"], res.get("username"))
+        self.assertEqual(expected_response["data"]["email"], res.get("email"))
         mock_update_user.assert_called_once()
 
     @patch("app.main.controller.user_controller.user_auth")
     def test_user_auth(self, mock_user_auth):
         # ARRANGE
         expected_data = {
-            "id":1,
+            "id": 1,
             "public_id": "c47560e6-619f-4867-8ea7-213709aea349",
             "username": "aqiz",
             "email": "aqiz@gmail.com",
             "password": "password",
             "role": "admin",
-            "status": "active"
+            "status": "active",
         }
         token = create_token(expected_data)
         user_credential = {
-            "email" : expected_data['email'],
-            "password": expected_data['password']
+            "email": expected_data["email"],
+            "password": expected_data["password"],
         }
         expected_response = {
             "status": "success",
@@ -285,9 +293,7 @@ class TestUserEndpoints(TestCase):
 
         # ASSERT
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(expected_response["status"], res['status'])
-        self.assertEqual(expected_response["message"], res['message'])
-        self.assertEqual(expected_response["token"], res['token'])
+        self.assertEqual(expected_response["status"], res["status"])
+        self.assertEqual(expected_response["message"], res["message"])
+        self.assertEqual(expected_response["token"], res["token"])
         mock_user_auth.assert_called_once_with(user_credential)
-    
-    
