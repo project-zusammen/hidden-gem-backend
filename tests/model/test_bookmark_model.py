@@ -12,11 +12,8 @@ review_data = {
     "content": "This is a test review.",
     "location": "Test Location",
 }
-user_data = {
-    "username": "aqiz",
-    "email": "aqiz@gmail.com",
-    "password": "Aqiz123!"
-}
+user_data = {"username": "aqiz", "email": "aqiz@gmail.com", "password": "Aqiz123!"}
+
 
 class TestBookmark(unittest.TestCase):
     def setUp(self):
@@ -34,10 +31,8 @@ class TestBookmark(unittest.TestCase):
         # ARRANGE
         review_model = Review()
         created_review = review_model.create_review(review_data)
-        review_id = review_model.get_review_id_by_public_id(created_review['public_id'])
-        data = {
-            'review_id': created_review['public_id']
-        }
+        review_id = review_model.get_review_id_by_public_id(created_review["public_id"])
+        data = {"review_id": created_review["public_id"]}
         user_model = User()
         new_user = user_model.register_user(user_data)
         bookmark_model = Bookmark()
@@ -46,7 +41,7 @@ class TestBookmark(unittest.TestCase):
 
         # ASSERT
         self.assertIsNotNone(new_bookmark)
-        self.assertEqual(new_bookmark["user_id"], new_user['public_id'])
+        self.assertEqual(new_bookmark["user_id"], new_user["public_id"])
         self.assertEqual(new_bookmark["review_id"], review_id)
 
     def test_get_bookmark_by_userid(self):
@@ -55,9 +50,7 @@ class TestBookmark(unittest.TestCase):
         created_review = review_model.create_review(review_data)
         user_model = User()
         new_user = user_model.register_user(user_data)
-        bookmark_data = {
-            "review_id": created_review['public_id']
-        }
+        bookmark_data = {"review_id": created_review["public_id"]}
         bookmark_model = Bookmark()
         new_bookmark = bookmark_model.create_bookmark(bookmark_data, 1)
 
@@ -77,17 +70,13 @@ class TestBookmark(unittest.TestCase):
         created_review = review_model.create_review(review_data)
         user_model = User()
         new_user = user_model.register_user(user_data)
-        bookmark_data = {
-            "review_id": created_review['public_id']
-        }
+        bookmark_data = {"review_id": created_review["public_id"]}
         bookmark_model = Bookmark()
         new_bookmark = bookmark_model.create_bookmark(bookmark_data, 1)
 
         # ACT
-        deleted_bookmark = bookmark_model.delete_bookmark(new_bookmark['public_id'],1)
+        deleted_bookmark = bookmark_model.delete_bookmark(new_bookmark["public_id"], 1)
 
         # ASSERT
         self.assertIsNotNone(deleted_bookmark)
-        self.assertEqual(deleted_bookmark,True)
-
-    
+        self.assertEqual(deleted_bookmark, True)

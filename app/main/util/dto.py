@@ -68,6 +68,7 @@ class RegionDto:
         {"city": fields.String(required=True, description="city name for region")},
     )
 
+
 class AppealDto:
     appeal = api.model(
         "appeal",
@@ -77,6 +78,7 @@ class AppealDto:
         },
     )
     status = api.model("status", {"status": fields.Boolean(description="status")})
+
 
 class BookmarkDto:
     bookmark = api.model(

@@ -6,11 +6,13 @@ from app.main.util.helper import create_token
 from app.main.service.bookmark_service import (
     create_bookmark,
     get_bookmark_by_userid,
-    delete_bookmark
+    delete_bookmark,
 )
+
 
 def generate_fake_public_id():
     return str(uuid.uuid4())
+
 
 class TestBookmarkService(TestCase):
     @classmethod
@@ -29,19 +31,19 @@ class TestBookmarkService(TestCase):
         user_id = 1
         data = [
             {
-            "public_id": "ec064187-a837-4f75-b22a-0b6ee6136a7e",
-            "user_id": 1,
-            "review_id": 1,
-            "created_at": "2024-01-16T03:01:20",
-            "updated_at": "2024-01-16T03:01:20"
+                "public_id": "ec064187-a837-4f75-b22a-0b6ee6136a7e",
+                "user_id": 1,
+                "review_id": 1,
+                "created_at": "2024-01-16T03:01:20",
+                "updated_at": "2024-01-16T03:01:20",
             },
             {
-            "public_id": "4306e51c-8715-4c62-aae2-ffd86a4b5794",
-            "user_id": 1,
-            "review_id": 2,
-            "created_at": "2024-01-16T03:13:22",
-            "updated_at": "2024-01-16T03:13:22"
-            }
+                "public_id": "4306e51c-8715-4c62-aae2-ffd86a4b5794",
+                "user_id": 1,
+                "review_id": 2,
+                "created_at": "2024-01-16T03:13:22",
+                "updated_at": "2024-01-16T03:13:22",
+            },
         ]
         mock_get_bookmark_by_userid.return_value = data
 
@@ -65,14 +67,11 @@ class TestBookmarkService(TestCase):
     @patch("app.main.model.bookmark.Bookmark.create_bookmark")
     def test_create_bookmark(self, mock_create_bookmark):
         # Arrange
-        data = {
-            "user_id":1,
-            "review_id": 1
-        }
+        data = {"user_id": 1, "review_id": 1}
         mock_create_bookmark.return_value = data
 
         # Act
-        response, status_code = create_bookmark({'review_id':1}, 1)
+        response, status_code = create_bookmark({"review_id": 1}, 1)
         result = response["data"]
 
         # Assert
@@ -91,12 +90,10 @@ class TestBookmarkService(TestCase):
         mock_delete_bookmark.return_value = True
 
         # Act
-        response, status_code = delete_bookmark(public_id,user_id)
+        response, status_code = delete_bookmark(public_id, user_id)
 
         # Assert
         self.assertEqual(status_code, 201)
         self.assertEqual(response["status"], "success")
         self.assertEqual(response["message"], "Successfully deleted.")
         mock_delete_bookmark.assert_called_once()
-
-   

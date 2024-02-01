@@ -2,8 +2,8 @@ from .. import db
 import uuid
 import datetime
 from ..util.helper import convert_to_local_time
-from .review import Review  
-from .user import User  
+from .review import Review
+from .user import User
 
 review_instance = Review()
 user_instance = User()
@@ -37,13 +37,15 @@ class Bookmark(db.Model):
 
     def create_bookmark(self, data, user_id):
         try:
-            review_id = review_instance.get_review_id_by_public_id(data.get('review_id'))
+            review_id = review_instance.get_review_id_by_public_id(
+                data.get("review_id")
+            )
             self.public_id = str(uuid.uuid4())
             self.user_id = user_id
             self.review_id = review_id
             self.created_at = datetime.datetime.utcnow()
             self.updated_at = datetime.datetime.utcnow()
-            
+
             db.session.add(self)
             db.session.commit()
             return self.serialize()

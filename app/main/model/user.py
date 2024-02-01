@@ -84,7 +84,6 @@ class User(db.Model):
         except Exception as e:
             raise e
 
-
     def get_user_by_id(self, public_id, user_id):
         try:
             user = self.check_user_authorization(public_id, user_id)
@@ -178,7 +177,7 @@ class User(db.Model):
                 return user
         except Exception as e:
             raise e
-        
+
     def get_user_public_id_by_id(self, id):
         try:
             user = self.query.filter_by(id=id).first()
