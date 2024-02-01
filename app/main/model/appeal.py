@@ -58,4 +58,3 @@ class Appeal(db.Model):
             return self.serialize()
         except Exception as e:
             raise e
-

@@ -6,7 +6,6 @@ from ..util.helper import convert_to_local_time, is_valid_email, create_token
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
-
 # class UserRole(Enum):
 #     admin = "admin"
 #     user = "user"
@@ -84,7 +83,6 @@ class User(db.Model):
             return self.serialize()
         except Exception as e:
             raise e
-
 
     def get_user_by_id(self, public_id, user_id):
         try:

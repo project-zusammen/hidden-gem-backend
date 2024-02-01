@@ -63,13 +63,8 @@ class CommentDto:
     visible = api.model("visible", {"visible": fields.Boolean(description="visible")})
 
 
-
 class RegionDto:
     region = api.model(
         "region",
-        {
-            "city": fields.String(required=True, description="city name for region")
-        }
+        {"city": fields.String(required=True, description="city name for region")},
     )
-
-    
