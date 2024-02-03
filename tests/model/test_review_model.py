@@ -108,11 +108,11 @@ class TestReview(unittest.TestCase):
         # ACT
         page = 1
         count = 1
-        tag_id = 0
+        # tag_id = 0
         category_id = 1
         region_id = 1
         retrieved_reviews = review_model.get_all_reviews(
-            page, count, tag_id, category_id, region_id
+            page, count, category_id, region_id
         )
 
         # ASSERT

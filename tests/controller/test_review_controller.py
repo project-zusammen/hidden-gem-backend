@@ -93,10 +93,11 @@ class TestReviewEndpoints(TestCase):
         }
         mock_get_all_reviews.return_value = expected_response
         page = 1
+        count = 2
 
         # ACT
         with self.app.test_client() as client:
-            response = client.get(f"/api/review?page={page}")
+            response = client.get(f"/api/review?page={page}&count={count}")
             result = json.loads(response.data.decode("utf-8"))
             result = result.get("data")
             first_review = result[0]
