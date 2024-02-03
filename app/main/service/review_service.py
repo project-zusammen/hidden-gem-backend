@@ -10,11 +10,11 @@ review_tag_model = ReviewTag()
 def create_review(data):
     try:
         review = review_model.create_review(data)
-        review_id = review_model.get_review_id_by_public_id(review["public_id"])
-        hashtags = review_model.get_the_hashtag_from_content(review["content"])
-        for hashtag in hashtags:
-            tag = tag_model.create_tag(hashtag)
-            result = review_tag_model.create_review_tag(tag["id"], review_id)
+        # review_id = review_model.get_review_id_by_public_id(review["public_id"])
+        # hashtags = review_model.get_the_hashtag_from_content(review["content"])
+        # for hashtag in hashtags:
+        #     tag = tag_model.create_tag(hashtag)
+        #     result = review_tag_model.create_review_tag(tag["id"], review_id)
         response_object = {
             "status": "success",
             "message": "Successfully created.",
