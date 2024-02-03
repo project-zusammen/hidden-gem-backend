@@ -23,17 +23,17 @@ from ...extensions import ns
 class ReviewList(Resource):
     @ns.param("page", "Page of data you want to retrieve")
     @ns.param("count", "How many items you want to include in each page")
-    @ns.param("tag_id", "Retrieve data based on the specified tag")
+    # @ns.param("tag_id", "Retrieve data based on the specified tag")
     @ns.param("category_id", "Retrieve data based on the specified category")
     @ns.param("region_id", "Retrieve data based on the specified region")
     def get(self):
         """List all reviews"""
         page = request.args.get("page", default=1, type=int)
         count = request.args.get("count", default=50, type=int)
-        tag_id = request.args.get("tag_id", default=0, type=int)
+        # tag_id = request.args.get("tag_id", default=0, type=int)
         category_id = request.args.get("category_id", default=0, type=int)
         region_id = request.args.get("region_id", default=0, type=int)
-        return get_all_reviews(page, count, tag_id, category_id, region_id)
+        return get_all_reviews(page, count, category_id, region_id)
 
     @ns.expect(_review, validate=True)
     def post(self):

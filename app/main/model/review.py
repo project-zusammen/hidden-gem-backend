@@ -55,15 +55,15 @@ class Review(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def get_all_reviews(self, page, count, tag_id, category_id, region_id):
+    def get_all_reviews(self, page, count, region_id, category_id ):
         try:
             offset = (page - 1) * count
-            query = db.session.query(Review).join(
-                ReviewTag, ReviewTag.review_id == Review.id, isouter=True
-            )
-            query = query.filter(Review.visible == True)
-            if tag_id:
-                query = query.filter(ReviewTag.tag_id == tag_id)
+            # query = db.session.query(Review).join(
+            #     ReviewTag, ReviewTag.review_id == Review.id, isouter=True
+            # )
+            query = self.query.filter(Review.visible == True)
+            # if tag_id:
+            #     query = query.filter(ReviewTag.tag_id == tag_id)
             if category_id:
                 query = query.filter(Review.category_id == category_id)
             if region_id:
