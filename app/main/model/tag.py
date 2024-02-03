@@ -70,7 +70,6 @@ class ReviewTag(db.Model):
         created_at = convert_to_local_time(self.created_at)
         updated_at = convert_to_local_time(self.updated_at)
         return {
-            "id": self.id,
             "public_id": self.public_id,
             "tag_id": self.tag_id,
             "review_id": self.review_id,
