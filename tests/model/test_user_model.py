@@ -55,9 +55,10 @@ class TestUser(unittest.TestCase):
         user_model = User()
         user = user_model.register_user(user_data)
         page = 1
+        count = 2
 
         # ACT
-        retrieved_users = user_model.get_all_users(page)
+        retrieved_users = user_model.get_all_users(page, count)
 
         # ASSERT
         self.assertIsNotNone(retrieved_users)
