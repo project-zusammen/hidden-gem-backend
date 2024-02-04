@@ -17,7 +17,7 @@ def get_db_uri(db_user, db_password):
 
 DATABASE_URI = get_db_uri(db_user, db_password)
 
-ENV = env.str("FLASK_DEBUG", default=False)
+ENV = env.str("FLASK_DEBUG", default="False")
 DEBUG = ENV == "dev"
 SQLALCHEMY_DATABASE_URI = DATABASE_URI
 SECRET_KEY = env.str("SECRET_KEY")
