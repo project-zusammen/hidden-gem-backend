@@ -19,6 +19,7 @@ report_data = {
     "type": "review",
     "item_id": str(uuid.uuid4()),
     "reason": "Test Reason",
+    "status": "received",
 }
 
 error_message = "Input payload validation failed"
@@ -80,6 +81,7 @@ class TestReportEndpoints(TestCase):
         report_data_missing_type = {
             "item_id": "some_item_id",
             "reason": "some_reason",
+            "status": "received",
         }
 
         expected_response = {
@@ -104,6 +106,7 @@ class TestReportEndpoints(TestCase):
         report_data_missing_item_id = {
             "type": "review",
             "reason": "some_reason",
+            "status": "received",
         }
 
         expected_response = {
@@ -128,6 +131,7 @@ class TestReportEndpoints(TestCase):
         report_data_missing_reason = {
             "type": "review",
             "item_id": "some_item_id",
+            "status": "received",
         }
 
         expected_response = {
@@ -139,6 +143,31 @@ class TestReportEndpoints(TestCase):
         # ACT
         with self.app.test_client() as client:
             response = client.post("/api/report", json=report_data_missing_reason)
+            res = response.get_json()
+
+        # ASSERT
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(expected_response["message"], res["message"])
+        self.assertEqual(expected_response["errors"], res["errors"])
+    
+    @patch("app.main.controller.report_controller.create_report")
+    def test_create_report_missing_status(self, mock_create_report):
+        # ARRANGE
+        report_data_missing_status = {
+            "type": "review",
+            "item_id": "some_item_id",
+            "reason": "some_reason",
+        }
+
+        expected_response = {
+            "message": error_message,
+            "errors": {'status': "'status' is a required property"},
+        }
+        mock_create_report.return_value = expected_response
+
+        # ACT
+        with self.app.test_client() as client:
+            response = client.post("/api/report", json=report_data_missing_status)
             res = response.get_json()
 
         # ASSERT

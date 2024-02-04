@@ -16,6 +16,7 @@ class Report(db.Model):
     type = db.Column(db.String(100), nullable=False)
     item_id = db.Column(db.Integer, db.ForeignKey('review.id'), nullable=False)
     reason = db.Column(db.String(255), nullable=False)
+    status = db.Column(db.String(100), nullable=False, default="received")
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False)
 
@@ -42,6 +43,7 @@ class Report(db.Model):
             "type": self.type,
             "item_id": item_id,
             "reason": self.reason,
+            "status": self.status,
             "created_at": created_at.isoformat() if self.created_at else None,
             "updated_at": updated_at.isoformat() if self.updated_at else None,
         }
@@ -55,6 +57,7 @@ class Report(db.Model):
             self.public_id = str(uuid.uuid4())
             self.user_id = data.get("user_id")
             self.type = data.get("type")
+            self.status = data.get("status", "received")
             item_id = data.get("item_id")
 
             if self.type == "comment":

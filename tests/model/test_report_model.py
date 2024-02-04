@@ -16,6 +16,7 @@ review_data = {
 
 report_data = {
     "reason": "Test Reason",
+    "status": "received",
 }
 
 def register_user():
@@ -65,6 +66,7 @@ class TestReport(unittest.TestCase):
         self.assertEqual(created_report["type"], report_data["type"])
         self.assertEqual(created_report["item_id"], report_data["item_id"])
         self.assertEqual(created_report["reason"], report_data["reason"])
+        self.assertEqual(created_report["status"], report_data["status"])
     
     def test_create_and_get_report_on_comment(self):
         # ARRANGE
@@ -96,6 +98,7 @@ class TestReport(unittest.TestCase):
         self.assertEqual(created_report["type"], report_data["type"])
         self.assertEqual(created_report["item_id"], report_data["item_id"])
         self.assertEqual(created_report["reason"], report_data["reason"])
+        self.assertEqual(created_report["status"], report_data["status"])
 
 if __name__ == "__main__":
     unittest.main()
