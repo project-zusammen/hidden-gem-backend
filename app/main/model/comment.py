@@ -45,10 +45,6 @@ class Comment(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def get_all_comments(self):
-        comments = self.query.filter_by(visible=True).all()
-        return [comment.serialize() for comment in comments]
-
     def create_comment(self, data):
         try:
             self.public_id = str(uuid.uuid4())
@@ -68,8 +64,19 @@ class Comment(db.Model):
         except Exception as e:
             raise e
 
+    def get_all_comments(self):
+        try:
+            comments = self.query.filter_by(visible=True).all()
+            return [comment.serialize() for comment in comments]
+        except Exception as e:
+            raise e
+
     def get_comment_by_id(self, public_id):
-        return self.query.filter_by(public_id=public_id, visible=True).first()
+        comment = self.query.filter_by(public_id=public_id, visible=True).first()
+        try:
+            return comment.serialize()
+        except Exception as e:
+            raise e
 
     def get_comment_public_id(self, id):
         comment = self.query.filter_by(id=id).first()
@@ -78,43 +85,53 @@ class Comment(db.Model):
         return None
 
     def delete_comment(self, public_id):
-        comment = self.get_comment_by_id(public_id)
-        if not comment:
-            return None
-        else:
-            comment.visible = False
-            comment.updated_at = datetime.datetime.utcnow()
-            comment.save()
-            return comment.serialize()
+        try:
+            comment = self.query.filter_by(public_id=public_id, visible=True).first()
+            if not comment:
+                return None
+            else:
+                comment.visible = False
+                comment.updated_at = datetime.datetime.utcnow()
+                comment.save()
+                return comment.serialize()
+        except Exception as e:
+            raise e
 
     def update_comment(self, public_id, data):
-        comment = self.get_comment_by_id(public_id)
-        if not comment:
-            return None
-        else:
-            comment.content = data.get("content")
-            comment.updated_at = datetime.datetime.utcnow()
-            comment.save()
-            return comment.serialize()
+        try:
+            comment = self.query.filter_by(public_id=public_id, visible=True).first()
+            if not comment:
+                return None
+            else:
+                comment.content = data.get("content")
+                comment.updated_at = datetime.datetime.utcnow()
+                comment.save()
+                return comment.serialize()
+        except Exception as e:
+            raise e
 
     def upvote_comment(self, public_id, upvote=True):
-        comment = self.get_comment_by_id(public_id)
-        if not comment:
-            return None
-        if upvote:
-            comment.upvotes += 1
-        else:
-            comment.downvotes += 1
-        comment.updated_at = datetime.datetime.utcnow()
-        comment.save()
-        return comment.serialize()
-
-    def update_visibility(self, public_id, visible=True):
-        comment = self.query.filter_by(public_id=public_id).first()
-        if not comment:
-            return None
-        else:
-            comment.visible = visible
+        try:
+            comment = self.query.filter_by(public_id=public_id, visible=True).first()
+            if upvote:
+                comment.upvotes += 1
+            else:
+                comment.downvotes += 1
             comment.updated_at = datetime.datetime.utcnow()
             comment.save()
             return comment.serialize()
+        except Exception as e:
+            raise e
+
+    def update_visibility(self, public_id, visible=True):
+        try:
+            comment = self.query.filter_by(public_id=public_id).first()
+            if not comment:
+                return None
+            else:
+                comment.visible = visible
+                comment.updated_at = datetime.datetime.utcnow()
+                comment.save()
+                return comment.serialize()
+        except Exception as e:
+            raise e
