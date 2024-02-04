@@ -50,24 +50,27 @@ class Comment(db.Model):
         return [comment.serialize() for comment in comments]
 
     def create_comment(self, data):
-        self.public_id = str(uuid.uuid4())
-        self.content = data.get("content")
-        
-        review_model = Review()
-        review = review_model.get_review_by_id(data.get("review_id"))
-        self.review_id = review.id
+        try:
+            self.public_id = str(uuid.uuid4())
+            self.content = data.get("content")
+            
+            review_model = Review()
+            review = review_model.get_review_by_id(data.get("review_id"))
+            self.review_id = review.id
 
-        if not self.content:
-            return None
+            if not self.content:
+                return None
 
-        self.created_at = datetime.datetime.utcnow()
-        self.updated_at = datetime.datetime.utcnow()
-        self.upvotes = 0
-        self.downvotes = 0
-        self.visible = True
+            self.created_at = datetime.datetime.utcnow()
+            self.updated_at = datetime.datetime.utcnow()
+            self.upvotes = 0
+            self.downvotes = 0
+            self.visible = True
 
-        self.save()
-        return self.serialize()
+            self.save()
+            return self.serialize()
+        except Exception as e:
+            raise e
 
     def get_comment_by_id(self, public_id):
         return self.query.filter_by(public_id=public_id, visible=True).first()
