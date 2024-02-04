@@ -30,6 +30,7 @@ appeal_data = {
     "user_id": user_data["public_id"]
 }
 
+public_id = "public_id_test"
 
 class TestAppealEndpoints(TestCase):
     def setUp(self):
@@ -50,9 +51,12 @@ class TestAppealEndpoints(TestCase):
         }
         mock_create_appeal.return_value = expected_response
 
+        token = create_token(user_data)
+        headers = {"X-API-KEY": token}
+
         # ACT
         with self.app.test_client() as client:
-            response = client.post("/api/appeal", json=appeal_data)
+            response = client.post("/api/appeal", json=appeal_data, headers=headers)
             res = response.get_json()
             res = res.get("data")
 
@@ -85,5 +89,30 @@ class TestAppealEndpoints(TestCase):
         # ASSERT
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(res, list)
-        self.assertEqual(expected_data[0].get("content"), first_appeal.get("content"))
+        self.assertEqual(expected_data[0]["reason"], first_appeal["reason"])
         mock_get_all_appeals.assert_called_once()
+
+    @patch("app.main.controller.appeal_controller.get_a_appeal")
+    def test_get_a_appeal(self, mock_get_a_appeal):
+        # ARRANGE
+        expected_data = appeal_data
+        expected_response = {
+            "status": "success",
+            "message": "Successfully retrieved appeal.",
+            "data": expected_data,
+        }
+        mock_get_a_appeal.return_value = expected_response
+
+        token = create_token(user_data)
+        headers = {"X-API-KEY": token}
+
+        # ACT
+        with self.app.test_client() as client:
+            response = client.get(f"/api/appeal/{public_id}", headers=headers)
+            res = json.loads(response.data.decode("utf-8"))
+            res = res.get("data")
+
+        # ASSERT
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_data["reason"], res["reason"])
+        mock_get_a_appeal.assert_called_once()
