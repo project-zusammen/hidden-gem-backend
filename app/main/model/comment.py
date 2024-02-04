@@ -53,13 +53,9 @@ class Comment(db.Model):
         try:
             self.public_id = str(uuid.uuid4())
             self.content = data.get("content")
-            
-            review_model = Review()
-            review = review_model.get_review_by_id(data.get("review_id"))
-            self.review_id = review.id
 
             if not self.content:
-                return None
+                raise Exception("Comment content is required")
 
             self.created_at = datetime.datetime.utcnow()
             self.updated_at = datetime.datetime.utcnow()
