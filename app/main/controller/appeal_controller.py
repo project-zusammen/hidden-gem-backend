@@ -28,18 +28,22 @@ class AppealList(Resource):
         """List all appeals"""
         return get_all_appeals()
     
+    @ns.doc(security="bearer")
+    @token_required
     @ns.expect(_appeal, validate=True)
-    def post(self):
+    def post(self, decoded_token):
         """Creates a new appeal"""
-        return create_appeal(ns.payload)
+        user_id = decoded_token["id"]
+        return create_appeal(ns.payload, user_id)
     
 
 @ns.route("/appeal/<public_id>")
 @ns.param("public_id", "The appeal identifier")
 class Appeal(Resource):
+    @ns.doc(security="bearer")
+    @token_required
     def get(self, decoded_token, public_id):
         user_id = decoded_token["id"]
         role = decoded_token["role"]
         """Get a appeal by its identifier"""
-        appeal = get_a_appeal(public_id, user_id, role)
-        return appeal
+        return get_a_appeal(public_id, user_id, role)

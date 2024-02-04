@@ -23,7 +23,7 @@ def get_all_appeals():
         log.error(f"Error in get_all_appeals: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
     
-def get_a_appeal(public_id, user_id , role):
+def get_a_appeal(public_id, user_id, role):
     try:
         appeal = appeal_model.get_appeal_by_id(public_id, user_id, role)
         if not appeal:
@@ -42,8 +42,9 @@ def get_a_appeal(public_id, user_id , role):
         log.error(f"Error in get_a_appeal: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
 
-def create_appeal(data):
+def create_appeal(data, user_id):
     try:
+        data["user_id"] = user_id
         appeal = appeal_model.create_appeal(data)
         response_object = {
             "status": "success",
