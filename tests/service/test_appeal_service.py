@@ -2,15 +2,12 @@ import uuid
 from unittest import TestCase
 from unittest.mock import patch
 from app import create_app
-from app.main.service.appeal_service import (
-    create_appeal,
-    get_all_appeals,
-    get_a_appeal
-)
+from app.main.service.appeal_service import create_appeal, get_all_appeals, get_a_appeal
 
 
 def generate_fake_public_id():
     return str(uuid.uuid4())
+
 
 appeal_1 = {
     "public_id": generate_fake_public_id(),
@@ -84,7 +81,11 @@ class TestAppealService(TestCase):
         mock_get_appeal_by_id.return_value = data
 
         # ACT
-        response, status_code = get_a_appeal(public_id=generate_fake_public_id(), user_id=generate_fake_public_id(), role="admin")
+        response, status_code = get_a_appeal(
+            public_id=generate_fake_public_id(),
+            user_id=generate_fake_public_id(),
+            role="admin",
+        )
         result = response["data"]
 
         # ASSERT
@@ -96,4 +97,3 @@ class TestAppealService(TestCase):
         self.assertEqual(result["report_id"], data["report_id"])
 
         mock_get_appeal_by_id.assert_called_once()
-        

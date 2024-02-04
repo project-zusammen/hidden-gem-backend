@@ -11,7 +11,7 @@ class Appeal(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     public_id = db.Column(db.String(100), unique=True, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     # report_id = db.Column(db.Integer, db.ForeignKey('report.id'), nullable=False)
     reason = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
@@ -30,7 +30,7 @@ class Appeal(db.Model):
         # report_id = report_model.get_report_public_id(self.report_id)
         return {
             "public_id": self.public_id,
-            'user_id': user_public_id,
+            "user_id": user_public_id,
             # 'report_id': self.report_id,
             "reason": self.reason,
             "created_at": created_at.isoformat() if self.created_at else None,
@@ -50,7 +50,7 @@ class Appeal(db.Model):
             self.reason = data.get("reason")
             if not self.reason:
                 raise Exception("Appeal explanation is required")
-            
+
             self.created_at = datetime.datetime.utcnow()
             self.updated_at = datetime.datetime.utcnow()
             self.status = "Need Reviewed"
@@ -59,14 +59,14 @@ class Appeal(db.Model):
             return self.serialize()
         except Exception as e:
             raise e
-        
+
     def get_all_appeals(self):
         try:
             appeals = self.query.all()
             return [appeal.serialize() for appeal in appeals]
         except Exception as e:
             raise e
-        
+
     def get_appeal_by_id(self, public_id, user_id, role):
         try:
             appeal = self.query.filter_by(public_id=public_id).first()

@@ -5,21 +5,20 @@ from app.extensions import db
 from app.main.model.appeal import Appeal
 from app.main.model.user import User
 
-appeal_data = {
-    "reason": "This is a test appeal.",
-    "report_id": "report_id"
-}
+appeal_data = {"reason": "This is a test appeal.", "report_id": "report_id"}
+
 
 def register_user():
     global user_id
     user_data = {
         "username": "test_user",
         "email": "test_user@gmail.com",
-        "password": "test_password"
+        "password": "test_password",
     }
     user_model = User()
     user = user_model.register_user(user_data)
     user_id = user_model.get_user_id(user["public_id"])
+
 
 class TestAppeal(unittest.TestCase):
     def setUp(self):
@@ -66,7 +65,9 @@ class TestAppeal(unittest.TestCase):
         appeal = appeal_model.create_appeal(appeal_data)
 
         # ACT
-        retrieved_appeal = appeal_model.get_appeal_by_id(public_id=appeal["public_id"], user_id=user_id, role="admin")
+        retrieved_appeal = appeal_model.get_appeal_by_id(
+            public_id=appeal["public_id"], user_id=user_id, role="admin"
+        )
 
         # ASSERT
         self.assertIsNotNone(retrieved_appeal)
@@ -79,7 +80,9 @@ class TestAppeal(unittest.TestCase):
         appeal = appeal_model.create_appeal(appeal_data)
 
         # ACT
-        retrieved_appeal = appeal_model.get_appeal_by_id(public_id=appeal["public_id"], user_id=user_id, role="user")
+        retrieved_appeal = appeal_model.get_appeal_by_id(
+            public_id=appeal["public_id"], user_id=user_id, role="user"
+        )
 
         # ASSERT
         self.assertIsNotNone(retrieved_appeal)

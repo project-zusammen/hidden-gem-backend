@@ -27,10 +27,11 @@ report_data = {
 appeal_data = {
     "reason": "This is a test appeal.",
     "report_id": report_data["public_id"],
-    "user_id": user_data["public_id"]
+    "user_id": user_data["public_id"],
 }
 
 public_id = "public_id_test"
+
 
 class TestAppealEndpoints(TestCase):
     def setUp(self):
@@ -64,7 +65,7 @@ class TestAppealEndpoints(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_response["data"]["reason"], res.get("reason"))
         mock_create_appeal.assert_called_once()
-    
+
     @patch("app.main.controller.appeal_controller.get_all_appeals")
     def test_get_all_appeals(self, mock_get_all_appeals):
         # ARRANGE

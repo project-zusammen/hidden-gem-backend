@@ -4,11 +4,7 @@ from ..util.helper import error_handler
 
 
 from flask_restx import Resource
-from ..service.appeal_service import (
-    create_appeal,
-    get_all_appeals,
-    get_a_appeal
-)
+from ..service.appeal_service import create_appeal, get_all_appeals, get_a_appeal
 from ...extensions import ns
 
 
@@ -24,10 +20,10 @@ class AppealList(Resource):
         role = decoded_token["role"]
         if role != "admin":
             return error_handler("Access denied")
-        
+
         """List all appeals"""
         return get_all_appeals()
-    
+
     @ns.doc(security="bearer")
     @token_required
     @ns.expect(_appeal, validate=True)
@@ -35,7 +31,7 @@ class AppealList(Resource):
         """Creates a new appeal"""
         user_id = decoded_token["id"]
         return create_appeal(ns.payload, user_id)
-    
+
 
 @ns.route("/appeal/<public_id>")
 @ns.param("public_id", "The appeal identifier")
