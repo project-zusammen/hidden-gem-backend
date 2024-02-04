@@ -44,7 +44,12 @@ class Comment(db.Model):
         try:
             self.public_id = str(uuid.uuid4())
             self.content = data.get("content")
+        try:
+            self.public_id = str(uuid.uuid4())
+            self.content = data.get("content")
 
+            if not self.content:
+                raise Exception("Comment content is required")
             if not self.content:
                 raise Exception("Comment content is required")
 
@@ -53,7 +58,23 @@ class Comment(db.Model):
             self.upvotes = 0
             self.downvotes = 0
             self.visible = True
+            self.created_at = datetime.datetime.utcnow()
+            self.updated_at = datetime.datetime.utcnow()
+            self.upvotes = 0
+            self.downvotes = 0
+            self.visible = True
 
+            self.save()
+            return self.serialize()
+        except Exception as e:
+            raise e
+
+    def get_all_comments(self):
+        try:
+            comments = self.query.filter_by(visible=True).all()
+            return [comment.serialize() for comment in comments]
+        except Exception as e:
+            raise e
             self.save()
             return self.serialize()
         except Exception as e:
@@ -72,8 +93,24 @@ class Comment(db.Model):
             return comment.serialize()
         except Exception as e:
             raise e
+        comment = self.query.filter_by(public_id=public_id, visible=True).first()
+        try:
+            return comment.serialize()
+        except Exception as e:
+            raise e
 
     def delete_comment(self, public_id):
+        try:
+            comment = self.query.filter_by(public_id=public_id, visible=True).first()
+            if not comment:
+                return None
+            else:
+                comment.visible = False
+                comment.updated_at = datetime.datetime.utcnow()
+                comment.save()
+                return comment.serialize()
+        except Exception as e:
+            raise e
         try:
             comment = self.query.filter_by(public_id=public_id, visible=True).first()
             if not comment:
@@ -98,10 +135,24 @@ class Comment(db.Model):
                 return comment.serialize()
         except Exception as e:
             raise e
+        try:
+            comment = self.query.filter_by(public_id=public_id, visible=True).first()
+            if not comment:
+                return None
+            else:
+                comment.content = data.get("content")
+                comment.updated_at = datetime.datetime.utcnow()
+                comment.save()
+                return comment.serialize()
+        except Exception as e:
+            raise e
 
     def upvote_comment(self, public_id, upvote=True):
         try:
+<<<<<<< HEAD
             # comment = self.get_comment_by_id(public_id)
+=======
+>>>>>>> main
             comment = self.query.filter_by(public_id=public_id, visible=True).first()
             if upvote:
                 comment.upvotes += 1
@@ -114,6 +165,17 @@ class Comment(db.Model):
             raise e
 
     def update_visibility(self, public_id, visible=True):
+        try:
+            comment = self.query.filter_by(public_id=public_id).first()
+            if not comment:
+                return None
+            else:
+                comment.visible = visible
+                comment.updated_at = datetime.datetime.utcnow()
+                comment.save()
+                return comment.serialize()
+        except Exception as e:
+            raise e
         try:
             comment = self.query.filter_by(public_id=public_id).first()
             if not comment:
