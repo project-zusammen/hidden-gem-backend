@@ -47,6 +47,12 @@ class Comment(db.Model):
 
     def create_comment(self, data):
         try:
+            review_model = Review()
+            review = review_model.get_review_by_id(data.get("review_id"))
+            if not review:
+                raise Exception("Review not found")
+            
+            self. review_id = review.id
             self.public_id = str(uuid.uuid4())
             self.content = data.get("content")
 
