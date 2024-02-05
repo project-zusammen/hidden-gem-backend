@@ -139,7 +139,7 @@ class TestAppealEndpoints(TestCase):
             )
             res = response.get_json()
             res = res.get("data")
-        
+
         # ASSERT
         self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_response["data"]["status"], res["status"])

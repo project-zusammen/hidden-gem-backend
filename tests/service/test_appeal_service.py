@@ -2,7 +2,12 @@ import uuid
 from unittest import TestCase
 from unittest.mock import patch
 from app import create_app
-from app.main.service.appeal_service import create_appeal, get_all_appeals, get_a_appeal, update_appeal
+from app.main.service.appeal_service import (
+    create_appeal,
+    get_all_appeals,
+    get_a_appeal,
+    update_appeal,
+)
 
 
 def generate_fake_public_id():
@@ -106,7 +111,9 @@ class TestAppealService(TestCase):
         mock_update_appeal.return_value = data
 
         # ACT
-        response, status_code = update_appeal(public_id=generate_fake_public_id(), status="accepted")
+        response, status_code = update_appeal(
+            public_id=generate_fake_public_id(), status="accepted"
+        )
         result = response["data"]
 
         # ASSERT

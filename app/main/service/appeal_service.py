@@ -58,7 +58,7 @@ def create_appeal(data, user_id):
     except Exception as e:
         log.error(f"Error in create_appeal: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
-    
+
 
 def update_appeal(public_id, status):
     try:
