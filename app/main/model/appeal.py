@@ -16,7 +16,7 @@ class Appeal(db.Model):
     reason = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False)
-    status = db.Column(db.String(20), nullable=False, default="Need Reviewed")
+    status = db.Column(db.String(20), nullable=False, default="received")
 
     def __repr__(self):
         return f"<Appeal(reason={self.reason})>"
@@ -53,7 +53,7 @@ class Appeal(db.Model):
 
             self.created_at = datetime.datetime.utcnow()
             self.updated_at = datetime.datetime.utcnow()
-            self.status = "Need Reviewed"
+            self.status = "received"
 
             self.save()
             return self.serialize()
