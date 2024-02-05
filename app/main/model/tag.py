@@ -20,7 +20,6 @@ class Tag(db.Model):
         created_at = convert_to_local_time(self.created_at)
         updated_at = convert_to_local_time(self.updated_at)
         return {
-            "id": self.id,
             "public_id": self.public_id,
             "name": self.name,
             "created_at": created_at.isoformat() if self.created_at else None,
@@ -33,9 +32,9 @@ class Tag(db.Model):
 
     def create_tag(self, name):
         try:
-            tag = self.query.filter_by(name=name).first()
-            if tag:
-                return {"id": tag.id}
+            # tag = self.query.filter_by(name=name).first()
+            # if tag:
+            #     return {"id": tag.id}
             self.public_id = str(uuid.uuid4())
             self.name = name
             self.created_at = datetime.datetime.utcnow()
