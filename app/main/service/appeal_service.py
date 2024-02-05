@@ -70,7 +70,7 @@ def update_appeal(public_id, status):
             }, 409
         response_object = {
             "status": "success",
-            "message": "Successfully update appeal",
+            "message": "Successfully update appeal.",
             "data": updated_appeal,
         }
         return response_object, 201

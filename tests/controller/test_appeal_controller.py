@@ -117,3 +117,31 @@ class TestAppealEndpoints(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_data["reason"], res["reason"])
         mock_get_a_appeal.assert_called_once()
+
+    @patch("app.main.controller.appeal_controller.update_appeal")
+    def test_update_appeal(self, mock_update_appeal):
+        # ARRANGE
+        appeal_data["status"] = "accepted"
+        expected_response = {
+            "status": "success",
+            "message": "Successfully updated.",
+            "data": appeal_data,
+        }
+        mock_update_appeal.return_value = expected_response
+
+        token = create_token(user_data)
+        headers = {"X-API-KEY": token}
+
+        # ACT
+        with self.app.test_client() as client:
+            response = client.put(
+                f"/api/appeal/{public_id}", json=appeal_data, headers=headers
+            )
+            res = response.get_json()
+            res = res.get("data")
+        
+        # ASSERT
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_response["data"]["status"], res["status"])
+
+        mock_update_appeal.assert_called_once()

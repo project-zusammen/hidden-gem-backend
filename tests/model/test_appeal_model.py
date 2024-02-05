@@ -87,3 +87,18 @@ class TestAppeal(unittest.TestCase):
         # ASSERT
         self.assertIsNotNone(retrieved_appeal)
         self.assertEqual(retrieved_appeal["reason"], appeal_data["reason"])
+
+    def test_update_appeal(self):
+        # ARRANGE
+        appeal_model = Appeal()
+        appeal_data["user_id"] = user_id
+        appeal = appeal_model.create_appeal(appeal_data)
+
+        # ACT
+        updated_appeal = appeal_model.update_appeal(
+            public_id=appeal["public_id"], status="accepted"
+        )
+
+        # ASSERT
+        self.assertIsNotNone(updated_appeal)
+        self.assertEqual(updated_appeal["status"], "accepted")
