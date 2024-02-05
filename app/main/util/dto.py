@@ -87,6 +87,5 @@ class ReportDto:
             "type": fields.String(required=True, description="report type"),
             "item_id": fields.String(required=True, description="report item_id"),
             "reason": fields.String(required=True, description="report reason"),
-            "status": fields.String(required=True, description="report status"),
         },
     )

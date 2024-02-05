@@ -57,7 +57,7 @@ class Report(db.Model):
             self.public_id = str(uuid.uuid4())
             self.user_id = data.get("user_id")
             self.type = data.get("type")
-            self.status = data.get("status", "received")
+            self.status = "received"
             item_id = data.get("item_id")
 
             if self.type == "comment":
