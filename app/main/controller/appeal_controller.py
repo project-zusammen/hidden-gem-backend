@@ -48,7 +48,7 @@ class Appeal(Resource):
     @ns.doc(security="bearer")
     @token_required
     @ns.expect(_status)
-    def get(self, decoded_token, public_id):
+    def put(self, decoded_token, public_id):
         role = decoded_token["role"]
         if role != "admin":
             return error_handler("Access denied")
