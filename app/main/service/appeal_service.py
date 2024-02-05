@@ -58,3 +58,22 @@ def create_appeal(data, user_id):
     except Exception as e:
         log.error(f"Error in create_appeal: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
+    
+
+def update_appeal(public_id, status):
+    try:
+        updated_appeal = appeal_model.update_appeal(public_id, status)
+        if not updated_appeal:
+            return {
+                "status": "fail",
+                "message": "Appeal does not exist.",
+            }, 409
+        response_object = {
+            "status": "success",
+            "message": "Successfully update appeal",
+            "data": updated_appeal,
+        }
+        return response_object, 201
+    except Exception as e:
+        log.error(f"Error in update_appeal: {str(e)}")
+        return {"status": "error", "message": "Internal Server Error"}, 500

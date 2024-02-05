@@ -77,3 +77,15 @@ class Appeal(db.Model):
             return appeal.serialize()
         except Exception as e:
             raise e
+        
+    def update_appeal(self, public_id, status):
+        try:
+            appeal = self.query.filter_by(public_id=public_id).first()
+            if not appeal:
+                return None
+            appeal.updated_at = datetime.datetime.utcnow()
+            appeal.status = status
+            appeal.save()
+            return appeal.serialize()
+        except Exception as e:
+            raise e
