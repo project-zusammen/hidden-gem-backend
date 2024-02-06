@@ -9,7 +9,7 @@ appeal_data = {"reason": "This is a test appeal.", "report_id": "report_id"}
 
 
 def register_user():
-    global user_id
+    global user_id, user_role
     user_data = {
         "username": "test_user",
         "email": "test_user@gmail.com",
@@ -18,6 +18,19 @@ def register_user():
     user_model = User()
     user = user_model.register_user(user_data)
     user_id = user_model.get_user_id(user["public_id"])
+    user_role = user_model.get_user_id(user["role"])
+
+def register_admin():
+    global admin_id, admin_role
+    user_data = {
+        "username": "test_admin",
+        "email": "test_admin@gmail.com",
+        "password": "test_admin_password",
+    }
+    user_model = User()
+    admin = user_model.register_admin(user_data)
+    admin_id = user_model.get_user_id(admin["public_id"])
+    admin_role = user_model.get_user_id(admin["role"])
 
 
 class TestAppeal(unittest.TestCase):
@@ -27,6 +40,7 @@ class TestAppeal(unittest.TestCase):
         self.app_context.push()
         db.create_all()
         register_user()
+        register_admin()
 
     def tearDown(self):
         db.session.remove()
@@ -61,12 +75,12 @@ class TestAppeal(unittest.TestCase):
     def test_get_appeal_by_id_role_admin(self):
         # ARRANGE
         appeal_model = Appeal()
-        appeal_data["user_id"] = user_id
+        appeal_data["user_id"] = admin_id
         appeal = appeal_model.create_appeal(appeal_data)
 
         # ACT
         retrieved_appeal = appeal_model.get_appeal_by_id(
-            public_id=appeal["public_id"], user_id=user_id, role="admin"
+            public_id=appeal["public_id"], user_id=admin_id, role=admin_role
         )
 
         # ASSERT
@@ -81,7 +95,7 @@ class TestAppeal(unittest.TestCase):
 
         # ACT
         retrieved_appeal = appeal_model.get_appeal_by_id(
-            public_id=appeal["public_id"], user_id=user_id, role="user"
+            public_id=appeal["public_id"], user_id=user_id, role=user_role
         )
 
         # ASSERT

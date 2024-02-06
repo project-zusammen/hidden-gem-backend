@@ -85,6 +85,29 @@ class User(db.Model):
             raise e
 
 
+    def register_admin(self, data):
+        try:
+            password = generate_password_hash(data.get("password"))
+            email = data.get("email")
+            if not is_valid_email(email):
+                raise Exception("The email is invalid")
+            user = self.query.filter_by(email=email).first()
+            if user:
+                raise Exception("This email has already registered")
+
+            self.public_id = str(uuid.uuid4())
+            self.username = data.get("username")
+            self.email = email
+            self.password = password
+            self.role = data.get("role", "admin")
+            self.status = data.get("status", "active")
+            self.created_at = datetime.datetime.utcnow()
+            self.updated_at = datetime.datetime.utcnow()
+            self.save()
+            return self.serialize()
+        except Exception as e:
+            raise e
+
     def get_user_by_id(self, public_id, user_id):
         try:
             user = self.check_user_authorization(public_id, user_id)
