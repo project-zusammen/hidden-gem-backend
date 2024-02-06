@@ -47,8 +47,6 @@ class Comment(db.Model):
 
             if not self.content:
                 raise Exception("Comment content is required")
-            if not self.content:
-                raise Exception("Comment content is required")
 
             self.created_at = datetime.datetime.utcnow()
             self.updated_at = datetime.datetime.utcnow()
