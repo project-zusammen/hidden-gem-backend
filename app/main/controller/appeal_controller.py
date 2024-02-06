@@ -7,7 +7,7 @@ from flask_restx import Resource
 from ..service.appeal_service import (
     create_appeal,
     get_all_appeals,
-    get_a_appeal,
+    get_an_appeal,
     update_appeal,
 )
 from ...extensions import ns
@@ -48,7 +48,7 @@ class Appeal(Resource):
         user_id = decoded_token["id"]
         role = decoded_token["role"]
         """Get a appeal by its identifier"""
-        return get_a_appeal(public_id, user_id, role)
+        return get_an_appeal(public_id, user_id, role)
 
     @ns.doc(security="bearer")
     @token_required

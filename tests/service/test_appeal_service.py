@@ -5,7 +5,7 @@ from app import create_app
 from app.main.service.appeal_service import (
     create_appeal,
     get_all_appeals,
-    get_a_appeal,
+    get_an_appeal,
     update_appeal,
 )
 
@@ -80,13 +80,13 @@ class TestAppealService(TestCase):
         mock_get_all_appeals.assert_called_once()
 
     @patch("app.main.model.appeal.Appeal.get_appeal_by_id")
-    def test_get_a_appeal(self, mock_get_appeal_by_id):
+    def test_get_an_appeal(self, mock_get_appeal_by_id):
         # ARRANGE
         data = appeal_1
         mock_get_appeal_by_id.return_value = data
 
         # ACT
-        response, status_code = get_a_appeal(
+        response, status_code = get_an_appeal(
             public_id=generate_fake_public_id(),
             user_id=generate_fake_public_id(),
             role="admin",
