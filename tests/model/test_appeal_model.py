@@ -20,6 +20,7 @@ def register_user():
     user_id = user_model.get_user_id(user["public_id"])
     user_role = user_model.get_user_id(user["role"])
 
+
 def register_admin():
     global admin_id, admin_role
     user_data = {
@@ -102,6 +103,22 @@ class TestAppeal(unittest.TestCase):
         self.assertIsNotNone(retrieved_appeal)
         self.assertEqual(retrieved_appeal["reason"], appeal_data["reason"])
 
+    def test_get_appeal_failed(self):
+        # ARRANGE
+        appeal_model = Appeal()
+        appeal_data["user_id"] = admin_id
+        appeal = appeal_model.create_appeal(appeal_data)
+
+        # ACT
+
+        # ASSERT
+        with self.assertRaises(Exception) as context:
+            appeal_model.get_appeal_by_id(
+                public_id=appeal["public_id"], user_id=user_id, role=user_role
+            )
+
+        self.assertTrue("Access Denied" in str(context.exception))
+
     def test_update_appeal(self):
         # ARRANGE
         appeal_model = Appeal()
@@ -116,3 +133,7 @@ class TestAppeal(unittest.TestCase):
         # ASSERT
         self.assertIsNotNone(updated_appeal)
         self.assertEqual(updated_appeal["status"], "accepted")
+
+
+if __name__ == "__main__":
+    unittest.main()
