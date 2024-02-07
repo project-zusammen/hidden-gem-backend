@@ -55,7 +55,10 @@ class Review(db.Model):
         return [review.serialize() for review in reviews]
 
     def get_review_by_id(self, public_id):
-        return self.query.filter_by(public_id=public_id, visible=True).first()
+        review = self.query.filter_by(public_id=public_id, visible=True).first()
+        if review:
+            return review.serialize()
+        return None
     
     def get_review_public_id(self, id):
         review = self.query.filter_by(id=id).first()
@@ -85,7 +88,7 @@ class Review(db.Model):
         return self.serialize()
 
     def update_review(self, public_id, data):
-        review = self.get_review_by_id(public_id)
+        review = self.query.filter_by(public_id=public_id, visible=True).first()
         if not review:
             return None
         else:
@@ -101,7 +104,7 @@ class Review(db.Model):
             return review.serialize()
 
     def delete_review(self, public_id):
-        review = self.get_review_by_id(public_id)
+        review = self.query.filter_by(public_id=public_id, visible=True).first()
         if not review:
             return None
         else:
@@ -111,7 +114,7 @@ class Review(db.Model):
             return review.serialize()
 
     def upvote_review(self, public_id, upvote=True):
-        review = self.get_review_by_id(public_id)
+        review = self.query.filter_by(public_id=public_id, visible=True).first()
         if not review:
             return None
         if upvote:
@@ -123,7 +126,7 @@ class Review(db.Model):
         return review.serialize()
 
     def update_visibility(self, public_id, visible=True):
-        review = self.get_review_by_id(public_id)
+        review = self.query.filter_by(public_id=public_id, visible=True).first()
         if not review:
             return None
         else:
@@ -131,3 +134,9 @@ class Review(db.Model):
             review.updated_at = datetime.datetime.utcnow()
             review.save()
             return review.serialize()
+
+    def get_review_db_id(self, public_id):
+        review = self.query.filter_by(public_id=public_id).first()
+        if review:
+            return review.id
+        return None

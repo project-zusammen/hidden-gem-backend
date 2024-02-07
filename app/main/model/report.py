@@ -62,12 +62,12 @@ class Report(db.Model):
 
             if self.type == "comment":
                 comment_model = Comment()
-                comment = comment_model.get_comment_by_id(item_id)
-                self.item_id = comment.id
+                comment_id = comment_model.get_comment_db_id(item_id)
+                self.item_id = comment_id
             else:
                 review_model = Review()
-                review = review_model.get_review_by_id(item_id)
-                self.item_id = review.id
+                review_id = review_model.get_review_db_id(item_id)
+                self.item_id = review_id
             
             self.reason = data.get("reason")
             self.created_at = datetime.datetime.utcnow()

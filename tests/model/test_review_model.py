@@ -38,7 +38,6 @@ class TestReview(unittest.TestCase):
 
         # ACT
         retrieved_review = review_model.get_review_by_id(created_review["public_id"])
-        retrieved_review = retrieved_review.serialize()
 
         # ASSERT
         self.assertIsNotNone(retrieved_review)
