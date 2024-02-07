@@ -14,7 +14,7 @@ class ReviewDto:
             "content": fields.String(required=True, description="review content"),
             "location": fields.String(description="review location"),
             "category_id": fields.String(description="category Identifier"),
-            "region_id": fields.String(description="region Identifier"),
+            "region_id": fields.String(required=True, description="region Identifier"),
         },
     )
     upvote = api.model("upvote", {"upvote": fields.Boolean(description="upvote")})
@@ -78,3 +78,14 @@ class AppealDto:
         },
     )
     status = api.model("status", {"status": fields.Boolean(description="status")})
+
+
+class ReportDto:
+    report = api.model(
+        "report",
+        {
+            "type": fields.String(required=True, description="report type"),
+            "item_id": fields.String(required=True, description="report item_id"),
+            "reason": fields.String(required=True, description="report reason"),
+        },
+    )

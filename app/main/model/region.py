@@ -51,7 +51,16 @@ class Region(db.Model):
             raise e
         
     def get_region_by_id(self, public_id):
-        return self.query.filter_by(public_id=public_id).first()
+        region = self.query.filter_by(public_id=public_id).first()
+        if region:
+            return region.id
+        return None
+
+    def get_region_public_id(self, id):
+        region = self.query.filter_by(id=id).first()
+        if region:
+            return region.public_id
+        return None
         
     def delete_region(self, public_id):
         try:
