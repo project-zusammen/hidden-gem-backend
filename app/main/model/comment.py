@@ -64,9 +64,21 @@ class Comment(db.Model):
             self.upvotes = 0
             self.downvotes = 0
             self.visible = True
+            self.created_at = datetime.datetime.utcnow()
+            self.updated_at = datetime.datetime.utcnow()
+            self.upvotes = 0
+            self.downvotes = 0
+            self.visible = True
 
             self.save()
             return self.serialize()
+        except Exception as e:
+            raise e
+
+    def get_all_comments(self):
+        try:
+            comments = self.query.filter_by(visible=True).all()
+            return [comment.serialize() for comment in comments]
         except Exception as e:
             raise e
 
