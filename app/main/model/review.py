@@ -2,21 +2,15 @@ import uuid
 import datetime
 from .. import db
 from ..util.helper import convert_to_local_time
-<<<<<<< HEAD
 import re
 from .tag import ReviewTag
-
-
-=======
 from .region import Region
->>>>>>> main
 
 class Review(db.Model):
     __tablename__ = "review"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     public_id = db.Column(db.String(100), unique=True, nullable=False)
-<<<<<<< HEAD
     user_id = db.Column(
         db.Integer, db.ForeignKey("user.id", name="fk_review_user"), nullable=False
     )
@@ -27,12 +21,6 @@ class Review(db.Model):
         db.Integer, db.ForeignKey("region.id", name="fk_review_region"), nullable=False
     )
     title = db.Column(db.String(100), nullable=False)
-=======
-    # user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    # category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
-    region_id = db.Column(db.Integer, db.ForeignKey('region.id'), nullable=False)
-    title = db.Column(db.String(100))
->>>>>>> main
     content = db.Column(db.String(255), nullable=False)
     location = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, nullable=False)
@@ -106,12 +94,9 @@ class Review(db.Model):
         self.title = data.get("title")
         self.content = data.get("content")
         self.location = data.get("location")
-<<<<<<< HEAD
         self.user_id = data.get("user_id")
         self.category_id = data.get("category_id")
         self.region_id = data.get("region_id")
-=======
->>>>>>> main
         if not self.title or not self.content:
             return None
         
@@ -176,7 +161,6 @@ class Review(db.Model):
             review.save()
             return review.serialize()
 
-<<<<<<< HEAD
     def get_review_id_by_public_id(self, public_id):
         try:
             review = self.query.filter_by(public_id=public_id, visible=True).first()
@@ -191,10 +175,8 @@ class Review(db.Model):
             return re.findall(r"\#\w+", content)
         except Exception as e:
             raise e
-=======
     def get_review_db_id(self, public_id):
         review = self.query.filter_by(public_id=public_id).first()
         if review:
             return review.id
         return None
->>>>>>> main
