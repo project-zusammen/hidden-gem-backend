@@ -3,6 +3,7 @@ from flask_restx import Resource
 from ...extensions import ns
 from ..service.report_service import create_report, get_all_reports, get_a_report
 from ..util.token_verify import token_required
+from ..util.helper import error_handler
 
 report_dto = ReportDto()
 _report = report_dto.report
@@ -20,9 +21,9 @@ class ReportList(Resource):
     @ns.doc(security="bearer")
     @token_required
     def get(self, decoded_token):
-        # role = decoded_token["role"]
-        # if role != "admin":
-        #     return error_handler("Access denied")
+        role = decoded_token["role"]
+        if role != "admin":
+            return error_handler("Access denied")
 
         """List all reports"""
         return get_all_reports()

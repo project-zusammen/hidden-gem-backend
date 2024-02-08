@@ -22,27 +22,27 @@ report_data = {
 def register_user():
     global user_id, user_role
     user_data = {
-        "username": "test_user",
-        "email": "test_user@gmail.com",
+        "username": "test_users",
+        "email": "test_users@gmail.com",
         "password": "test_password",
     }
     user_model = User()
     user = user_model.register_user(user_data)
     user_id = user_model.get_user_id(user["public_id"])
-    user_role = user_model.get_user_id(user["role"])
+    user_role = user_model.get_user_role(user["public_id"])
 
 
 def register_admin():
     global admin_id, admin_role
     user_data = {
-        "username": "test_admin",
-        "email": "test_admin@gmail.com",
+        "username": "test_admins",
+        "email": "test_admins@gmail.com",
         "password": "test_admin_password",
     }
     user_model = User()
     admin = user_model.register_admin(user_data)
     admin_id = user_model.get_user_id(admin["public_id"])
-    admin_role = user_model.get_user_id(admin["role"])
+    admin_role = user_model.get_user_role(admin["public_id"])
 
 class TestReport(unittest.TestCase):
     def setUp(self):
