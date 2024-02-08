@@ -10,17 +10,35 @@ review_data = {
     "title": "Test Review",
     "content": "This is a test review #review",
     "location": "Test Location",
-    "user_id": 1,
-    "region_id": 1,
-    "category_id": 1,
 }
-user_data = {"username": "aqiz", "email": "aqiz@gmail.com", "password": "Aqiz123!"}
+
+user_data = {
+    "username": "aqiz", 
+    "email": "aqiz@gmail.com", 
+    "password": "Aqiz123!"
+}
+
+category_data = {
+    "name": "Test Category",
+}
 
 def create_region(region_name="Test Region"):
     global region_id
     region_model = Region()
     region = region_model.create_region(region_name)
     region_id = region["public_id"]
+
+def create_category():
+    global category_id
+    category_model = Category()
+    category = category_model.create_category(category_data["name"])
+    category_id = category["public_id"]
+
+def register_user():
+    global user_id
+    user_model = User()
+    user = user_model.register_user(user_data)
+    user_id = user["public_id"]
 
 
 class TestReview(unittest.TestCase):
@@ -30,7 +48,11 @@ class TestReview(unittest.TestCase):
         self.app_context.push()
         db.create_all()
         create_region()
+        create_category()
+        register_user()
         review_data["region_id"] = region_id
+        review_data["category_id"] = category_id
+        review_data["user_id"] = user_id
 
     def tearDown(self):
         db.session.remove()
@@ -40,13 +62,6 @@ class TestReview(unittest.TestCase):
     def test_create_and_get_review(self):
         # ARRANGE
         review_model = Review()
-        region_model = Region()
-        category_model = Category()
-        user_model = User()
-
-        created_user = user_model.register_user(user_data)
-        created_region = region_model.create_region("purbalingga")
-        created_category = category_model.create_category("food")
         created_review = review_model.create_review(review_data)
 
         # ACT
@@ -64,13 +79,6 @@ class TestReview(unittest.TestCase):
     def test_update_review(self):
         # ARRANGE
         review_model = Review()
-        region_model = Region()
-        category_model = Category()
-        user_model = User()
-
-        created_user = user_model.register_user(user_data)
-        created_region = region_model.create_region("purbalingga")
-        created_category = category_model.create_category("food")
         created_review = review_model.create_review(review_data)
 
         # ACT
@@ -78,7 +86,9 @@ class TestReview(unittest.TestCase):
             "title": "Updated Review",
             "content": "This is an updated review.",
             "location": "Updated Location",
-            "region_id": review["region_id"],
+            "region_id": region_id,
+            "category_id": category_id,
+            "user_id": user_id,
         }
         updated_review = review_model.update_review(
             created_review["public_id"], updated_data
@@ -94,32 +104,21 @@ class TestReview(unittest.TestCase):
     def test_get_all_reviews(self):
         # ARRANGE
         review_model = Review()
-        region_model = Region()
-        category_model = Category()
-        user_model = User()
-
-        created_user = user_model.register_user(user_data)
-        created_region = region_model.create_region("jakarta")
-        created_category = category_model.create_category("food")
-        review_data1 = {
-            "title": "Test Review1",
+        review_data_1 = {
+            "title": "Test Review 1",
             "content": "This is a test review #review1",
-            "location": "Test Locatio1",
-            "user_id": 1,
-            "region_id": 1,
-            "category_id": 1,
+            "location": "Test Location 1",
+            "user_id": user_id,
+            "region_id": region_id,
+            "category_id": category_id,
         }
-        review = review_model.create_review(review_data1)
+        review = review_model.create_review(review_data_1)
 
         # ACT
         page = 1
         count = 1
         # tag_id = 0
-        category_id = 1
-        region_id = 1
-        retrieved_reviews = review_model.get_all_reviews(
-            page, count, category_id, region_id
-        )
+        retrieved_reviews = review_model.get_all_reviews(page=page, count=count, region_id=region_id, category_id=category_id)
 
         # ASSERT
         self.assertIsNotNone(retrieved_reviews)
@@ -131,12 +130,6 @@ class TestReview(unittest.TestCase):
     def test_delete_review(self):
         # ARRANGE
         review_model = Review()
-        region_model = Region()
-        category_model = Category()
-        user_model = User()
-        created_user = user_model.register_user(user_data)
-        created_region = region_model.create_region("purbalingga")
-        created_category = category_model.create_category("food")
         review = review_model.create_review(review_data)
 
         # ACT
@@ -149,12 +142,6 @@ class TestReview(unittest.TestCase):
     def test_upvote_review(self):
         # ARRANGE
         review_model = Review()
-        region_model = Region()
-        category_model = Category()
-        user_model = User()
-        created_user = user_model.register_user(user_data)
-        created_region = region_model.create_region("purbalingga")
-        created_category = category_model.create_category("food")
         review = review_model.create_review(review_data)
 
         # ACT
@@ -168,12 +155,6 @@ class TestReview(unittest.TestCase):
     def test_downvote_review(self):
         # ARRANGE
         review_model = Review()
-        region_model = Region()
-        category_model = Category()
-        user_model = User()
-        created_user = user_model.register_user(user_data)
-        created_region = region_model.create_region("purbalingga")
-        created_category = category_model.create_category("food")
         review = review_model.create_review(review_data)
 
         # ACT
@@ -189,12 +170,6 @@ class TestReview(unittest.TestCase):
     def test_update_visibility(self):
         # ARRANGE
         review_model = Review()
-        region_model = Region()
-        category_model = Category()
-        user_model = User()
-        created_user = user_model.register_user(user_data)
-        created_region = region_model.create_region("purbalingga")
-        created_category = category_model.create_category("food")
         review = review_model.create_review(review_data)
 
         # ACT

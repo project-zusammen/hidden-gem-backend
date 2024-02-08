@@ -31,6 +31,9 @@ class Category(db.Model):
         db.session.commit()
 
     def create_category(self, category_name):
+        check_category = self.query.filter_by(name=category_name).first()
+        if check_category:
+            return check_category.serialize()
         try:
             self.public_id = str(uuid.uuid4())
             self.name = category_name
@@ -40,3 +43,15 @@ class Category(db.Model):
             return self.serialize()
         except Exception as e:
             raise e
+    
+    def get_category_id(self, public_id):
+        category = self.query.filter_by(public_id=public_id).first()
+        if not category:
+            return None
+        return category.id
+    
+    def get_public_id(self, id):
+        category = self.query.filter_by(id=id).first()
+        if not category:
+            return None
+        return category.public_id

@@ -32,6 +32,9 @@ class Region(db.Model):
         db.session.commit()
 
     def create_region(self, region_name):
+        check_region = self.query.filter_by(city=region_name).first()
+        if check_region:
+            return check_region.serialize()
         try:
             self.public_id = str(uuid.uuid4())
             self.city = region_name

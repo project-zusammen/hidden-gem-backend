@@ -1,11 +1,13 @@
+import re
 import uuid
+import logging
 import datetime
 from .. import db
 from ..util.helper import convert_to_local_time
-import re
 # from .tag import ReviewTag
-from .region import Region
 from .user import User 
+from .region import Region
+from .category import Category
 
 class Review(db.Model):
     __tablename__ = "review"
@@ -40,10 +42,16 @@ class Review(db.Model):
         region_model = Region()
         region_public_id = region_model.get_region_public_id(self.region_id)
 
+        user_model = User()
+        user_public_id = user_model.get_user_public_id(self.user_id)
+
+        category_model = Category()
+        category_public_id = category_model.get_public_id(self.category_id)
+
         return {
             "public_id": self.public_id,
-            # 'user_id': self.user_id,
-            # 'category_id': self.category_id,
+            'user_id': user_public_id,
+            'category_id': category_public_id,
             "region_id": region_public_id,
             "title": self.title,
             "content": self.content,
@@ -69,14 +77,18 @@ class Review(db.Model):
             # if tag_id:
             #     query = query.filter(ReviewTag.tag_id == tag_id)
             if category_id:
-                query = query.filter(Review.category_id == category_id)
+                category_db_id = Category.get_category_id(category_id)
+                query = query.filter(Review.category_id == category_db_id)
+            
             if region_id:
-                query = query.filter(Review.region_id == region_id)
+                region_db_id = Region.get_region_by_id(region_id)
+                query = query.filter(Review.region_id == region_db_id)
 
             reviews = query.limit(count).offset(offset).all()
             return [review.serialize() for review in reviews]
         except Exception as e:
-            raise e
+            logging.exception("An error occurred while creating a report: %s", str(e))
+            return None
 
     def get_review_by_id(self, public_id):
         review = self.query.filter_by(public_id=public_id, visible=True).first()
@@ -91,33 +103,42 @@ class Review(db.Model):
         return None
 
     def create_review(self, data):
-        self.public_id = str(uuid.uuid4())
-        self.title = data.get("title")
-        self.content = data.get("content")
-        self.location = data.get("location")
+        try:
+            self.public_id = str(uuid.uuid4())
+            self.location = data.get("location")
+            
+            self.title = data.get("title")
+            self.content = data.get("content")
+            if not self.title or not self.content:
+                return None
 
-        user_model = User()
-        user_public_id = data.get("user_id")
-        user_id = user_model.get_user_id(user_public_id)
-        self.user_id = user_id
-        
-        self.category_id = data.get("category_id")
-        self.region_id = data.get("region_id")
-        if not self.title or not self.content:
+            user_id = data.get("user_id")
+            if user_id:
+                user_model = User()
+                self.user_id = user_model.get_user_id(user_id)
+            
+            category_id = data.get("category_id")
+            if category_id:
+                category_model = Category()
+                self.category_id = category_model.get_category_id(category_id)
+
+            region_id = data.get("region_id")
+            if region_id:
+                region_model = Region()
+                self.region_id = region_model.get_region_by_id(region_id)
+            
+
+            self.created_at = datetime.datetime.utcnow()
+            self.updated_at = datetime.datetime.utcnow()
+            self.upvotes = 0
+            self.downvotes = 0
+            self.visible = True
+
+            self.save()
+            return self.serialize()
+        except Exception as e:
+            logging.exception("An error occurred while creating a report: %s", str(e))
             return None
-        
-        region_id = data.get("region_id")
-        region_model = Region()
-        self.region_id = region_model.get_region_by_id(region_id)
-
-        self.created_at = datetime.datetime.utcnow()
-        self.updated_at = datetime.datetime.utcnow()
-        self.upvotes = 0
-        self.downvotes = 0
-        self.visible = True
-
-        self.save()
-        return self.serialize()
 
     def update_review(self, public_id, data):
         review = self.query.filter_by(public_id=public_id, visible=True).first()
@@ -125,8 +146,9 @@ class Review(db.Model):
             return None
         else:
             region_id = data.get("region_id")
-            region_model = Region()
-            review.region_id = region_model.get_region_by_id(region_id)
+            if region_id:
+                region_model = Region()
+                review.region_id = region_model.get_region_by_id(region_id)
             
             review.title = data.get("title")
             review.content = data.get("content")
@@ -181,6 +203,7 @@ class Review(db.Model):
             return re.findall(r"\#\w+", content)
         except Exception as e:
             raise e
+    
     def get_review_db_id(self, public_id):
         review = self.query.filter_by(public_id=public_id).first()
         if review:
