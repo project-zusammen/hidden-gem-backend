@@ -54,8 +54,11 @@ class Report(db.Model):
 
     def create_report(self, data):
         try:
+            user_public_id = data.get("user_id")
+            user_model = User()
+            user_id = user_model.get_user_id(user_public_id)
+            self.user_id = user_id
             self.public_id = str(uuid.uuid4())
-            self.user_id = data.get("user_id")
             self.type = data.get("type")
             self.status = "received"
             item_id = data.get("item_id")

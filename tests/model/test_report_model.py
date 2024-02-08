@@ -19,16 +19,38 @@ report_data = {
     "status": "received",
 }
 
-def register_user():
-    global user_id
+def register_reviewer():
+    global reviewer_id
     user_data = {
-        "username": "test_user",
-        "email": "test_user@gmail.com",
-        "password": "test_password",
+        "username": "test_reviewer",
+        "email": "test_reviewer@gmail.com",
+        "password": "test_reviewer_password",
     }
     user_model = User()
     user = user_model.register_user(user_data)
-    user_id = user_model.get_user_id(user["public_id"])
+    reviewer_id = user["public_id"]
+
+def register_reporter():
+    global reporter_id
+    user_data = {
+        "username": "test_reporter",
+        "email": "test_reporter@gmail.com",
+        "password": "test_reporter_password",
+    }
+    user_model = User()
+    user = user_model.register_user(user_data)
+    reporter_id = user["public_id"]
+
+def register_commenter():
+    global commenter_id
+    user_data = {
+        "username": "test_commenter",
+        "email": "test_commenter@gmail.com",
+        "password": "test_commenter_password",
+    }
+    user_model = User()
+    user = user_model.register_user(user_data)
+    commenter_id = user["public_id"]
 
 class TestReport(unittest.TestCase):
     def setUp(self):
@@ -36,7 +58,10 @@ class TestReport(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
-        register_user()
+        register_reviewer()
+        review_data["user_id"] = reviewer_id
+        register_reporter()
+        report_data["user_id"] = reporter_id        
     
     def tearDown(self):
         db.session.remove()
@@ -56,7 +81,7 @@ class TestReport(unittest.TestCase):
         report_data["type"] = "review"
         report_data["item_id"] = created_review["public_id"]
         report_data["region_id"] = created_region["public_id"]
-        report_data["user_id"] = user_id
+        report_data["user_id"] = reporter_id
         
         # ACT
         created_report = report_model.create_report(report_data)
@@ -77,9 +102,12 @@ class TestReport(unittest.TestCase):
         review_model = Review()
         created_review = review_model.create_review(review_data)
 
+        register_commenter()
+
         comment_data = {
             "content": "This is a test comment.",
             "review_id": created_review["public_id"],
+            "user_id": commenter_id,
         }
         comment_model = Comment()
         created_comment = comment_model.create_comment(comment_data)
@@ -88,7 +116,7 @@ class TestReport(unittest.TestCase):
         report_data["type"] = "comment"
         report_data["item_id"] = created_comment["public_id"]
         report_data["region_id"] = created_region["public_id"]
-        report_data["user_id"] = user_id
+        report_data["user_id"] = reporter_id
         
         # ACT
         created_report = report_model.create_report(report_data)
