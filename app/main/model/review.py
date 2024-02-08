@@ -3,8 +3,9 @@ import datetime
 from .. import db
 from ..util.helper import convert_to_local_time
 import re
-from .tag import ReviewTag
+# from .tag import ReviewTag
 from .region import Region
+from .user import User 
 
 class Review(db.Model):
     __tablename__ = "review"
@@ -94,7 +95,12 @@ class Review(db.Model):
         self.title = data.get("title")
         self.content = data.get("content")
         self.location = data.get("location")
-        self.user_id = data.get("user_id")
+
+        user_model = User()
+        user_public_id = data.get("user_id")
+        user_id = user_model.get_user_id(user_public_id)
+        self.user_id = user_id
+        
         self.category_id = data.get("category_id")
         self.region_id = data.get("region_id")
         if not self.title or not self.content:

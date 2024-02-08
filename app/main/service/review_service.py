@@ -1,10 +1,10 @@
 import logging as log
 from app.main.model.review import Review
-from app.main.model.tag import Tag, ReviewTag
+from app.main.model.tag import Tag
 
 review_model = Review()
 tag_model = Tag()
-review_tag_model = ReviewTag()
+# review_tag_model = ReviewTag()
 
 
 def create_review(data):

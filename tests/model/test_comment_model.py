@@ -5,6 +5,7 @@ from app.extensions import db
 from app.main.model.comment import Comment
 from app.main.model.review import Review
 from app.main.model.region import Region
+from app.main.model.user import User
 
 comment_data = {"content": "new comment"}
 
@@ -14,14 +15,26 @@ def create_region(region_name="Test Region"):
     region_id = region["public_id"]
     return region_id
 
+def create_user():
+    user_model = User()
+    user_data = {
+        "username": "test_user",
+        "email": "test_user@gmail.com",
+        "password": "test_password"
+    }
+    user = user_model.register_user(user_data)
+    return user["public_id"]
+
 def create_review():
     global review_id
     region_id = create_region()
+    user_id = create_user()
     review_data = {
         "title": "Test Review",
         "content": "This is a test review.",
         "location": "Test Location",
         "region_id": region_id,
+        "user_id": user_id,
     }
     review_model = Review()
     review = review_model.create_review(review_data)
