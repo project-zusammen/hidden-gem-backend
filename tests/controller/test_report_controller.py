@@ -59,7 +59,7 @@ class TestReportEndpoints(TestCase):
         self.assertEqual(expected_response["data"]["reason"], res.get("reason"))
         mock_create_report.assert_called_once()
     
-    def test_craete_report_missing_token(self):
+    def test_create_report_missing_token(self):
         # ARRANGE
         expected_response = {
             "message": "Access Denied: Unauthorized operation. Please log in to proceed."
