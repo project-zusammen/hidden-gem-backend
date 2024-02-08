@@ -2,7 +2,7 @@ import uuid
 import datetime
 from .. import db
 from ..util.helper import convert_to_local_time
-
+from .review import Review
 
 class Comment(db.Model):
     __tablename__ = "comment"
@@ -11,6 +11,7 @@ class Comment(db.Model):
     public_id = db.Column(db.String(100), unique=True, nullable=False)
     # user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     # comment_id = db.Column(db.Integer, db.ForeignKey('comment.id')) -> yang bener
+    review_id = db.Column(db.Integer, db.ForeignKey("review.id"), nullable=False)
     content = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False)
@@ -24,10 +25,14 @@ class Comment(db.Model):
     def serialize(self):
         created_at = convert_to_local_time(self.created_at)
         updated_at = convert_to_local_time(self.updated_at)
+
+        review_model = Review()
+        review_public_id = review_model.get_review_public_id(self.review_id)
+
         return {
             "public_id": self.public_id,
             # 'user_id': self.user_id,
-            # 'comment_id': self.comment_id,
+            "review_id": review_public_id,
             "content": self.content,
             "created_at": created_at.isoformat() if self.created_at else None,
             "updated_at": updated_at.isoformat() if self.updated_at else None,
@@ -42,6 +47,12 @@ class Comment(db.Model):
 
     def create_comment(self, data):
         try:
+            review_model = Review()
+            review_id = review_model.get_review_db_id(data.get("review_id"))
+            if not review_id:
+                raise Exception("Review not found")
+            
+            self.review_id = review_id
             self.public_id = str(uuid.uuid4())
             self.content = data.get("content")
 
@@ -86,6 +97,12 @@ class Comment(db.Model):
             return comment.serialize()
         except Exception as e:
             raise e
+
+    def get_comment_public_id(self, id):
+        comment = self.query.filter_by(id=id).first()
+        if comment:
+            return comment.public_id
+        return None
 
     def delete_comment(self, public_id):
         try:
@@ -138,3 +155,9 @@ class Comment(db.Model):
                 return comment.serialize()
         except Exception as e:
             raise e
+
+    def get_comment_db_id(self, public_id):
+        comment = self.query.filter_by(public_id=public_id).first()
+        if comment:
+            return comment.id
+        return None

@@ -93,8 +93,8 @@ class TestAppealEndpoints(TestCase):
         self.assertEqual(expected_data[0]["reason"], first_appeal["reason"])
         mock_get_all_appeals.assert_called_once()
 
-    @patch("app.main.controller.appeal_controller.get_a_appeal")
-    def test_get_a_appeal(self, mock_get_a_appeal):
+    @patch("app.main.controller.appeal_controller.get_an_appeal")
+    def test_get_an_appeal(self, mock_get_an_appeal):
         # ARRANGE
         expected_data = appeal_data
         expected_response = {
@@ -102,7 +102,7 @@ class TestAppealEndpoints(TestCase):
             "message": "Successfully retrieved appeal.",
             "data": expected_data,
         }
-        mock_get_a_appeal.return_value = expected_response
+        mock_get_an_appeal.return_value = expected_response
 
         token = create_token(user_data)
         headers = {"X-API-KEY": token}
@@ -116,4 +116,32 @@ class TestAppealEndpoints(TestCase):
         # ASSERT
         self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_data["reason"], res["reason"])
-        mock_get_a_appeal.assert_called_once()
+        mock_get_an_appeal.assert_called_once()
+
+    @patch("app.main.controller.appeal_controller.update_appeal")
+    def test_update_appeal(self, mock_update_appeal):
+        # ARRANGE
+        appeal_data["status"] = "accepted"
+        expected_response = {
+            "status": "success",
+            "message": "Successfully updated.",
+            "data": appeal_data,
+        }
+        mock_update_appeal.return_value = expected_response
+
+        token = create_token(user_data)
+        headers = {"X-API-KEY": token}
+
+        # ACT
+        with self.app.test_client() as client:
+            response = client.put(
+                f"/api/appeal/{public_id}", json=appeal_data, headers=headers
+            )
+            res = response.get_json()
+            res = res.get("data")
+
+        # ASSERT
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_response["data"]["status"], res["status"])
+
+        mock_update_appeal.assert_called_once()

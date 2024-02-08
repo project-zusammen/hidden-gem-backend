@@ -2,7 +2,12 @@ import uuid
 from unittest import TestCase
 from unittest.mock import patch
 from app import create_app
-from app.main.service.appeal_service import create_appeal, get_all_appeals, get_a_appeal
+from app.main.service.appeal_service import (
+    create_appeal,
+    get_all_appeals,
+    get_an_appeal,
+    update_appeal,
+)
 
 
 def generate_fake_public_id():
@@ -75,13 +80,13 @@ class TestAppealService(TestCase):
         mock_get_all_appeals.assert_called_once()
 
     @patch("app.main.model.appeal.Appeal.get_appeal_by_id")
-    def test_get_a_appeal(self, mock_get_appeal_by_id):
+    def test_get_an_appeal(self, mock_get_appeal_by_id):
         # ARRANGE
         data = appeal_1
         mock_get_appeal_by_id.return_value = data
 
         # ACT
-        response, status_code = get_a_appeal(
+        response, status_code = get_an_appeal(
             public_id=generate_fake_public_id(),
             user_id=generate_fake_public_id(),
             role="admin",
@@ -97,3 +102,26 @@ class TestAppealService(TestCase):
         self.assertEqual(result["report_id"], data["report_id"])
 
         mock_get_appeal_by_id.assert_called_once()
+
+    @patch("app.main.model.appeal.Appeal.update_appeal")
+    def test_update_appeal(self, mock_update_appeal):
+        # ARRANGE
+        data = appeal_1
+        data["status"] = "accepted"
+        mock_update_appeal.return_value = data
+
+        # ACT
+        response, status_code = update_appeal(
+            public_id=generate_fake_public_id(), status="accepted"
+        )
+        result = response["data"]
+
+        # ASSERT
+        self.assertEqual(status_code, 201)
+        self.assertEqual(response["status"], "success")
+        self.assertEqual(response["message"], "Successfully update appeal.")
+        self.assertEqual(result["reason"], data["reason"])
+        self.assertEqual(result["report_id"], data["report_id"])
+        self.assertEqual(result["status"], data["status"])
+
+        mock_update_appeal.assert_called_once()
