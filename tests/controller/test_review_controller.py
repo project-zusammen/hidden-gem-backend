@@ -2,15 +2,15 @@ import json
 from unittest import TestCase
 from unittest.mock import patch
 from app import create_app
-from app.extensions import db
-from app.main.util.dto import ReviewDto
 
 review_data = {
     "title": "Test Review",
     "content": "This is a test review.",
     "location": "Test Location",
+    "region_id": "test-region-id",
 }
 
+error_message = "Input payload validation failed"
 
 class TestReviewEndpoints(TestCase):
     def setUp(self):
@@ -256,3 +256,76 @@ class TestReviewEndpoints(TestCase):
             expected_response["data"].get("visible"), res["data"].get("visible")
         )
         mock_visibility_review.assert_called_once()
+    
+    @patch("app.main.controller.review_controller.create_review")
+    def test_create_review_missing_title(self, mock_create_review):
+        # ARRANGE
+        review_data_missing_title = {
+            "content": "This is a test review.",
+            "location": "Test Location",
+            "region_id": "test-region-id",
+        }
+        expected_response = {
+            "message": error_message,
+            "errors": {'title': "'title' is a required property"},
+        }
+        mock_create_review.return_value = expected_response
+
+        # ACT
+        with self.app.test_client() as client:
+            response = client.post("/api/review", json=review_data_missing_title)
+            res = response.get_json()
+
+        # ASSERT
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(expected_response["message"], res["message"])
+        self.assertEqual(expected_response["errors"], res["errors"])
+    
+    @patch("app.main.controller.review_controller.create_review")
+    def test_create_review_missing_content(self, mock_create_review):
+        # ARRANGE
+        review_data_missing_content = {
+            "title": "Test Review",
+            "location": "Test Location",
+            "region_id": "test-region-id",
+        }
+        expected_response = {
+            "message": error_message,
+            "errors": {'content': "'content' is a required property"},
+        }
+        mock_create_review.return_value = expected_response
+
+        # ACT
+        with self.app.test_client() as client:
+            response = client.post("/api/review", json=review_data_missing_content)
+            res = response.get_json()
+
+        # ASSERT
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(expected_response["message"], res["message"])
+        self.assertEqual(expected_response["errors"], res["errors"])
+    
+    @patch("app.main.controller.review_controller.create_review")
+    def test_create_review_missing_region_id(self, mock_create_review):
+        # ARRANGE
+        review_data_missing_region_id = {
+            "title": "Test Review",
+            "content": "This is a test review.",
+            "location": "Test Location",
+        }
+        expected_response = {
+            "message": error_message,
+            "errors": {'region_id': "'region_id' is a required property"},
+        }
+        mock_create_review.return_value = expected_response
+
+        # ACT
+        with self.app.test_client() as client:
+            response = client.post("/api/review", json=review_data_missing_region_id)
+            res = response.get_json()
+
+        # ASSERT
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(expected_response["message"], res["message"])
+        self.assertEqual(expected_response["errors"], res["errors"])
+        

@@ -2,16 +2,21 @@ import uuid
 import datetime
 from .. import db
 from ..util.helper import convert_to_local_time
+<<<<<<< HEAD
 import re
 from .tag import ReviewTag
 
 
+=======
+from .region import Region
+>>>>>>> main
 
 class Review(db.Model):
     __tablename__ = "review"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     public_id = db.Column(db.String(100), unique=True, nullable=False)
+<<<<<<< HEAD
     user_id = db.Column(
         db.Integer, db.ForeignKey("user.id", name="fk_review_user"), nullable=False
     )
@@ -22,6 +27,12 @@ class Review(db.Model):
         db.Integer, db.ForeignKey("region.id", name="fk_review_region"), nullable=False
     )
     title = db.Column(db.String(100), nullable=False)
+=======
+    # user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    # category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    region_id = db.Column(db.Integer, db.ForeignKey('region.id'), nullable=False)
+    title = db.Column(db.String(100))
+>>>>>>> main
     content = db.Column(db.String(255), nullable=False)
     location = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, nullable=False)
@@ -36,11 +47,15 @@ class Review(db.Model):
     def serialize(self):
         created_at = convert_to_local_time(self.created_at)
         updated_at = convert_to_local_time(self.updated_at)
+        
+        region_model = Region()
+        region_public_id = region_model.get_region_public_id(self.region_id)
+
         return {
             "public_id": self.public_id,
-            "user_id": self.user_id,
-            "category_id": self.category_id,
-            "region_id": self.region_id,
+            # 'user_id': self.user_id,
+            # 'category_id': self.category_id,
+            "region_id": region_public_id,
             "title": self.title,
             "content": self.content,
             "location": self.location,
@@ -75,18 +90,34 @@ class Review(db.Model):
             raise e
 
     def get_review_by_id(self, public_id):
-        return self.query.filter_by(public_id=public_id, visible=True).first()
+        review = self.query.filter_by(public_id=public_id, visible=True).first()
+        if review:
+            return review.serialize()
+        return None
+    
+    def get_review_public_id(self, id):
+        review = self.query.filter_by(id=id).first()
+        if review:
+            return review.public_id
+        return None
 
     def create_review(self, data):
         self.public_id = str(uuid.uuid4())
         self.title = data.get("title")
         self.content = data.get("content")
         self.location = data.get("location")
+<<<<<<< HEAD
         self.user_id = data.get("user_id")
         self.category_id = data.get("category_id")
         self.region_id = data.get("region_id")
+=======
+>>>>>>> main
         if not self.title or not self.content:
             return None
+        
+        region_id = data.get("region_id")
+        region_model = Region()
+        self.region_id = region_model.get_region_by_id(region_id)
 
         self.created_at = datetime.datetime.utcnow()
         self.updated_at = datetime.datetime.utcnow()
@@ -98,12 +129,14 @@ class Review(db.Model):
         return self.serialize()
 
     def update_review(self, public_id, data):
-        review = self.get_review_by_id(public_id)
+        review = self.query.filter_by(public_id=public_id, visible=True).first()
         if not review:
             return None
         else:
-            review.category_id = data.get("category_id")
-            review.region_id = data.get("region_id")
+            region_id = data.get("region_id")
+            region_model = Region()
+            review.region_id = region_model.get_region_by_id(region_id)
+            
             review.title = data.get("title")
             review.content = data.get("content")
             review.location = data.get("location")
@@ -112,7 +145,7 @@ class Review(db.Model):
             return review.serialize()
 
     def delete_review(self, public_id):
-        review = self.get_review_by_id(public_id)
+        review = self.query.filter_by(public_id=public_id, visible=True).first()
         if not review:
             return None
         else:
@@ -122,7 +155,7 @@ class Review(db.Model):
             return review.serialize()
 
     def upvote_review(self, public_id, upvote=True):
-        review = self.get_review_by_id(public_id)
+        review = self.query.filter_by(public_id=public_id, visible=True).first()
         if not review:
             return None
         if upvote:
@@ -134,7 +167,7 @@ class Review(db.Model):
         return review.serialize()
 
     def update_visibility(self, public_id, visible=True):
-        review = self.get_review_by_id(public_id)
+        review = self.query.filter_by(public_id=public_id, visible=True).first()
         if not review:
             return None
         else:
@@ -143,6 +176,7 @@ class Review(db.Model):
             review.save()
             return review.serialize()
 
+<<<<<<< HEAD
     def get_review_id_by_public_id(self, public_id):
         try:
             review = self.query.filter_by(public_id=public_id, visible=True).first()
@@ -157,3 +191,10 @@ class Review(db.Model):
             return re.findall(r"\#\w+", content)
         except Exception as e:
             raise e
+=======
+    def get_review_db_id(self, public_id):
+        review = self.query.filter_by(public_id=public_id).first()
+        if review:
+            return review.id
+        return None
+>>>>>>> main

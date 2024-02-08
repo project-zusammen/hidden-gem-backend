@@ -16,6 +16,12 @@ review_data = {
 }
 user_data = {"username": "aqiz", "email": "aqiz@gmail.com", "password": "Aqiz123!"}
 
+def create_region(region_name="Test Region"):
+    global region_id
+    region_model = Region()
+    region = region_model.create_region(region_name)
+    region_id = region["public_id"]
+
 
 class TestReview(unittest.TestCase):
     def setUp(self):
@@ -23,6 +29,8 @@ class TestReview(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
+        create_region()
+        review_data["region_id"] = region_id
 
     def tearDown(self):
         db.session.remove()
@@ -43,7 +51,6 @@ class TestReview(unittest.TestCase):
 
         # ACT
         retrieved_review = review_model.get_review_by_id(created_review["public_id"])
-        retrieved_review = retrieved_review.serialize()
 
         # ASSERT
         self.assertIsNotNone(retrieved_review)
@@ -71,8 +78,7 @@ class TestReview(unittest.TestCase):
             "title": "Updated Review",
             "content": "This is an updated review.",
             "location": "Updated Location",
-            "category_id": 1,
-            "region_id": 1,
+            "region_id": review["region_id"],
         }
         updated_review = review_model.update_review(
             created_review["public_id"], updated_data
