@@ -3,9 +3,29 @@ import unittest
 from app.main import create_app
 from app.extensions import db
 from app.main.model.comment import Comment
+from app.main.model.review import Review
+from app.main.model.region import Region
 
-comment_data = {"content": "new comment", "review_id": "review_id"}
+comment_data = {"content": "new comment"}
 
+def create_region(region_name="Test Region"):
+    region_model = Region()
+    region = region_model.create_region(region_name)
+    region_id = region["public_id"]
+    return region_id
+
+def create_review():
+    global review_id
+    region_id = create_region()
+    review_data = {
+        "title": "Test Review",
+        "content": "This is a test review.",
+        "location": "Test Location",
+        "region_id": region_id,
+    }
+    review_model = Review()
+    review = review_model.create_review(review_data)
+    review_id = review["public_id"]
 
 class TestComment(unittest.TestCase):
     def setUp(self):
@@ -13,6 +33,8 @@ class TestComment(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
+        create_review()
+        comment_data["review_id"] = review_id
 
     def tearDown(self):
         db.session.remove()
@@ -33,7 +55,7 @@ class TestComment(unittest.TestCase):
     def test_get_all_comments(self):
         # ARRANGE
         comment_model = Comment()
-        comment = comment_model.create_comment(comment_data)
+        comment_model.create_comment(comment_data)
 
         # ACT
         retrieved_comments = comment_model.get_all_comments()
@@ -90,7 +112,7 @@ class TestComment(unittest.TestCase):
         comment = comment_model.create_comment(comment_data)
 
         # ACT
-        upvoted_comment = comment_model.upvote_comment(
+        comment_model.upvote_comment(
             comment["public_id"], upvote=True
         )
         upvoted_comment = comment_model.upvote_comment(

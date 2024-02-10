@@ -2,12 +2,19 @@ import unittest
 from app.main import create_app
 from app.extensions import db
 from app.main.model.review import Review
+from app.main.model.region import Region
 
 review_data = {
     "title": "Test Review",
     "content": "This is a test review.",
     "location": "Test Location",
 }
+
+def create_region(region_name="Test Region"):
+    global region_id
+    region_model = Region()
+    region = region_model.create_region(region_name)
+    region_id = region["public_id"]
 
 
 class TestReview(unittest.TestCase):
@@ -16,6 +23,8 @@ class TestReview(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
+        create_region()
+        review_data["region_id"] = region_id
 
     def tearDown(self):
         db.session.remove()
@@ -29,7 +38,6 @@ class TestReview(unittest.TestCase):
 
         # ACT
         retrieved_review = review_model.get_review_by_id(created_review["public_id"])
-        retrieved_review = retrieved_review.serialize()
 
         # ASSERT
         self.assertIsNotNone(retrieved_review)
@@ -47,6 +55,7 @@ class TestReview(unittest.TestCase):
             "title": "Updated Review",
             "content": "This is an updated review.",
             "location": "Updated Location",
+            "region_id": review["region_id"],
         }
         updated_review = review_model.update_review(review["public_id"], updated_data)
 

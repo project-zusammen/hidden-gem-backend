@@ -84,6 +84,30 @@ class User(db.Model):
         except Exception as e:
             raise e
 
+
+    def register_admin(self, data):
+        try:
+            password = generate_password_hash(data.get("password"))
+            email = data.get("email")
+            if not is_valid_email(email):
+                raise Exception("The email is invalid")
+            user = self.query.filter_by(email=email).first()
+            if user:
+                raise Exception("This email has already registered")
+
+            self.public_id = str(uuid.uuid4())
+            self.username = data.get("username")
+            self.email = email
+            self.password = password
+            self.role = data.get("role", "admin")
+            self.status = data.get("status", "active")
+            self.created_at = datetime.datetime.utcnow()
+            self.updated_at = datetime.datetime.utcnow()
+            self.save()
+            return self.serialize()
+        except Exception as e:
+            raise e
+
     def get_user_by_id(self, public_id, user_id):
         try:
             user = self.check_user_authorization(public_id, user_id)
@@ -91,7 +115,41 @@ class User(db.Model):
                 return user.serialize()
         except Exception as e:
             raise e
+    
+    def get_user_public_id(self, id):
+        try:
+            user = self.query.filter_by(id=id).first()
+            if user:
+                return user.public_id
+            return None
+        except Exception as e:
+            raise e
 
+    def get_user_id(self, public_id):
+        try:
+            user = self.query.filter_by(public_id=public_id).first()
+            if user:
+                return user.id
+        except Exception as e:
+            raise e
+
+    def get_user_public_id(self, id):
+        try:
+            user = self.query.filter_by(id=id).first()
+            if user:
+                return user.public_id
+            return None
+        except Exception as e:
+            raise e
+
+    def get_user_id(self, public_id):
+        try:
+            user = self.query.filter_by(public_id=public_id).first()
+            if user:
+                return user.id
+        except Exception as e:
+            raise e
+        
     def delete_user(self, public_id, user_id):
         try:
             user = self.check_user_authorization(public_id, user_id)
