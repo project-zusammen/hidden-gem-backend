@@ -50,13 +50,13 @@ class TestReviewService(TestCase):
         mock_get_all_reviews.return_value = data
         page = 1
         count = 50
-        # tag_id = 0
+        tag_id = 0
         region_id = 0
         category_id = 0
         
         # Act
         response, status_code = get_all_reviews(
-            page, count, region_id, category_id
+            page, count, region_id, category_id, tag_id
         )
         result = response["data"]
 

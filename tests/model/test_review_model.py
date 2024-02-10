@@ -5,6 +5,7 @@ from app.main.model.review import Review
 from app.main.model.region import Region
 from app.main.model.category import Category
 from app.main.model.user import User
+from app.main.model.tag import Tag
 
 review_data = {
     "title": "Test Review",
@@ -20,6 +21,10 @@ user_data = {
 
 category_data = {
     "name": "Test Category",
+}
+
+tag_data = {
+    "name": "Test Tag",
 }
 
 def create_region(region_name="Test Region"):
@@ -40,6 +45,12 @@ def register_user():
     user = user_model.register_user(user_data)
     user_id = user["public_id"]
 
+def create_tag():
+    global tag_id
+    tag_model = Tag()
+    tag = tag_model.create_tag(tag_data)
+    tag_id = tag["public_id"]
+
 
 class TestReview(unittest.TestCase):
     def setUp(self):
@@ -50,9 +61,11 @@ class TestReview(unittest.TestCase):
         create_region()
         create_category()
         register_user()
+        create_tag()
         review_data["region_id"] = region_id
         review_data["category_id"] = category_id
         review_data["user_id"] = user_id
+        review_data["tag_id"] = tag_id
 
     def tearDown(self):
         db.session.remove()
@@ -104,21 +117,12 @@ class TestReview(unittest.TestCase):
     def test_get_all_reviews(self):
         # ARRANGE
         review_model = Review()
-        review_data_1 = {
-            "title": "Test Review 1",
-            "content": "This is a test review #review1",
-            "location": "Test Location 1",
-            "user_id": user_id,
-            "region_id": region_id,
-            "category_id": category_id,
-        }
-        review = review_model.create_review(review_data_1)
+        review = review_model.create_review(review_data)
 
         # ACT
         page = 1
         count = 1
-        # tag_id = 0
-        retrieved_reviews = review_model.get_all_reviews(page=page, count=count, region_id=region_id, category_id=category_id)
+        retrieved_reviews = review_model.get_all_reviews(page, count, region_id, category_id, tag_id)
 
         # ASSERT
         self.assertIsNotNone(retrieved_reviews)
