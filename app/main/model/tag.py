@@ -47,7 +47,16 @@ class Tag(db.Model):
             tag = self.query.filter_by(public_id=public_id).first()
             if tag:
                 return tag.id
-            raise Exception("Tag not found. Invalid ID")
+            return None
         except Exception as e:
             raise e
-
+        
+    def get_tag_public_id(self, id):
+        try:
+            tag = self.query.filter_by(id=id).first()
+            if tag:
+                return tag.public_id
+            return None
+        except Exception as e:
+            raise e
+        
