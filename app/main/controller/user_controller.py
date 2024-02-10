@@ -1,12 +1,6 @@
 from ..util.dto import UserDto
 from ..util.helper import error_handler
 from flask import request
-
-user_dto = UserDto()
-_user = user_dto.user
-_login = user_dto.login
-_userStatus = user_dto.status
-
 from flask_restx import Resource
 from ..service.user_service import (
     register_user,
@@ -20,6 +14,10 @@ from ..service.user_service import (
 from ...extensions import ns
 from ..util.token_verify import token_required
 
+user_dto = UserDto()
+_user = user_dto.user
+_login = user_dto.login
+_userStatus = user_dto.status
 
 @ns.route("/user/signup")
 class UserSignUp(Resource):
