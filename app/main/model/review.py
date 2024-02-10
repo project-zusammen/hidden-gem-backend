@@ -189,21 +189,6 @@ class Review(db.Model):
             review.save()
             return review.serialize()
 
-    def get_review_id_by_public_id(self, public_id):
-        try:
-            review = self.query.filter_by(public_id=public_id, visible=True).first()
-            if not review:
-                raise Exception("Review not found. Invalid public_id")
-            return review.id
-        except Exception as e:
-            raise e
-
-    def get_the_hashtag_from_content(self, content):
-        try:
-            return re.findall(r"\#\w+", content)
-        except Exception as e:
-            raise e
-    
     def get_review_db_id(self, public_id):
         review = self.query.filter_by(public_id=public_id).first()
         if review:

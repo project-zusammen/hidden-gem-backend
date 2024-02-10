@@ -88,3 +88,11 @@ class ReportDto:
             "reason": fields.String(required=True, description="report reason"),
         },
     )
+
+class TagDto:
+    tag = api.model(
+        "tag",
+        {
+            "name": fields.String(required=True, description="tag name"),
+        },
+    )

@@ -99,16 +99,8 @@ class TestReviewService(TestCase):
         self.assertEqual(result["location"], data["location"])
 
     @patch("app.main.model.review.Review.create_review")
-    # @patch("app.main.model.review.Review.get_review_id_by_public_id")
-    # @patch("app.main.model.review.Review.get_the_hashtag_from_content")
-    # @patch("app.main.model.tag.Tag.create_tag")
-    # @patch("app.main.model.tag.ReviewTag.create_review_tag")
     def test_create_review(
         self,
-        # mock_create_review_tag,
-        # mock_create_tag,
-        # mock_get_hashtags,
-        # mock_get_review_id,
         mock_create_review,
     ):
         # Arrange
@@ -120,13 +112,7 @@ class TestReviewService(TestCase):
             "content": "This is a review #tag1",
             "location": "Test Location",
         }
-        # tag_data = {"id": 1, "public_id": public_id, "name": "#tag1"}
-        # review_tag_data = {"id": 1, "public_id": public_id, "tag_id": 1, "review_id": 1}
         mock_create_review.return_value = data
-        # mock_get_review_id.return_value = 1
-        # mock_get_hashtags.return_value = ["#tag1"]
-        # mock_create_tag.return_value = tag_data
-        # mock_create_review_tag.return_value = review_tag_data
 
         # Act
         response, status_code = create_review(data)
@@ -142,8 +128,6 @@ class TestReviewService(TestCase):
 
         # Check interactions with mock methods
         mock_create_review.assert_called_once_with(data)
-        # mock_get_review_id.assert_called_once_with(public_id)
-        # mock_get_hashtags.assert_called_once_with(data["content"])
 
     @patch("app.main.model.review.Review.update_review")
     def test_update_review(self, mock_update_review):
