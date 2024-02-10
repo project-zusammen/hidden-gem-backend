@@ -6,14 +6,22 @@ from app.main.model.comment import Comment
 from app.main.model.review import Review
 from app.main.model.region import Region
 from app.main.model.user import User
+from app.main.model.tag import Tag
 
 comment_data = {"content": "new comment"}
+tag_data = {"tag": "new tag"}
 
 def create_region(region_name="Test Region"):
     region_model = Region()
     region = region_model.create_region(region_name)
     region_id = region["public_id"]
     return region_id
+
+def create_tag():
+    tag_model = Tag()
+    tag = tag_model.create_tag(tag_data)
+    tag_id = tag["public_id"]
+    return tag_id
 
 def create_user():
     user_model = User()
@@ -29,13 +37,16 @@ def create_review():
     global review_id
     region_id = create_region()
     user_id = create_user()
+    tag_id = create_tag()
     review_data = {
         "title": "Test Review",
         "content": "This is a test review.",
         "location": "Test Location",
         "region_id": region_id,
         "user_id": user_id,
+        "tag_id": tag_id,
     }
+
     review_model = Review()
     review = review_model.create_review(review_data)
     review_id = review["public_id"]
