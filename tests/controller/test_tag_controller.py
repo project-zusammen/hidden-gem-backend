@@ -21,7 +21,7 @@ tag_data = {
 }
 
 
-class TestAppealEndpoints(TestCase):
+class TestTagEndpoints(TestCase):
     def setUp(self):
         self.app = create_app(config_object="app.test_settings")
         self.app_context = self.app.app_context()

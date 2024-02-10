@@ -21,7 +21,7 @@ def register_user():
     user_role = user_model.get_user_id(user["role"])
 
 
-class TestAppeal(unittest.TestCase):
+class TestTag(unittest.TestCase):
     def setUp(self):
         self.app = create_app(config_object="app.test_settings")
         self.app_context = self.app.app_context()
