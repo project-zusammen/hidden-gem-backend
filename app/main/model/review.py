@@ -1,13 +1,17 @@
-import re
 import uuid
 import logging
 import datetime
 from .. import db
 from ..util.helper import convert_to_local_time
-# from .tag import ReviewTag
 from .user import User 
 from .region import Region
 from .category import Category
+from .tag import Tag
+
+region_model = Region()
+user_model = User()
+category_model = Category()
+tag_model = Tag()
 
 class Review(db.Model):
     __tablename__ = "review"
@@ -22,6 +26,9 @@ class Review(db.Model):
     )
     region_id = db.Column(
         db.Integer, db.ForeignKey("region.id", name="fk_review_region"), nullable=False
+    )
+    tag_id = db.Column(
+        db.Integer, db.ForeignKey("tag.id", name="fk_review_tag")
     )
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.String(255), nullable=False)
@@ -39,20 +46,17 @@ class Review(db.Model):
         created_at = convert_to_local_time(self.created_at)
         updated_at = convert_to_local_time(self.updated_at)
         
-        region_model = Region()
         region_public_id = region_model.get_region_public_id(self.region_id)
-
-        user_model = User()
         user_public_id = user_model.get_user_public_id(self.user_id)
-
-        category_model = Category()
         category_public_id = category_model.get_public_id(self.category_id)
+        tag_public_id = tag_model.get_tag_public_id(self.tag_id)
 
         return {
             "public_id": self.public_id,
             'user_id': user_public_id,
             'category_id': category_public_id,
             "region_id": region_public_id,
+            "tag_id": tag_public_id,
             "title": self.title,
             "content": self.content,
             "location": self.location,
@@ -67,21 +71,18 @@ class Review(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def get_all_reviews(self, page, count, region_id, category_id ):
+    def get_all_reviews(self, page, count, region_id, category_id, tag_id):
         try:
             offset = (page - 1) * count
-            # query = db.session.query(Review).join(
-            #     ReviewTag, ReviewTag.review_id == Review.id, isouter=True
-            # )
             query = self.query.filter(Review.visible == True)
-            # if tag_id:
-            #     query = query.filter(ReviewTag.tag_id == tag_id)
+            if tag_id:
+                tag_db_id = tag_model.get_tag_db_id(tag_id)
+                query = query.filter(Review.tag_id == tag_db_id)
             if category_id:
-                category_db_id = Category.get_category_id(category_id)
+                category_db_id = category_model.get_category_id(category_id)
                 query = query.filter(Review.category_id == category_db_id)
-            
             if region_id:
-                region_db_id = Region.get_region_by_id(region_id)
+                region_db_id = region_model.get_region_by_id(region_id)
                 query = query.filter(Review.region_id == region_db_id)
 
             reviews = query.limit(count).offset(offset).all()
@@ -127,6 +128,10 @@ class Review(db.Model):
                 region_model = Region()
                 self.region_id = region_model.get_region_by_id(region_id)
             
+            tag_id = data.get("tag_id")
+            if tag_id:
+                tag_model = Tag()
+                self.tag_id = tag_model.get_tag_db_id(tag_id)
 
             self.created_at = datetime.datetime.utcnow()
             self.updated_at = datetime.datetime.utcnow()

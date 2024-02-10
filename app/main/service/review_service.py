@@ -73,10 +73,10 @@ def update_visibility(public_id, visible=True):
         return {"status": "error", "message": "Internal Server Error"}, 500
 
 
-def get_all_reviews(page, count,  category_id, region_id):
+def get_all_reviews(page, count,  category_id, region_id, tag_id):
     try:
         reviews = review_model.get_all_reviews(
-            page, count,  category_id, region_id
+            page, count,  category_id, region_id, tag_id
         )
         if not reviews:
             return {"status": "success", "message": "No reviews found", "data": []}, 200
