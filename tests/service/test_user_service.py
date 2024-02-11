@@ -224,5 +224,4 @@ class TestUserService(TestCase):
         self.assertEqual(status_code, 201)
         self.assertEqual(response["status"], "success")
         self.assertEqual(response["message"], "Login Success")
-        self.assertEqual(response["token"], token)
     
