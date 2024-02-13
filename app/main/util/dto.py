@@ -89,3 +89,4 @@ class ReportDto:
             "reason": fields.String(required=True, description="report reason"),
         },
     )
+    status = api.model("status", {"status": fields.Boolean(description="status")})

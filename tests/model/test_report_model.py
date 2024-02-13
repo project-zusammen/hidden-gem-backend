@@ -19,6 +19,7 @@ report_data = {
     "status": "received",
 }
 
+
 def register_user():
     global user_id, user_role
     user_data = {
@@ -44,6 +45,7 @@ def register_admin():
     admin_id = user_model.get_user_id(admin["public_id"])
     admin_role = user_model.get_user_role(admin["public_id"])
 
+
 class TestReport(unittest.TestCase):
     def setUp(self):
         self.app = create_app(config_object="app.test_settings")
@@ -52,7 +54,7 @@ class TestReport(unittest.TestCase):
         db.create_all()
         register_user()
         register_admin()
-    
+
     def tearDown(self):
         db.session.remove()
         db.drop_all()
@@ -62,17 +64,17 @@ class TestReport(unittest.TestCase):
         # ARRANGE
         region_model = Region()
         created_region = region_model.create_region("Test Region")
-        
+
         review_data["region_id"] = created_region["public_id"]
         review_model = Review()
         created_review = review_model.create_review(review_data)
-        
+
         report_model = Report()
         report_data["type"] = "review"
         report_data["item_id"] = created_review["public_id"]
         report_data["region_id"] = created_region["public_id"]
         report_data["user_id"] = user_id
-        
+
         # ACT
         created_report = report_model.create_report(report_data)
 
@@ -82,12 +84,12 @@ class TestReport(unittest.TestCase):
         self.assertEqual(created_report["item_id"], report_data["item_id"])
         self.assertEqual(created_report["reason"], report_data["reason"])
         self.assertEqual(created_report["status"], report_data["status"])
-    
+
     def test_create_and_get_report_on_comment(self):
         # ARRANGE
         region_model = Region()
         created_region = region_model.create_region("Test Region")
-        
+
         review_data["region_id"] = created_region["public_id"]
         review_model = Review()
         created_review = review_model.create_review(review_data)
@@ -98,13 +100,13 @@ class TestReport(unittest.TestCase):
         }
         comment_model = Comment()
         created_comment = comment_model.create_comment(comment_data)
-        
+
         report_model = Report()
         report_data["type"] = "comment"
         report_data["item_id"] = created_comment["public_id"]
         report_data["region_id"] = created_region["public_id"]
         report_data["user_id"] = user_id
-        
+
         # ACT
         created_report = report_model.create_report(report_data)
 
@@ -119,11 +121,11 @@ class TestReport(unittest.TestCase):
         # ARRANGE
         region_model = Region()
         created_region = region_model.create_region("Test Region")
-        
+
         review_data["region_id"] = created_region["public_id"]
         review_model = Review()
         created_review = review_model.create_review(review_data)
-        
+
         report_model = Report()
         report_data["type"] = "review"
         report_data["item_id"] = created_review["public_id"]
@@ -131,7 +133,7 @@ class TestReport(unittest.TestCase):
         report_data["user_id"] = user_id
 
         report_model.create_report(report_data)
-        
+
         # ACT
         all_reports = report_model.get_all_reports()
 
@@ -146,11 +148,11 @@ class TestReport(unittest.TestCase):
         # ARRANGE
         region_model = Region()
         created_region = region_model.create_region("Test Region")
-        
+
         review_data["region_id"] = created_region["public_id"]
         review_model = Review()
         created_review = review_model.create_review(review_data)
-        
+
         report_model = Report()
         report_data["type"] = "review"
         report_data["item_id"] = created_review["public_id"]
@@ -175,11 +177,11 @@ class TestReport(unittest.TestCase):
         # ARRANGE
         region_model = Region()
         created_region = region_model.create_region("Test Region")
-        
+
         review_data["region_id"] = created_region["public_id"]
         review_model = Review()
         created_review = review_model.create_review(review_data)
-        
+
         report_model = Report()
         report_data["type"] = "review"
         report_data["item_id"] = created_review["public_id"]
@@ -201,11 +203,11 @@ class TestReport(unittest.TestCase):
         # ARRANGE
         region_model = Region()
         created_region = region_model.create_region("Test Region")
-        
+
         review_data["region_id"] = created_region["public_id"]
         review_model = Review()
         created_review = review_model.create_review(review_data)
-        
+
         report_model = Report()
         report_data["type"] = "review"
         report_data["item_id"] = created_review["public_id"]
@@ -223,6 +225,33 @@ class TestReport(unittest.TestCase):
             )
 
         self.assertTrue("Access Denied" in str(context.exception))
+
+    def test_update_report(self):
+        # ARRANGE
+        region_model = Region()
+        created_region = region_model.create_region("Test Region")
+
+        review_data["region_id"] = created_region["public_id"]
+        review_model = Review()
+        created_review = review_model.create_review(review_data)
+
+        report_model = Report()
+        report_data["type"] = "review"
+        report_data["item_id"] = created_review["public_id"]
+        report_data["region_id"] = created_region["public_id"]
+        report_data["user_id"] = user_id
+
+        report = report_model.create_report(report_data)
+
+        # ACT
+        updated_report = report_model.update_report(
+            public_id=report["public_id"], status="accepted"
+        )
+
+        # ASSERT
+        self.assertIsNotNone(updated_report)
+        self.assertEqual(updated_report["status"], "accepted")
+
 
 if __name__ == "__main__":
     unittest.main()

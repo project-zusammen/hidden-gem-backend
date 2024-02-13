@@ -31,9 +31,13 @@ report_data = {
     "type": "review",
     "item_id": str(uuid.uuid4()),
     "reason": "Test Reason",
+    "status": "received",
 }
 
 error_message = "Input payload validation failed"
+
+public_id = str(uuid.uuid4())
+
 
 class TestReportEndpoints(TestCase):
     def setUp(self):
@@ -70,7 +74,7 @@ class TestReportEndpoints(TestCase):
         self.assertEqual(expected_response["data"]["user_id"], res.get("user_id"))
         self.assertEqual(expected_response["data"]["reason"], res.get("reason"))
         mock_create_report.assert_called_once()
-    
+
     def test_craete_report_missing_token(self):
         # ARRANGE
         expected_response = {
@@ -85,7 +89,7 @@ class TestReportEndpoints(TestCase):
         # ASSERT
         self.assertEqual(response.status_code, 401)
         self.assertEqual(expected_response["message"], res["message"])
-    
+
     @patch("app.main.controller.report_controller.create_report")
     def test_create_report_missing_type(self, mock_create_report):
         # ARRANGE
@@ -96,7 +100,7 @@ class TestReportEndpoints(TestCase):
 
         expected_response = {
             "message": error_message,
-            "errors": {'type': "'type' is a required property"},
+            "errors": {"type": "'type' is a required property"},
         }
         mock_create_report.return_value = expected_response
 
@@ -108,8 +112,8 @@ class TestReportEndpoints(TestCase):
         # ASSERT
         self.assertEqual(response.status_code, 400)
         self.assertEqual(expected_response["message"], res["message"])
-        self.assertEqual(expected_response["errors"], res["errors"]) 
-    
+        self.assertEqual(expected_response["errors"], res["errors"])
+
     @patch("app.main.controller.report_controller.create_report")
     def test_create_report_missing_item_id(self, mock_create_report):
         # ARRANGE
@@ -120,7 +124,7 @@ class TestReportEndpoints(TestCase):
 
         expected_response = {
             "message": error_message,
-            "errors": {'item_id': "'item_id' is a required property"},
+            "errors": {"item_id": "'item_id' is a required property"},
         }
         mock_create_report.return_value = expected_response
 
@@ -132,8 +136,8 @@ class TestReportEndpoints(TestCase):
         # ASSERT
         self.assertEqual(response.status_code, 400)
         self.assertEqual(expected_response["message"], res["message"])
-        self.assertEqual(expected_response["errors"], res["errors"]) 
-    
+        self.assertEqual(expected_response["errors"], res["errors"])
+
     @patch("app.main.controller.report_controller.create_report")
     def test_create_report_missing_reason(self, mock_create_report):
         # ARRANGE
@@ -144,7 +148,7 @@ class TestReportEndpoints(TestCase):
 
         expected_response = {
             "message": error_message,
-            "errors": {'reason': "'reason' is a required property"},
+            "errors": {"reason": "'reason' is a required property"},
         }
         mock_create_report.return_value = expected_response
 
@@ -201,7 +205,9 @@ class TestReportEndpoints(TestCase):
 
         # ACT
         with self.app.test_client() as client:
-            response = client.get(f"/api/report/{report_data['public_id']}", headers=headers)
+            response = client.get(
+                f"/api/report/{report_data['public_id']}", headers=headers
+            )
             res = json.loads(response.data.decode("utf-8"))
             res = res.get("data")
 
@@ -209,3 +215,31 @@ class TestReportEndpoints(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_data["reason"], res["reason"])
         mock_get_an_report.assert_called_once()
+
+    @patch("app.main.controller.report_controller.update_report")
+    def test_update_report(self, mock_update_report):
+        # ARRANGE
+        report_data["status"] = "accepted"
+        expected_response = {
+            "status": "success",
+            "message": "Successfully updated.",
+            "data": report_data,
+        }
+        mock_update_report.return_value = expected_response
+
+        token = create_token(admin_data)
+        headers = {"X-API-KEY": token}
+
+        # ACT
+        with self.app.test_client() as client:
+            response = client.put(
+                f"/api/report/{public_id}", json=report_data, headers=headers
+            )
+            res = response.get_json()
+            res = res.get("data")
+
+        # ASSERT
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_response["data"]["status"], res["status"])
+
+        mock_update_report.assert_called_once()
