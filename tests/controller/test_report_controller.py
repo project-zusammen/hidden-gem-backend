@@ -25,7 +25,18 @@ admin_data = {
     "status": "active",
 }
 
+admin_data = {
+    "id": 1,
+    "public_id": str(uuid.uuid4()),
+    "username": "test_user",
+    "email": "@gmail.com",
+    "password": "test_password",
+    "role": "admin",
+    "status": "active",
+}
+
 report_data = {
+    "public_id": str(uuid.uuid4()),
     "public_id": str(uuid.uuid4()),
     "user_id": user_data["public_id"],
     "type": "review",

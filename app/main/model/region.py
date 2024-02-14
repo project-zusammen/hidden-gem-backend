@@ -4,6 +4,7 @@ import uuid
 import datetime
 from ..util.helper import convert_to_local_time
 
+
 class Region(db.Model):
     __tablename__ = "region"
 
@@ -12,8 +13,6 @@ class Region(db.Model):
     city = db.Column(db.String(100), unique=True)
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False)
-
-    
 
     def __repr__(self):
         return f"<Region(city={self.city})>"
@@ -31,7 +30,7 @@ class Region(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
-    
+
     def create_region(self, region_name):
         try:
             self.public_id = str(uuid.uuid4())
@@ -49,7 +48,7 @@ class Region(db.Model):
             return [region.serialize() for region in regions]
         except Exception as e:
             raise e
-        
+
     def get_region_by_id(self, public_id):
         region = self.query.filter_by(public_id=public_id).first()
         if region:
@@ -72,8 +71,8 @@ class Region(db.Model):
             return True
         except Exception as e:
             raise e
-    
-    def update_region(self,public_id, new_region):
+
+    def update_region(self, public_id, new_region):
         try:
             region = self.get_region_by_id(public_id)
             if not region:
@@ -87,4 +86,3 @@ class Region(db.Model):
 
         except Exception as e:
             raise e
-        

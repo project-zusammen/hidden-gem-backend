@@ -22,6 +22,7 @@ report_data = {
 
 def register_user():
     global user_id, user_role
+    global user_id, user_role
     user_data = {
         "username": "test_users",
         "email": "test_users@gmail.com",

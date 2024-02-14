@@ -31,6 +31,23 @@ report_data_2 = {
 }
 
 
+report_data_1 = {
+    "public_id": generate_fake_public_id(),
+    "user_id": generate_fake_public_id(),
+    "type": "review",
+    "item_id": generate_fake_public_id(),
+    "reason": "Test Reason 1",
+}
+
+report_data_2 = {
+    "public_id": generate_fake_public_id(),
+    "user_id": generate_fake_public_id(),
+    "type": "review",
+    "item_id": generate_fake_public_id(),
+    "reason": "Test Reason 2",
+}
+
+
 class TestReviewService(TestCase):
     @classmethod
     def setUpClass(cls):
