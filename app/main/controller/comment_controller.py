@@ -1,4 +1,5 @@
 from ..util.dto import CommentDto
+from flask import request
 
 comment_dto = CommentDto()
 _comment = comment_dto.comment
@@ -20,9 +21,13 @@ from ...extensions import ns
 
 @ns.route("/comment")
 class CommentList(Resource):
+    @ns.param("page", "Page of data you want to retrieve")
+    @ns.param("count", "How many items you want to include in each page")
     def get(self):
         """List all comment"""
-        return get_all_comments()
+        page = request.args.get("page", default=1, type=int)
+        count = request.args.get("count", default=10, type=int)
+        return get_all_comments(page, count)
 
     @ns.expect(_comment, validate=True)
     def post(self):
