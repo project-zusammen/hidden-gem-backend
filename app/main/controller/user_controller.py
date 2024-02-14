@@ -19,7 +19,6 @@ _user = user_dto.user
 _login = user_dto.login
 _userStatus = user_dto.status
 
-
 @ns.route("/user/signup")
 class UserSignUp(Resource):
     @ns.expect(_user, validate=True)
@@ -27,15 +26,18 @@ class UserSignUp(Resource):
         """Register a new user"""
         return register_user(ns.payload)
 
+
 @ns.route("/user")
 class UserList(Resource):
-    @ns.doc(security="bearer", params={'page': {'description': 'Page number', 'type': 'integer'}}) 
+    @ns.doc(
+        security="bearer",
+        params={"page": {"description": "Page number", "type": "integer"}},
+    )
     @token_required
     def get(self, decoded_token):
         """List all users"""
-        page = request.args.get('page', default=None, type=int)
+        page = request.args.get("page", default=None, type=int)
         return get_all_users(page)
-
 
 
 @ns.route("/user/<public_id>")
@@ -64,6 +66,7 @@ class User(Resource):
         user_id = decoded_token["id"]
         return delete_user(public_id, user_id)
 
+
 ## work in progress, need authentication for this endpoint
 @ns.route("/user/<public_id>/status")
 @ns.param("public_id", "The user identifier")
@@ -79,6 +82,7 @@ class UserStatus(Resource):
         """Update user status"""
         updated_user = update_user_status(public_id, ns.payload)
         return updated_user
+
 
 @ns.route("/user/login")
 class UserLogin(Resource):

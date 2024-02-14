@@ -18,6 +18,7 @@ from app.main.controller.region_controller import ns as region_ns
 from app.main.controller.appeal_controller import ns as appeal_ns
 from app.main.controller.report_controller import ns as report_ns
 
+
 def create_app(config_object="app.settings"):
     """Create application factory, as explained here: http://flask.pocoo.org/docs/patterns/appfactories/.
 
