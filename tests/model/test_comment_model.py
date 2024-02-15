@@ -56,13 +56,16 @@ class TestComment(unittest.TestCase):
         # ARRANGE
         comment_model = Comment()
         comment_model.create_comment(comment_data)
+        page = 1
+        count = 2
 
         # ACT
-        retrieved_comments = comment_model.get_all_comments()
+        retrieved_comments = comment_model.get_all_comments(page, count)
 
         # ASSERT
         self.assertIsNotNone(retrieved_comments)
         self.assertEqual(comment_data["content"], retrieved_comments[0]["content"])
+        self.assertEqual(comment_data["review_id"], retrieved_comments[0]["review_id"])
 
     def test_get_comment_by_id(self):
         # ARRANGE

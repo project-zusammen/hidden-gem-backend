@@ -21,8 +21,8 @@ from ...extensions import ns
 
 @ns.route("/comment")
 class CommentList(Resource):
-    @ns.param("page", "Page of data you want to retrieve")
-    @ns.param("count", "How many items you want to include in each page")
+    @ns.param("page", "Which page number you want to query?")
+    @ns.param("count", "How many items you want to include in each page?")
     def get(self):
         """List all comment"""
         page = request.args.get("page", default=1, type=int)
