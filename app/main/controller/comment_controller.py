@@ -79,7 +79,7 @@ class CommentVisible(Resource):
         role = decoded_token["role"]
         if role != "admin":
             return error_handler("Access denied")
-        
+
         visible = ns.payload.get("visible")
         updated_visibility = update_visibility(public_id, visible)
         return updated_visibility

@@ -79,7 +79,9 @@ class TestCommentEndpoints(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(res, list)
         self.assertEqual(expected_data[0].get("content"), first_comment.get("content"))
-        self.assertEqual(expected_data[0].get("review_id"), first_comment.get("review_id"))
+        self.assertEqual(
+            expected_data[0].get("review_id"), first_comment.get("review_id")
+        )
         mock_get_all_comments.assert_called_once()
 
     @patch("app.main.controller.comment_controller.get_a_comment")
@@ -173,7 +175,9 @@ class TestCommentEndpoints(TestCase):
 
         # ACT
         with self.app.test_client() as client:
-            response = client.put(f"/api/comment/{public_id}/vote", json=comment_data_single)
+            response = client.put(
+                f"/api/comment/{public_id}/vote", json=comment_data_single
+            )
             res = response.get_json()
 
         # ASSERT
@@ -203,7 +207,11 @@ class TestCommentEndpoints(TestCase):
 
         # ACT
         with self.app.test_client() as client:
-            response = client.put(f"/api/comment/{public_id}/status", json=comment_data_single, headers=headers)
+            response = client.put(
+                f"/api/comment/{public_id}/status",
+                json=comment_data_single,
+                headers=headers,
+            )
             res = response.get_json()
 
         # ASSERT

@@ -9,6 +9,7 @@ from app.main.model.user import User
 
 comment_data = {"content": "new comment"}
 
+
 def register_user():
     global user_id, user_role
     user_data = {
@@ -34,11 +35,13 @@ def register_admin():
     admin_id = user_model.get_user_id(admin["public_id"])
     admin_role = user_model.get_user_role(admin["public_id"])
 
+
 def create_region(region_name="Test Region"):
     region_model = Region()
     region = region_model.create_region(region_name)
     region_id = region["public_id"]
     return region_id
+
 
 def create_review():
     global review_id
@@ -52,6 +55,7 @@ def create_review():
     review_model = Review()
     review = review_model.create_review(review_data)
     review_id = review["public_id"]
+
 
 class TestComment(unittest.TestCase):
     def setUp(self):
@@ -143,9 +147,7 @@ class TestComment(unittest.TestCase):
         comment = comment_model.create_comment(comment_data)
 
         # ACT
-        comment_model.upvote_comment(
-            comment["public_id"], upvote=True
-        )
+        comment_model.upvote_comment(comment["public_id"], upvote=True)
         upvoted_comment = comment_model.upvote_comment(
             comment["public_id"], upvote=False
         )
