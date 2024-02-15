@@ -5,8 +5,34 @@ from app.extensions import db
 from app.main.model.comment import Comment
 from app.main.model.review import Review
 from app.main.model.region import Region
+from app.main.model.user import User
 
 comment_data = {"content": "new comment"}
+
+def register_user():
+    global user_id, user_role
+    user_data = {
+        "username": "test_user",
+        "email": "test_user@gmail.com",
+        "password": "test_password",
+    }
+    user_model = User()
+    user = user_model.register_user(user_data)
+    user_id = user_model.get_user_id(user["public_id"])
+    user_role = user_model.get_user_role(user["role"])
+
+
+def register_admin():
+    global admin_id, admin_role
+    user_data = {
+        "username": "test_admin",
+        "email": "test_admin@gmail.com",
+        "password": "test_admin_password",
+    }
+    user_model = User()
+    admin = user_model.register_admin(user_data)
+    admin_id = user_model.get_user_id(admin["public_id"])
+    admin_role = user_model.get_user_role(admin["public_id"])
 
 def create_region(region_name="Test Region"):
     region_model = Region()
@@ -35,6 +61,8 @@ class TestComment(unittest.TestCase):
         db.create_all()
         create_review()
         comment_data["review_id"] = review_id
+        register_user()
+        register_admin()
 
     def tearDown(self):
         db.session.remove()

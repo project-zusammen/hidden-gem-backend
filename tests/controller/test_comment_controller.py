@@ -1,7 +1,19 @@
+import uuid
 import json
 from unittest import TestCase
 from unittest.mock import patch
 from app import create_app
+from app.main.util.helper import create_token
+
+user_data = {
+    "id": 1,
+    "public_id": str(uuid.uuid4()),
+    "username": "test_user",
+    "email": "@gmail.com",
+    "password": "test_password",
+    "role": "admin",
+    "status": "active",
+}
 
 comment_data_single = {"content": "This is a test comment.", "review_id": "1234ABCD"}
 
@@ -186,9 +198,12 @@ class TestCommentEndpoints(TestCase):
 
         mock_update_visibility.return_value = expected_response
 
+        token = create_token(user_data)
+        headers = {"X-API-KEY": token}
+
         # ACT
         with self.app.test_client() as client:
-            response = client.put(f"/api/comment/{public_id}/status", json=comment_data_single)
+            response = client.put(f"/api/comment/{public_id}/status", json=comment_data_single, headers=headers)
             res = response.get_json()
 
         # ASSERT
