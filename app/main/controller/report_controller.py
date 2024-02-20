@@ -9,6 +9,7 @@ from flask import request
 report_dto = ReportDto()
 _report = report_dto.report
 
+
 @ns.route("/report")
 class ReportList(Resource):
     @ns.expect(_report, validate=True)
@@ -18,7 +19,7 @@ class ReportList(Resource):
         """Creates a new Report"""
         user_id = decoded_token["id"]
         return create_report(ns.payload, user_id)
-    
+
     @ns.param("page", "Which page number you want to query?")
     @ns.param("count", "How many items you want to include in each page?")
     @ns.doc(security="bearer")
@@ -32,7 +33,8 @@ class ReportList(Resource):
         count = request.args.get("count", default=20, type=int)
         """List all reports"""
         return get_all_reports(page, count)
-    
+
+
 @ns.route("/report/<public_id>")
 @ns.param("public_id", "The report identifier")
 class Report(Resource):

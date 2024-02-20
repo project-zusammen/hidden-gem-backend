@@ -17,7 +17,8 @@ def create_report(data, user_id):
     except Exception as e:
         log.error(f"Error in create_report: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
-    
+
+
 def get_all_reports(page, count):
     try:
         reports = report_model.get_all_reports(page, count)
@@ -27,7 +28,7 @@ def get_all_reports(page, count):
                 "message": "No reports found",
                 "data": [],
             }, 200
-        
+
         response_object = {
             "status": "success",
             "message": "Successfully retrieved reports.",
@@ -37,6 +38,7 @@ def get_all_reports(page, count):
     except Exception as e:
         log.error(f"Error in get_all_reports: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
+
 
 def get_a_report(public_id, user_id, role):
     try:
