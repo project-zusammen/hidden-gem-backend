@@ -16,6 +16,8 @@ from app.main.controller.user_controller import ns as user_ns
 from app.main.controller.comment_controller import ns as comment_ns
 from app.main.controller.region_controller import ns as region_ns
 from app.main.controller.appeal_controller import ns as appeal_ns
+from app.main.controller.report_controller import ns as report_ns
+
 from app.main.controller.bookmark_controller import ns as bookmark_ns
 
 
@@ -44,6 +46,7 @@ def register_extensions(app):
     api.add_namespace(comment_ns)
     api.add_namespace(region_ns)
     api.add_namespace(appeal_ns)
+    api.add_namespace(report_ns)
     api.add_namespace(bookmark_ns)
     debug_toolbar.init_app(app)
     migrate.init_app(app, db)
