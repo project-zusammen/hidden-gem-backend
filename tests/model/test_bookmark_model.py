@@ -4,7 +4,7 @@ from app.extensions import db
 from app.main.model.bookmark import Bookmark
 from app.main.model.user import User
 from app.main.model.review import Review
-from app.main.util.helper import create_token
+from app.main.model.region import Region
 
 
 review_data = {
@@ -29,6 +29,10 @@ class TestBookmark(unittest.TestCase):
 
     def test_create_bookmark(self):
         # ARRANGE
+        region_model = Region()
+        created_region = region_model.create_region("Test Region")
+        review_data["region_id"] = created_region["public_id"]
+
         review_model = Review()
         created_review = review_model.create_review(review_data)
         review_id = review_model.get_review_id_by_public_id(created_review["public_id"])
@@ -46,6 +50,10 @@ class TestBookmark(unittest.TestCase):
 
     def test_get_bookmark_by_userid(self):
         # ARRANGE
+        region_model = Region()
+        created_region = region_model.create_region("Test Region")
+        review_data["region_id"] = created_region["public_id"]
+
         review_model = Review()
         created_review = review_model.create_review(review_data)
         user_model = User()
@@ -64,8 +72,12 @@ class TestBookmark(unittest.TestCase):
         self.assertEqual(new_bookmark["user_id"], retrieved_bookmark[0]["user_id"])
         self.assertEqual(new_bookmark["public_id"], retrieved_bookmark[0]["public_id"])
 
-    def test_delete_user(self):
+    def test_delete_bookmark(self):
         # ARRANGE
+        region_model = Region()
+        created_region = region_model.create_region("Test Region")
+        review_data["region_id"] = created_region["public_id"]
+
         review_model = Review()
         created_review = review_model.create_review(review_data)
         user_model = User()
