@@ -1,4 +1,5 @@
 import uuid
+import json
 from unittest import TestCase
 from unittest.mock import patch
 from app import create_app
@@ -14,7 +15,18 @@ user_data = {
     "status": "active",
 }
 
+admin_data = {
+    "id": 1,
+    "public_id": str(uuid.uuid4()),
+    "username": "test_user",
+    "email": "@gmail.com",
+    "password": "test_password",
+    "role": "admin",
+    "status": "active",
+}
+
 report_data = {
+    "public_id": str(uuid.uuid4()),
     "user_id": user_data["public_id"],
     "type": "review",
     "item_id": str(uuid.uuid4()),
@@ -145,3 +157,55 @@ class TestReportEndpoints(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(expected_response["message"], res["message"])
         self.assertEqual(expected_response["errors"], res["errors"])
+
+    @patch("app.main.controller.report_controller.get_all_reports")
+    def test_get_all_reports(self, mock_get_all_reports):
+        # ARRANGE
+        expected_data = [report_data]
+        expected_response = {
+            "status": "success",
+            "message": "Successfully retrieved reports.",
+            "data": expected_data,
+        }
+        mock_get_all_reports.return_value = expected_response
+
+        token = create_token(admin_data)
+        headers = {"X-API-KEY": token}
+
+        # ACT
+        with self.app.test_client() as client:
+            response = client.get("/api/report", headers=headers)
+            res = json.loads(response.data.decode("utf-8"))
+            res = res.get("data")
+            first_report = res[0]
+
+        # ASSERT
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(res, list)
+        self.assertEqual(expected_data[0]["reason"], first_report["reason"])
+        mock_get_all_reports.assert_called_once()
+
+    @patch("app.main.controller.report_controller.get_a_report")
+    def test_get_a_report(self, mock_get_an_report):
+        # ARRANGE
+        expected_data = report_data
+        expected_response = {
+            "status": "success",
+            "message": "Successfully retrieved report.",
+            "data": expected_data,
+        }
+        mock_get_an_report.return_value = expected_response
+
+        token = create_token(user_data)
+        headers = {"X-API-KEY": token}
+
+        # ACT
+        with self.app.test_client() as client:
+            response = client.get(f"/api/report/{report_data['public_id']}", headers=headers)
+            res = json.loads(response.data.decode("utf-8"))
+            res = res.get("data")
+
+        # ASSERT
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_data["reason"], res["reason"])
+        mock_get_an_report.assert_called_once()

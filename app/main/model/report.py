@@ -78,3 +78,21 @@ class Report(db.Model):
         except Exception as e:
             logging.exception("An error occurred while creating a report: %s", str(e))
             return None
+    
+    def get_all_reports(self):
+        try:
+            reports = self.query.all()
+            return [report.serialize() for report in reports]
+        except Exception as e:
+            raise e
+
+    def get_report_by_id(self, public_id, user_id, role):
+        try:
+            report = self.query.filter_by(public_id=public_id).first()
+            if not report:
+                return None
+            if role != "admin" and report.user_id != user_id:
+                raise Exception("Access Denied")
+            return report.serialize()
+        except Exception as e:
+            raise e

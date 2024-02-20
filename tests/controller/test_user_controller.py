@@ -88,8 +88,7 @@ class TestUserEndpoints(TestCase):
                 "created_at": "2024-01-03T11:21:23",
                 "updated_at": "2024-01-03T11:21:23",
                 "role": "user",
-                "status": "active",
-                "status": "active",
+                "status": "active"
             }
         ]
         expected_response = {

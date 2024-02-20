@@ -10,7 +10,6 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     public_id = db.Column(db.String(100), unique=True, nullable=False)
     # user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    # comment_id = db.Column(db.Integer, db.ForeignKey('comment.id')) -> yang bener
     review_id = db.Column(db.Integer, db.ForeignKey("review.id"), nullable=False)
     content = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
@@ -72,13 +71,6 @@ class Comment(db.Model):
 
             self.save()
             return self.serialize()
-        except Exception as e:
-            raise e
-
-    def get_all_comments(self):
-        try:
-            comments = self.query.filter_by(visible=True).all()
-            return [comment.serialize() for comment in comments]
         except Exception as e:
             raise e
 
