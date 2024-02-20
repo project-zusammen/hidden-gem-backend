@@ -18,7 +18,7 @@ def register_user():
     user_model = User()
     user = user_model.register_user(user_data)
     user_id = user_model.get_user_id(user["public_id"])
-    user_role = user_model.get_user_id(user["role"])
+    user_role = user_model.get_user_role(user["role"])
 
 
 def register_admin():
@@ -31,7 +31,7 @@ def register_admin():
     user_model = User()
     admin = user_model.register_admin(user_data)
     admin_id = user_model.get_user_id(admin["public_id"])
-    admin_role = user_model.get_user_id(admin["role"])
+    admin_role = user_model.get_user_role(admin["public_id"])
 
 
 class TestAppeal(unittest.TestCase):

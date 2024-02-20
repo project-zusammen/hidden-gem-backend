@@ -128,5 +128,114 @@ class TestReport(unittest.TestCase):
         self.assertEqual(created_report["reason"], report_data["reason"])
         self.assertEqual(created_report["status"], report_data["status"])
 
+    def test_get_all_reports(self):
+        # ARRANGE
+        region_model = Region()
+        created_region = region_model.create_region("Test Region")
+        
+        review_data["region_id"] = created_region["public_id"]
+        review_model = Review()
+        created_review = review_model.create_review(review_data)
+        
+        report_model = Report()
+        report_data["type"] = "review"
+        report_data["item_id"] = created_review["public_id"]
+        report_data["region_id"] = created_region["public_id"]
+        report_data["user_id"] = user_id
+
+        report_model.create_report(report_data)
+        
+        # ACT
+        all_reports = report_model.get_all_reports()
+
+        # ASSERT
+        self.assertIsNotNone(all_reports)
+        self.assertEqual(all_reports[0]["type"], report_data["type"])
+        self.assertEqual(all_reports[0]["item_id"], report_data["item_id"])
+        self.assertEqual(all_reports[0]["reason"], report_data["reason"])
+        self.assertEqual(all_reports[0]["status"], report_data["status"])
+
+    def test_get_report_by_id_role_admin(self):
+        # ARRANGE
+        region_model = Region()
+        created_region = region_model.create_region("Test Region")
+        
+        review_data["region_id"] = created_region["public_id"]
+        review_model = Review()
+        created_review = review_model.create_review(review_data)
+        
+        report_model = Report()
+        report_data["type"] = "review"
+        report_data["item_id"] = created_review["public_id"]
+        report_data["region_id"] = created_region["public_id"]
+        report_data["user_id"] = user_id
+
+        report = report_model.create_report(report_data)
+
+        # ACT
+        retrieved_report = report_model.get_report_by_id(
+            public_id=report["public_id"], user_id=user_id, role=admin_role
+        )
+
+        # ASSERT
+        self.assertIsNotNone(retrieved_report)
+        self.assertEqual(retrieved_report["type"], report_data["type"])
+        self.assertEqual(retrieved_report["item_id"], report_data["item_id"])
+        self.assertEqual(retrieved_report["reason"], report_data["reason"])
+        self.assertEqual(retrieved_report["status"], report_data["status"])
+
+    def test_get_report_by_id_role_user(self):
+        # ARRANGE
+        region_model = Region()
+        created_region = region_model.create_region("Test Region")
+        
+        review_data["region_id"] = created_region["public_id"]
+        review_model = Review()
+        created_review = review_model.create_review(review_data)
+        
+        report_model = Report()
+        report_data["type"] = "review"
+        report_data["item_id"] = created_review["public_id"]
+        report_data["region_id"] = created_region["public_id"]
+        report_data["user_id"] = user_id
+
+        report = report_model.create_report(report_data)
+
+        # ACT
+        retrieved_report = report_model.get_report_by_id(
+            public_id=report["public_id"], user_id=user_id, role=user_role
+        )
+
+        # ASSERT
+        self.assertIsNotNone(retrieved_report)
+        self.assertEqual(retrieved_report["reason"], report_data["reason"])
+
+    def test_get_report_failed(self):
+        # ARRANGE
+        region_model = Region()
+        created_region = region_model.create_region("Test Region")
+        
+        review_data["region_id"] = created_region["public_id"]
+        review_model = Review()
+        created_review = review_model.create_review(review_data)
+        
+        report_model = Report()
+        report_data["type"] = "review"
+        report_data["item_id"] = created_review["public_id"]
+        report_data["region_id"] = created_region["public_id"]
+        report_data["user_id"] = admin_id
+
+        report = report_model.create_report(report_data)
+
+        # ACT
+
+        # ASSERT
+        with self.assertRaises(Exception) as context:
+            report_model.get_report_by_id(
+                public_id=report["public_id"], user_id=user_id, role=user_role
+            )
+
+        self.assertTrue("Access Denied" in str(context.exception))
+
 if __name__ == "__main__":
     unittest.main()
