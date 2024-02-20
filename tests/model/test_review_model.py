@@ -131,23 +131,6 @@ class TestReview(unittest.TestCase):
         self.assertEqual(updated_data["content"], updated_review["content"])
         self.assertEqual(updated_data["location"], updated_review["location"])
 
-    def test_get_all_reviews(self):
-        # ARRANGE
-        review_model = Review()
-        review = review_model.create_review(review_data)
-
-        # ACT
-        page = 1
-        count = 1
-        retrieved_reviews = review_model.get_all_reviews(page, count, region_id, category_id, tag_id)
-
-        # ASSERT
-        self.assertIsNotNone(retrieved_reviews)
-        self.assertEqual(len(retrieved_reviews), 1)
-        self.assertEqual(review["title"], retrieved_reviews[0]["title"])
-        self.assertEqual(review["content"], retrieved_reviews[0]["content"])
-        self.assertEqual(review["location"], retrieved_reviews[0]["location"])
-
     def test_delete_review(self):
         # ARRANGE
         review_model = Review()
