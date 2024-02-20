@@ -75,12 +75,12 @@ class Comment(db.Model):
         except Exception as e:
             raise e
 
-    def get_all_comments(self, page, count):
+    def get_all_comments(self, page, count=20):
         try:
             comments = (
                 self.query.filter_by(visible=True)
                 .order_by(Comment.created_at.desc())
-                .paginate(page=page, per_page=count, max_per_page=20, error_out=False)
+                .paginate(page=page, per_page=count, max_per_page=100, error_out=False)
             )
             return [comment.serialize() for comment in comments]
         except Exception as e:
