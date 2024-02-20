@@ -25,3 +25,14 @@ BCRYPT_LOG_ROUNDS = env.int("BCRYPT_LOG_ROUNDS", default=13)
 DEBUG_TB_ENABLED = DEBUG
 DEBUG_TB_INTERCEPT_REDIRECTS = False
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+# Redis settings
+REDIS_HOST = env.str("REDIS_HOST", default="localhost")
+REDIS_PORT = env.int("REDIS_PORT", default=6379)
+CACHE_REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+CACHE_TYPE = env.str("CACHE_TYPE", default="redis" if CACHE_REDIS_URL else "simple")
+
+redis_cache_config = {
+    "CACHE_TYPE": CACHE_TYPE,
+    "CACHE_REDIS_URL": CACHE_REDIS_URL
+}
