@@ -9,6 +9,7 @@ from app.extensions import (
     api,
     debug_toolbar,
     migrate,
+    cache
 )
 
 from app.main.controller.review_controller import ns as review_ns
@@ -47,6 +48,7 @@ def register_extensions(app):
     api.add_namespace(report_ns)
     debug_toolbar.init_app(app)
     migrate.init_app(app, db)
+    cache.init_app(app)
     return None
 
 
