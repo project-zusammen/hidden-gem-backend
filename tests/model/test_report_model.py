@@ -19,6 +19,18 @@ report_data = {
     "status": "received",
 }
 
+def register_admin():
+    global admin_id, admin_role
+    user_data = {
+        "username": "test_admins",
+        "email": "test_admins@gmail.com",
+        "password": "test_admin_password",
+    }
+    user_model = User()
+    admin = user_model.register_admin(user_data)
+    admin_id = user_model.get_user_id(admin["public_id"])
+    admin_role = user_model.get_user_role(admin["public_id"])
+
 def register_reviewer():
     global reviewer_id
     user_data = {
@@ -31,7 +43,7 @@ def register_reviewer():
     reviewer_id = user["public_id"]
 
 def register_reporter():
-    global reporter_id
+    global reporter_id, user_id, user_role
     user_data = {
         "username": "test_reporter",
         "email": "test_reporter@gmail.com",
@@ -39,6 +51,8 @@ def register_reporter():
     }
     user_model = User()
     user = user_model.register_user(user_data)
+    user_id = user_model.get_user_id(user["public_id"])
+    user_role = user_model.get_user_role(user["public_id"])
     reporter_id = user["public_id"]
 
 def register_commenter():
@@ -61,7 +75,8 @@ class TestReport(unittest.TestCase):
         register_reviewer()
         review_data["user_id"] = reviewer_id
         register_reporter()
-        report_data["user_id"] = reporter_id        
+        report_data["user_id"] = reporter_id       
+        register_admin()
     
     def tearDown(self):
         db.session.remove()
@@ -141,7 +156,7 @@ class TestReport(unittest.TestCase):
         report_data["type"] = "review"
         report_data["item_id"] = created_review["public_id"]
         report_data["region_id"] = created_region["public_id"]
-        report_data["user_id"] = user_id
+        report_data["user_id"] = reporter_id
 
         report_model.create_report(report_data)
         
@@ -168,13 +183,13 @@ class TestReport(unittest.TestCase):
         report_data["type"] = "review"
         report_data["item_id"] = created_review["public_id"]
         report_data["region_id"] = created_region["public_id"]
-        report_data["user_id"] = user_id
+        report_data["user_id"] = reporter_id
 
         report = report_model.create_report(report_data)
 
         # ACT
         retrieved_report = report_model.get_report_by_id(
-            public_id=report["public_id"], user_id=user_id, role=admin_role
+            public_id=report["public_id"], user_id=reporter_id, role=admin_role
         )
 
         # ASSERT
@@ -197,7 +212,7 @@ class TestReport(unittest.TestCase):
         report_data["type"] = "review"
         report_data["item_id"] = created_review["public_id"]
         report_data["region_id"] = created_region["public_id"]
-        report_data["user_id"] = user_id
+        report_data["user_id"] = reporter_id
 
         report = report_model.create_report(report_data)
 
@@ -223,7 +238,7 @@ class TestReport(unittest.TestCase):
         report_data["type"] = "review"
         report_data["item_id"] = created_review["public_id"]
         report_data["region_id"] = created_region["public_id"]
-        report_data["user_id"] = admin_id
+        report_data["user_id"] = reporter_id
 
         report = report_model.create_report(report_data)
 
@@ -232,7 +247,7 @@ class TestReport(unittest.TestCase):
         # ASSERT
         with self.assertRaises(Exception) as context:
             report_model.get_report_by_id(
-                public_id=report["public_id"], user_id=user_id, role=user_role
+                public_id=report["public_id"], user_id=reviewer_id, role=user_role
             )
 
         self.assertTrue("Access Denied" in str(context.exception))
