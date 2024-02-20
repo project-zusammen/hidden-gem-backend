@@ -28,7 +28,7 @@ class CommentList(Resource):
     def get(self):
         """List all comment"""
         page = request.args.get("page", default=1, type=int)
-        count = request.args.get("count", default=10, type=int)
+        count = request.args.get("count", default=20, type=int)
         return get_all_comments(page, count)
 
     @ns.expect(_comment, validate=True)
