@@ -79,9 +79,12 @@ class Report(db.Model):
             logging.exception("An error occurred while creating a report: %s", str(e))
             return None
     
-    def get_all_reports(self):
+    def get_all_reports(self, page, count):
         try:
-            reports = self.query.all()
+            reports = (
+                self.query.order_by(Report.created_at.desc())
+                .paginate(page=page, per_page=count, max_per_page=100, error_out=False)
+            )
             return [report.serialize() for report in reports]
         except Exception as e:
             raise e

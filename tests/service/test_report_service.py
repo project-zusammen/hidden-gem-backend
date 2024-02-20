@@ -70,8 +70,11 @@ class TestReviewService(TestCase):
         data = [report_data_1, report_data_2]
         mock_get_all_reports.return_value = data
 
+        page = 1
+        count = 2
+
         # ACT
-        response, status_code = get_all_reports()
+        response, status_code = get_all_reports(page, count)
         result = response["data"]
 
         # ASSERT

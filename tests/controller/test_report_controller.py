@@ -25,13 +25,31 @@ admin_data = {
     "status": "active",
 }
 
-report_data = {
+report_data_single = {
     "public_id": str(uuid.uuid4()),
     "user_id": user_data["public_id"],
     "type": "review",
     "item_id": str(uuid.uuid4()),
     "reason": "Test Reason",
 }
+
+report_data_multiple = [
+    {
+    "public_id": str(uuid.uuid4()),
+    "user_id": user_data["public_id"],
+    "type": "review",
+    "item_id": str(uuid.uuid4()),
+    "reason": "Test Reason 1",
+    },
+    {
+    "public_id": str(uuid.uuid4()),
+    "user_id": user_data["public_id"],
+    "type": "review",
+    "item_id": str(uuid.uuid4()),
+    "reason": "Test Reason 2",
+    },
+]
+
 
 error_message = "Input payload validation failed"
 
@@ -50,7 +68,7 @@ class TestReportEndpoints(TestCase):
         expected_response = {
             "status": "success",
             "message": "Successfully created.",
-            "data": report_data,
+            "data": report_data_single,
         }
         mock_create_report.return_value = expected_response
 
@@ -59,7 +77,7 @@ class TestReportEndpoints(TestCase):
 
         # ACT
         with self.app.test_client() as client:
-            response = client.post("/api/report", json=report_data, headers=headers)
+            response = client.post("/api/report", json=report_data_single, headers=headers)
             res = response.get_json()
             res = res.get("data")
 
@@ -79,7 +97,7 @@ class TestReportEndpoints(TestCase):
 
         # ACT
         with self.app.test_client() as client:
-            response = client.post("/api/report", json=report_data)
+            response = client.post("/api/report", json=report_data_single)
             res = response.get_json()
 
         # ASSERT
@@ -89,7 +107,7 @@ class TestReportEndpoints(TestCase):
     @patch("app.main.controller.report_controller.create_report")
     def test_create_report_missing_type(self, mock_create_report):
         # ARRANGE
-        report_data_missing_type = {
+        report_data_single_missing_type = {
             "item_id": "some_item_id",
             "reason": "some_reason",
         }
@@ -102,7 +120,7 @@ class TestReportEndpoints(TestCase):
 
         # ACT
         with self.app.test_client() as client:
-            response = client.post("/api/report", json=report_data_missing_type)
+            response = client.post("/api/report", json=report_data_single_missing_type)
             res = response.get_json()
 
         # ASSERT
@@ -113,7 +131,7 @@ class TestReportEndpoints(TestCase):
     @patch("app.main.controller.report_controller.create_report")
     def test_create_report_missing_item_id(self, mock_create_report):
         # ARRANGE
-        report_data_missing_item_id = {
+        report_data_single_missing_item_id = {
             "type": "review",
             "reason": "some_reason",
         }
@@ -126,7 +144,7 @@ class TestReportEndpoints(TestCase):
 
         # ACT
         with self.app.test_client() as client:
-            response = client.post("/api/report", json=report_data_missing_item_id)
+            response = client.post("/api/report", json=report_data_single_missing_item_id)
             res = response.get_json()
 
         # ASSERT
@@ -137,7 +155,7 @@ class TestReportEndpoints(TestCase):
     @patch("app.main.controller.report_controller.create_report")
     def test_create_report_missing_reason(self, mock_create_report):
         # ARRANGE
-        report_data_missing_reason = {
+        report_data_single_missing_reason = {
             "type": "review",
             "item_id": "some_item_id",
         }
@@ -150,7 +168,7 @@ class TestReportEndpoints(TestCase):
 
         # ACT
         with self.app.test_client() as client:
-            response = client.post("/api/report", json=report_data_missing_reason)
+            response = client.post("/api/report", json=report_data_single_missing_reason)
             res = response.get_json()
 
         # ASSERT
@@ -161,20 +179,22 @@ class TestReportEndpoints(TestCase):
     @patch("app.main.controller.report_controller.get_all_reports")
     def test_get_all_reports(self, mock_get_all_reports):
         # ARRANGE
-        expected_data = [report_data]
+        expected_data = report_data_multiple
         expected_response = {
             "status": "success",
             "message": "Successfully retrieved reports.",
             "data": expected_data,
         }
         mock_get_all_reports.return_value = expected_response
+        page = 1
+        count = 2
 
         token = create_token(admin_data)
         headers = {"X-API-KEY": token}
 
         # ACT
         with self.app.test_client() as client:
-            response = client.get("/api/report", headers=headers)
+            response = client.get(f"/api/report?page={page}&count={count}", headers=headers)
             res = json.loads(response.data.decode("utf-8"))
             res = res.get("data")
             first_report = res[0]
@@ -188,7 +208,7 @@ class TestReportEndpoints(TestCase):
     @patch("app.main.controller.report_controller.get_a_report")
     def test_get_a_report(self, mock_get_an_report):
         # ARRANGE
-        expected_data = report_data
+        expected_data = report_data_single
         expected_response = {
             "status": "success",
             "message": "Successfully retrieved report.",
@@ -201,7 +221,7 @@ class TestReportEndpoints(TestCase):
 
         # ACT
         with self.app.test_client() as client:
-            response = client.get(f"/api/report/{report_data['public_id']}", headers=headers)
+            response = client.get(f"/api/report/{report_data_single['public_id']}", headers=headers)
             res = json.loads(response.data.decode("utf-8"))
             res = res.get("data")
 

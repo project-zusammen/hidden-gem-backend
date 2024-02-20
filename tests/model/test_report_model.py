@@ -131,9 +131,12 @@ class TestReport(unittest.TestCase):
         report_data["user_id"] = user_id
 
         report_model.create_report(report_data)
+
+        page = 1
+        count = 2
         
         # ACT
-        all_reports = report_model.get_all_reports()
+        all_reports = report_model.get_all_reports(page, count)
 
         # ASSERT
         self.assertIsNotNone(all_reports)

@@ -18,9 +18,9 @@ def create_report(data, user_id):
         log.error(f"Error in create_report: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
     
-def get_all_reports():
+def get_all_reports(page, count):
     try:
-        reports = report_model.get_all_reports()
+        reports = report_model.get_all_reports(page, count)
         if not reports:
             return {
                 "status": "success",

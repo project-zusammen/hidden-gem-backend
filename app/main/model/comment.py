@@ -75,7 +75,7 @@ class Comment(db.Model):
         except Exception as e:
             raise e
 
-    def get_all_comments(self, page, count=20):
+    def get_all_comments(self, page, count):
         try:
             comments = (
                 self.query.filter_by(visible=True)
