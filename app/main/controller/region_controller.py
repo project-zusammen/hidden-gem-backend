@@ -8,7 +8,7 @@ from ..service.region_service import (
     delete_region,
 )
 
-ns = Namespace("api/region", authorizations=authorizations)
+ns = Namespace("region", authorizations=authorizations)
 region_dto = RegionDto()
 _region = region_dto.region
 

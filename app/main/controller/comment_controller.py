@@ -12,7 +12,7 @@ from ..service.comment_service import (
     update_visibility,
 )
 
-ns = Namespace("api/comment", authorizations=authorizations)
+ns = Namespace("comment", authorizations=authorizations)
 
 comment_dto = CommentDto()
 _comment = comment_dto.comment

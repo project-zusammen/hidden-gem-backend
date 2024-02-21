@@ -14,14 +14,14 @@ from ..service.user_service import (
 )
 from ..util.token_verify import token_required
 
-ns = Namespace("api/user", description="User related operations", authorizations=authorizations)
+ns = Namespace("user", authorizations=authorizations)
 
 user_dto = UserDto()
 _user = user_dto.user
 _login = user_dto.login
 _userStatus = user_dto.status
 
-@ns.route("/user/signup")
+@ns.route("/signup")
 class UserSignUp(Resource):
     @ns.expect(_user, validate=True)
     def post(self):
@@ -29,7 +29,7 @@ class UserSignUp(Resource):
         return register_user(ns.payload)
 
 
-@ns.route("/user")
+@ns.route("/")
 class UserList(Resource):
     @ns.doc(
         security="bearer",
@@ -42,7 +42,7 @@ class UserList(Resource):
         return get_all_users(page)
 
 
-@ns.route("/user/<public_id>")
+@ns.route("/<public_id>")
 @ns.param("public_id", "The user identifier")
 class User(Resource):
     @ns.doc(security="bearer")
@@ -70,7 +70,7 @@ class User(Resource):
 
 
 ## work in progress, need authentication for this endpoint
-@ns.route("/user/<public_id>/status")
+@ns.route("/<public_id>/status")
 @ns.param("public_id", "The user identifier")
 class UserStatus(Resource):
     @ns.doc(security="bearer")
@@ -86,7 +86,7 @@ class UserStatus(Resource):
         return updated_user
 
 
-@ns.route("/user/login")
+@ns.route("/login")
 class UserLogin(Resource):
     @ns.expect(_login, validate=True)
     def post(self):

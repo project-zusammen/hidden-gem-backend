@@ -11,7 +11,7 @@ from ..service.review_service import (
     update_visibility,
 )
 
-ns = Namespace("api/review", authorizations=authorizations)
+ns = Namespace("review", authorizations=authorizations)
 
 review_dto = ReviewDto()
 _review = review_dto.review

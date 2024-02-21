@@ -5,7 +5,7 @@ from ..service.report_service import create_report, get_all_reports, get_a_repor
 from ..util.token_verify import token_required
 from ..util.helper import error_handler
 
-ns = Namespace("api/report", authorizations=authorizations)
+ns = Namespace("report", authorizations=authorizations)
 
 report_dto = ReportDto()
 _report = report_dto.report
@@ -23,11 +23,11 @@ class ReportList(Resource):
     @ns.doc(security="bearer")
     @token_required
     def get(self, decoded_token):
+        """List all reports"""
         role = decoded_token["role"]
         if role != "admin":
             return error_handler("Access denied")
 
-        """List all reports"""
         return get_all_reports()
     
 @ns.route("/<public_id>")
@@ -36,7 +36,7 @@ class Report(Resource):
     @ns.doc(security="bearer")
     @token_required
     def get(self, decoded_token, public_id):
+        """Get a report by its identifier"""
         user_id = decoded_token["id"]
         role = decoded_token["role"]
-        """Get a report by its identifier"""
         return get_a_report(public_id, user_id, role)
