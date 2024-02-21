@@ -27,8 +27,7 @@ REDIS_PASSWORD = env.str("REDIS_PASSWORD")
 
 if REDIS_HOST and REDIS_PORT:
     redis_cache_config["CACHE_TYPE"] = "redis"
+    redis_cache_config["CACHE_REDIS_URL"] = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
 
 if REDIS_PASSWORD:
     redis_cache_config["CACHE_REDIS_URL"] = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/0"
-else:
-    redis_cache_config["CACHE_REDIS_URL"] = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
