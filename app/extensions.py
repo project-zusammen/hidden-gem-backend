@@ -12,6 +12,6 @@ authorizations = {"bearer": {"type": "apiKey", "in": "header", "name": "X-API-KE
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
-api = Api()
+api = Api(prefix="/api")
 migrate = Migrate()
 debug_toolbar = DebugToolbarExtension()
