@@ -1,7 +1,8 @@
+from flask_restx import Resource, Namespace
+from flask import request
+from ...extensions import authorizations
 from ..util.dto import UserDto
 from ..util.helper import error_handler
-from flask import request
-from flask_restx import Resource
 from ..service.user_service import (
     register_user,
     get_all_users,
@@ -11,8 +12,9 @@ from ..service.user_service import (
     delete_user,
     user_auth,
 )
-from ...extensions import ns
 from ..util.token_verify import token_required
+
+ns = Namespace("api/user", description="User related operations", authorizations=authorizations)
 
 user_dto = UserDto()
 _user = user_dto.user

@@ -1,11 +1,7 @@
+from flask_restx import Resource, Namespace
+
+from ...extensions import authorizations
 from ..util.dto import CommentDto
-
-comment_dto = CommentDto()
-_comment = comment_dto.comment
-_upvote = comment_dto.upvote
-_visible = comment_dto.visible
-
-from flask_restx import Resource
 from ..service.comment_service import (
     get_all_comments,
     create_comment,
@@ -15,10 +11,16 @@ from ..service.comment_service import (
     upvote_comment,
     update_visibility,
 )
-from ...extensions import ns
+
+ns = Namespace("api/comment", authorizations=authorizations)
+
+comment_dto = CommentDto()
+_comment = comment_dto.comment
+_upvote = comment_dto.upvote
+_visible = comment_dto.visible
 
 
-@ns.route("/comment")
+@ns.route("/")
 class CommentList(Resource):
     def get(self):
         """List all comment"""
@@ -30,7 +32,7 @@ class CommentList(Resource):
         return create_comment(ns.payload)
 
 
-@ns.route("/comment/<public_id>")
+@ns.route("/<public_id>")
 @ns.param("public_id", "The comment identifier")
 class Comment(Resource):
     def get(self, public_id):
@@ -50,7 +52,7 @@ class Comment(Resource):
         return updated_comment
 
 
-@ns.route("/comment/<public_id>/vote")
+@ns.route("/<public_id>/vote")
 @ns.param("public_id", "The Comment Identifier")
 class CommentUpvote(Resource):
     @ns.expect(_upvote)
@@ -61,7 +63,7 @@ class CommentUpvote(Resource):
         return upvoted_comment
 
 
-@ns.route("/comment/<public_id>/status")
+@ns.route("/<public_id>/status")
 @ns.param("public_id", "The Comment Identifier")
 class CommentVisible(Resource):
     @ns.expect(_visible)

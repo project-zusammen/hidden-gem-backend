@@ -1,14 +1,16 @@
+from flask_restx import Resource, Namespace
+from ...extensions import authorizations
 from ..util.dto import ReportDto
-from flask_restx import Resource
-from ...extensions import ns
 from ..service.report_service import create_report, get_all_reports, get_a_report
 from ..util.token_verify import token_required
 from ..util.helper import error_handler
 
+ns = Namespace("api/report", authorizations=authorizations)
+
 report_dto = ReportDto()
 _report = report_dto.report
 
-@ns.route("/report")
+@ns.route("/")
 class ReportList(Resource):
     @ns.expect(_report, validate=True)
     @ns.doc(security="bearer")
@@ -28,7 +30,7 @@ class ReportList(Resource):
         """List all reports"""
         return get_all_reports()
     
-@ns.route("/report/<public_id>")
+@ns.route("/<public_id>")
 @ns.param("public_id", "The report identifier")
 class Report(Resource):
     @ns.doc(security="bearer")

@@ -1,11 +1,6 @@
+from flask_restx import Resource, Namespace
+from ...extensions import authorizations
 from ..util.dto import ReviewDto
-
-review_dto = ReviewDto()
-_review = review_dto.review
-_upvote = review_dto.upvote
-_visible = review_dto.visible
-
-from flask_restx import Resource
 from ..service.review_service import (
     create_review,
     get_all_reviews,
@@ -15,10 +10,16 @@ from ..service.review_service import (
     upvote_review,
     update_visibility,
 )
-from ...extensions import ns
+
+ns = Namespace("api/review", authorizations=authorizations)
+
+review_dto = ReviewDto()
+_review = review_dto.review
+_upvote = review_dto.upvote
+_visible = review_dto.visible
 
 
-@ns.route("/review")
+@ns.route("/")
 class ReviewList(Resource):
     def get(self):
         """List all reviews"""
@@ -30,7 +31,7 @@ class ReviewList(Resource):
         return create_review(ns.payload)
 
 
-@ns.route("/review/<public_id>")
+@ns.route("/<public_id>")
 @ns.param("public_id", "The Review identifier")
 class Review(Resource):
     def get(self, public_id):
@@ -49,7 +50,7 @@ class Review(Resource):
         return delete_review(public_id)
 
 
-@ns.route("/review/<public_id>/vote")
+@ns.route("/<public_id>/vote")
 @ns.param("public_id", "The Review Identifier")
 class ReviewUpvote(Resource):
     @ns.expect(_upvote)
@@ -60,7 +61,7 @@ class ReviewUpvote(Resource):
         return upvoted_review
 
 
-@ns.route("/review/<public_id>/status")
+@ns.route("/<public_id>/status")
 @ns.param("public_id", "The Review Identifier")
 class ReviewVisible(Resource):
     @ns.expect(_visible)
