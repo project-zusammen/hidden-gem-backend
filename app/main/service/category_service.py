@@ -1,0 +1,19 @@
+import logging as log
+from app.main.model.category import Category
+from ..util.helper import error_handler
+
+category_model = Category()
+
+
+def create_category(category_name):
+    try:
+        category = category_model.create_category(category_name)
+        response_object = {
+            "status": "success",
+            "message": "Successfully created.",
+            "data": category,
+        }
+        return response_object, 201
+    except Exception as e:
+        log.error(f"Error in create_category: {str(e)}")
+        return error_handler(e)
