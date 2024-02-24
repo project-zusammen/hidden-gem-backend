@@ -20,6 +20,7 @@ from ...extensions import ns
 
 @ns.route("/review")
 class ReviewList(Resource):
+    @ns.cache.cached(timeout = 300)
     def get(self):
         """List all reviews"""
         return get_all_reviews()
