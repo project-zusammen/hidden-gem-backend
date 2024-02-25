@@ -1,6 +1,7 @@
 import uuid
 import logging
 import datetime
+from sqlalchemy import or_
 from .. import db
 from ..util.helper import convert_to_local_time
 from .user import User 
@@ -53,8 +54,8 @@ class Review(db.Model):
 
         return {
             "public_id": self.public_id,
-            'user_id': user_public_id,
-            'category_id': category_public_id,
+            "user_id": user_public_id,
+            "category_id": category_public_id,
             "region_id": region_public_id,
             "tag_id": tag_public_id,
             "title": self.title,
@@ -73,19 +74,20 @@ class Review(db.Model):
 
     def get_all_reviews(self, page, count, region_id, category_id, tag_id):
         try:
-            offset = (page - 1) * count
-            query = self.query.filter(Review.visible == True)
-            if tag_id:
-                tag_db_id = tag_model.get_tag_db_id(tag_id)
-                query = query.filter(Review.tag_id == tag_db_id)
-            if category_id:
-                category_db_id = category_model.get_category_id(category_id)
-                query = query.filter(Review.category_id == category_db_id)
-            if region_id:
-                region_db_id = region_model.get_region_by_id(region_id)
-                query = query.filter(Review.region_id == region_db_id)
+            reviews = self.query.filter_by(visible=True).filter(or_(self.region_id == region_id, self.category_id == category_id, self.tag_id == tag_id)).order_by(self.created_at.desc()).paginate(page=page, per_page=count, max_per_page=20, error_out=False)
+            # offset = (page - 1) * count
+            # query = self.query.filter(Review.visible == True)
+            # if tag_id:
+            #     tag_db_id = tag_model.get_tag_db_id(tag_id)
+            #     query = query.filter(Review.tag_id == tag_db_id)
+            # if category_id:
+            #     category_db_id = category_model.get_category_id(category_id)
+            #     query = query.filter(Review.category_id == category_db_id)
+            # if region_id:
+            #     region_db_id = region_model.get_region_by_id(region_id)
+            #     query = query.filter(Review.region_id == region_db_id)
 
-            reviews = query.limit(count).offset(offset).all()
+            # reviews = query.limit(count).offset(offset).all()
             return [review.serialize() for review in reviews]
         except Exception as e:
             logging.exception("An error occurred while creating a report: %s", str(e))
