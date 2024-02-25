@@ -96,3 +96,9 @@ class TagDto:
             "name": fields.String(required=True, description="tag name"),
         },
     )
+
+class CategoryDto:
+    category = api.model(
+        "category",
+        {"name": fields.String(required=True, description="name for category")},
+    )

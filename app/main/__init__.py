@@ -9,6 +9,7 @@ from app.extensions import (
     api,
     debug_toolbar,
     migrate,
+    cache
 )
 
 from app.main.controller.review_controller import ns as review_ns
@@ -20,6 +21,7 @@ from app.main.controller.report_controller import ns as report_ns
 from app.main.controller.tag_controller import ns as tag_ns
 
 
+from app.main.controller.category_controller import ns as category_ns
 
 
 def create_app(config_object="app.settings"):
@@ -49,10 +51,10 @@ def register_extensions(app):
     api.add_namespace(appeal_ns)
     api.add_namespace(report_ns)
     api.add_namespace(tag_ns)
+    api.add_namespace(category_ns)
     debug_toolbar.init_app(app)
     migrate.init_app(app, db)
-    from app.main.model import category
-
+    cache.init_app(app)
     return None
 
 
