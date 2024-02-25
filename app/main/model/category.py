@@ -31,6 +31,10 @@ class Category(db.Model):
 
     def create_category(self, category_name):
         try:
+            category = self.query.filter_by(name=category_name).first()
+            if category:
+                return category.serialize()
+            
             self.public_id = str(uuid.uuid4())
             self.name = category_name
             self.created_at = datetime.datetime.utcnow()
@@ -39,3 +43,12 @@ class Category(db.Model):
             return self.serialize()
         except Exception as e:
             raise e
+    
+    def get_categories(self):
+        try:
+            categories = self.query.all()
+            return [category.serialize() for category in categories]
+
+        except Exception as e:
+            raise e
+
