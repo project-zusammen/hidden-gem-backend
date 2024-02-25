@@ -28,6 +28,17 @@ class TestCategory(unittest.TestCase):
         # ASSERT
         self.assertIsNotNone(new_category)
         self.assertEqual(new_category["name"], category_data["name"])
+    
+    def test_get_categories(self):
+        # ARRANGE
+        category_model = Category()
+        category_model.create_category(category_data['name'])
+        categories = category_model.get_categories()
+
+        # ASSERT
+        self.assertIsNotNone(categories)
+        self.assertEqual(len(categories), 1)
+        self.assertEqual(categories[0]["name"], category_data["name"])
 
 
 if __name__ == "__main__":
