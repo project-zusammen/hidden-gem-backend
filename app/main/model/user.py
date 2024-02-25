@@ -243,3 +243,11 @@ class User(db.Model):
                 return user
         except Exception as e:
             raise e
+
+    def get_user_public_id_by_id(self, id):
+        try:
+            user = self.query.filter_by(id=id).first()
+            if user:
+                return user.public_id
+        except Exception as e:
+            raise e
