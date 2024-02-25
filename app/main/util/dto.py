@@ -98,3 +98,9 @@ class ReportDto:
             "reason": fields.String(required=True, description="report reason"),
         },
     )
+
+class CategoryDto:
+    category = api.model(
+        "category",
+        {"name": fields.String(required=True, description="name for category")},
+    )
