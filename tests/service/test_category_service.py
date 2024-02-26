@@ -39,14 +39,14 @@ class TestCategoryService(TestCase):
         self.assertEqual(response["message"], "Successfully created.")
         self.assertEqual(result["name"], data["name"])
     
-    @patch("app.main.model.category.Category.get_categories")
-    def test_get_all_categories(self, mock_get_categories):
+    @patch("app.main.model.category.Category.get_all_categories")
+    def test_get_all_categories(self, mock_get_all_categories):
         # Arrange
         data = {
             "public_id": str(uuid.uuid4()),
             "name": "food",
         }
-        mock_get_categories.return_value = [data]
+        mock_get_all_categories.return_value = [data]
 
         # Act
         response, status_code = get_all_categories()
@@ -57,4 +57,4 @@ class TestCategoryService(TestCase):
         self.assertEqual(response["status"], "success")
         self.assertEqual(response["message"], "Successfully get.")
         self.assertEqual(result, [data])
-        mock_get_categories.assert_called_once()
+        mock_get_all_categories.assert_called_once()
