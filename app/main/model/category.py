@@ -44,7 +44,7 @@ class Category(db.Model):
         except Exception as e:
             raise e
     
-    def get_categories(self):
+    def get_all_categories(self):
         try:
             categories = self.query.all()
             return [category.serialize() for category in categories]

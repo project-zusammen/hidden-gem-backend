@@ -20,7 +20,7 @@ def create_category(category_name):
 
 def get_all_categories():
     try:
-        categories = category_model.get_categories()
+        categories = category_model.get_all_categories()
         if not categories:
             return {"status": "success", "message": "No categories found", "data": []}, 200
         
