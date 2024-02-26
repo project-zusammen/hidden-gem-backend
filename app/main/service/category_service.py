@@ -31,5 +31,5 @@ def get_all_categories():
         }
         return response_object, 200
     except  Exception as e:
-        log.error(f"Error in get_all_reviews: {str(e)}")
+        log.error(f"Error in get_all_categories: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
