@@ -28,12 +28,25 @@ class TestCategory(unittest.TestCase):
         # ASSERT
         self.assertIsNotNone(new_category)
         self.assertEqual(new_category["name"], category_data["name"])
+
+    def test_create_category_no_duplicate(self):
+        # ARRANGE
+        category_model = Category()
+        new_category = category_model.create_category(category_data['name'])
+        another_category = category_model.create_category(category_data['name'])
+        categories = category_model.get_all_categories()
+
+        # ASSERT
+        self.assertIsNotNone(new_category)
+        self.assertIsNotNone(another_category)
+        self.assertEqual(len(categories), 1)
+
     
     def test_get_categories(self):
         # ARRANGE
         category_model = Category()
         category_model.create_category(category_data['name'])
-        categories = category_model.get_categories()
+        categories = category_model.get_all_categories()
 
         # ASSERT
         self.assertIsNotNone(categories)
