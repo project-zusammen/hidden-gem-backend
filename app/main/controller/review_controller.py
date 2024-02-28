@@ -31,10 +31,10 @@ class ReviewList(Resource):
         """List all reviews"""
         page = request.args.get("page", default=1, type=int)
         count = request.args.get("count", default=50, type=int)
-        tag_id = request.args.get("tag_id", default=0, type=int)
-        category_id = request.args.get("category_id", default=0, type=int)
-        region_id = request.args.get("region_id", default=0, type=int)
-        return get_all_reviews(page, count, category_id, region_id, tag_id)
+        tag_id = request.args.get("tag_id", default="", type=str)
+        category_id = request.args.get("category_id", default="", type=str)
+        region_id = request.args.get("region_id", default="", type=str)
+        return get_all_reviews(page, count, tag_id, category_id, region_id)
 
     @ns.expect(_review, validate=True)
     def post(self):
