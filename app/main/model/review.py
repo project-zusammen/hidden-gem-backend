@@ -3,6 +3,7 @@ import datetime
 from .. import db
 from ..util.helper import convert_to_local_time
 from .region import Region
+from .image import Image
 
 class Review(db.Model):
     __tablename__ = "review"
@@ -31,6 +32,9 @@ class Review(db.Model):
         region_model = Region()
         region_public_id = region_model.get_region_public_id(self.region_id)
 
+        image_model = Image()
+        image_urls = image_model.get_images_by_review_id(self.id)
+
         return {
             "public_id": self.public_id,
             # 'user_id': self.user_id,
@@ -44,6 +48,7 @@ class Review(db.Model):
             "upvotes": self.upvotes,
             "downvotes": self.downvotes,
             "visible": self.visible,
+            "image_urls": image_urls,
         }
 
     def save(self):
@@ -84,6 +89,13 @@ class Review(db.Model):
         )
 
         review.save()
+
+        image_urls = data.get("image_urls")
+        if image_urls:
+            for url in image_urls:
+                image = Image(url=url, review_id=review.id)
+                image.save()
+
         return review.serialize()
 
     def update_review(self, public_id, data):
