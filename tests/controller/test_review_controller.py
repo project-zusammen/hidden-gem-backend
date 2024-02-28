@@ -1,7 +1,10 @@
+import os
 import json
 from unittest import TestCase
 from unittest.mock import patch
 from app import create_app
+
+os.environ["DEBUG"] = "True"
 
 review_data = {
     "title": "Test Review",
