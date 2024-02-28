@@ -63,20 +63,23 @@ class User(db.Model):
             email = data.get("email")
             if not is_valid_email(email):
                 raise Exception("The email is invalid")
-            user = self.query.filter_by(email=email).first()
-            if user:
+            registered_user = self.query.filter_by(email=email).first()
+            if registered_user:
                 raise Exception("This email has already registered")
 
-            self.public_id = str(uuid.uuid4())
-            self.username = data.get("username")
-            self.email = email
-            self.password = password
-            self.role = data.get("role", "user")
-            self.status = data.get("status", "active")
-            self.created_at = datetime.datetime.utcnow()
-            self.updated_at = datetime.datetime.utcnow()
-            self.save()
-            return self.serialize()
+            user = User(
+                public_id = str(uuid.uuid4()),
+                username = data.get("username"),
+                email = email,
+                password = password,
+                role = data.get("role", "user"),
+                status = data.get("status", "active"),
+                created_at = datetime.datetime.utcnow(),
+                updated_at = datetime.datetime.utcnow(),
+            )
+
+            user.save()
+            return user.serialize()
         except Exception as e:
             raise e
 
@@ -87,20 +90,23 @@ class User(db.Model):
             email = data.get("email")
             if not is_valid_email(email):
                 raise Exception("The email is invalid")
-            user = self.query.filter_by(email=email).first()
-            if user:
+            registered_user = self.query.filter_by(email=email).first()
+            if registered_user:
                 raise Exception("This email has already registered")
+            
+            user = User(
+                public_id = str(uuid.uuid4()),
+                username = data.get("username"),
+                email = email,
+                password = password,
+                role = data.get("role", "admin"),
+                status = data.get("status", "active"),
+                created_at = datetime.datetime.utcnow(),
+                updated_at = datetime.datetime.utcnow(),
+            )
 
-            self.public_id = str(uuid.uuid4())
-            self.username = data.get("username")
-            self.email = email
-            self.password = password
-            self.role = data.get("role", "admin")
-            self.status = data.get("status", "active")
-            self.created_at = datetime.datetime.utcnow()
-            self.updated_at = datetime.datetime.utcnow()
-            self.save()
-            return self.serialize()
+            user.save()
+            return user.serialize()
         except Exception as e:
             raise e
 
@@ -220,5 +226,13 @@ class User(db.Model):
                 raise Exception("Access denied")
             else:
                 return user
+        except Exception as e:
+            raise e
+
+    def get_user_public_id_by_id(self, id):
+        try:
+            user = self.query.filter_by(id=id).first()
+            if user:
+                return user.public_id
         except Exception as e:
             raise e

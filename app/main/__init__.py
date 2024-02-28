@@ -23,6 +23,8 @@ from app.main.controller.tag_controller import ns as tag_ns
 
 from app.main.controller.category_controller import ns as category_ns
 
+from app.main.controller.bookmark_controller import ns as bookmark_ns
+
 
 def create_app(config_object="app.settings"):
     """Create application factory, as explained here: http://flask.pocoo.org/docs/patterns/appfactories/.
@@ -51,6 +53,7 @@ def register_extensions(app):
     api.add_namespace(appeal_ns)
     api.add_namespace(report_ns)
     api.add_namespace(tag_ns)
+    api.add_namespace(bookmark_ns)
     api.add_namespace(category_ns)
     debug_toolbar.init_app(app)
     migrate.init_app(app, db)

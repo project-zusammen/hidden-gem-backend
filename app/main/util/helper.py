@@ -43,8 +43,8 @@ def error_handler(error):
     elif "Duplicate entry" in error_message:
         message = f"Insert data failed : Data already exist, cannot duplicate data"
 
-    elif "User not found" in error_message:
-        message = f"Error get user : {error_message}"
+    elif "not found" in error_message:
+        message = f"Error retrieve data : {error_message}"
 
     elif "Invalid email or password" in error_message:
         message = f"Login Failed : {error_message}"

@@ -106,46 +106,24 @@ class Review(db.Model):
         return None
 
     def create_review(self, data):
-        try:
-            self.public_id = str(uuid.uuid4())
-            self.location = data.get("location")
-            
-            self.title = data.get("title")
-            self.content = data.get("content")
-            if not self.title or not self.content:
-                return None
+        region_model = Region()
+        region_id = data.get("region_id")
 
-            user_id = data.get("user_id")
-            if user_id:
-                user_model = User()
-                self.user_id = user_model.get_user_id(user_id)
-            
-            category_id = data.get("category_id")
-            if category_id:
-                category_model = Category()
-                self.category_id = category_model.get_category_id(category_id)
+        review = Review(
+            public_id = str(uuid.uuid4()),
+            title = data.get("title"),
+            content = data.get("content"),
+            location = data.get("location"),
+            region_id = region_model.get_region_by_id(region_id),
+            created_at = datetime.datetime.utcnow(),
+            updated_at = datetime.datetime.utcnow(),
+            upvotes = 0,
+            downvotes = 0,
+            visible = True,
+        )
 
-            region_id = data.get("region_id")
-            if region_id:
-                region_model = Region()
-                self.region_id = region_model.get_region_by_id(region_id)
-            
-            tag_id = data.get("tag_id")
-            if tag_id:
-                tag_model = Tag()
-                self.tag_id = tag_model.get_tag_db_id(tag_id)
-
-            self.created_at = datetime.datetime.utcnow()
-            self.updated_at = datetime.datetime.utcnow()
-            self.upvotes = 0
-            self.downvotes = 0
-            self.visible = True
-
-            self.save()
-            return self.serialize()
-        except Exception as e:
-            logging.exception("An error occurred while creating a report: %s", str(e))
-            return None
+        review.save()
+        return review.serialize()
 
     def update_review(self, public_id, data):
         review = self.query.filter_by(public_id=public_id, visible=True).first()
@@ -195,6 +173,15 @@ class Review(db.Model):
             review.updated_at = datetime.datetime.utcnow()
             review.save()
             return review.serialize()
+
+    def get_review_id_by_public_id(self, public_id):
+        try:
+            review = self.query.filter_by(public_id=public_id, visible=True).first()
+            if not review:
+                raise Exception("Review not found. Invalid public_id")
+            return review.id
+        except Exception as e:
+            raise e
 
     def get_review_db_id(self, public_id):
         review = self.query.filter_by(public_id=public_id).first()

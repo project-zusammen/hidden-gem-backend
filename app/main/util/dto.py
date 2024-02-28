@@ -79,6 +79,15 @@ class AppealDto:
     status = api.model("status", {"status": fields.Boolean(description="status")})
 
 
+class BookmarkDto:
+    bookmark = api.model(
+        "bookmark",
+        {
+            "review_id": fields.String(required=True, description="review id"),
+        },
+    )
+
+
 class ReportDto:
     report = api.model(
         "report",
