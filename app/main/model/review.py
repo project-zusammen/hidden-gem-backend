@@ -25,15 +25,15 @@ class Review(db.Model):
     def __repr__(self):
         return f"<Review(title={self.title}, content={self.content}), upvotes={self.upvotes}, downvotes={self.downvotes}>"
 
-    def serialize(self):
+    def serialize(self, image_urls=[]):
         created_at = convert_to_local_time(self.created_at)
         updated_at = convert_to_local_time(self.updated_at)
         
         region_model = Region()
         region_public_id = region_model.get_region_public_id(self.region_id)
 
-        image_model = Image()
-        image_urls = image_model.get_images_by_review_id(self.id)
+        if not image_urls:
+            image_urls = Image().get_images_by_review_id(self.id)
 
         return {
             "public_id": self.public_id,
@@ -96,7 +96,7 @@ class Review(db.Model):
                 image = Image(url=url, review_id=review.id)
                 image.save()
 
-        return review.serialize()
+        return review.serialize(image_urls=image_urls)
 
     def update_review(self, public_id, data):
         review = self.query.filter_by(public_id=public_id, visible=True).first()
@@ -112,7 +112,15 @@ class Review(db.Model):
             review.location = data.get("location")
             review.updated_at = datetime.datetime.utcnow()
             review.save()
-            return review.serialize()
+
+            image_urls = data.get("image_urls")
+            if image_urls:
+                Image.query.filter_by(review_id=review.id).delete()
+                for url in image_urls:
+                    image = Image(url=url, review_id=review.id)
+                    image.save()
+            
+            return review.serialize(image_urls=image_urls)
 
     def delete_review(self, public_id):
         review = self.query.filter_by(public_id=public_id, visible=True).first()

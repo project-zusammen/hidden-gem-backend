@@ -8,6 +8,7 @@ review_data = {
     "title": "Test Review",
     "content": "This is a test review.",
     "location": "Test Location",
+    "image_urls": ["https://test.com/image.jpg"],
 }
 
 def create_region(region_name="Test Region"):
@@ -44,6 +45,7 @@ class TestReview(unittest.TestCase):
         self.assertEqual(created_review["title"], retrieved_review["title"])
         self.assertEqual(created_review["content"], retrieved_review["content"])
         self.assertEqual(created_review["location"], retrieved_review["location"])
+        self.assertEqual(created_review["image_urls"], retrieved_review["image_urls"])
 
     def test_update_review(self):
         # ARRANGE
@@ -56,6 +58,7 @@ class TestReview(unittest.TestCase):
             "content": "This is an updated review.",
             "location": "Updated Location",
             "region_id": review["region_id"],
+            "image_urls": ["https://test.com/updated_image.jpg"],
         }
         updated_review = review_model.update_review(review["public_id"], updated_data)
 
@@ -65,6 +68,8 @@ class TestReview(unittest.TestCase):
         self.assertEqual(updated_data["title"], updated_review["title"])
         self.assertEqual(updated_data["content"], updated_review["content"])
         self.assertEqual(updated_data["location"], updated_review["location"])
+        self.assertEqual(updated_data["region_id"], updated_review["region_id"])
+        self.assertEqual(updated_data["image_urls"], updated_review["image_urls"])
 
     def test_get_all_reviews(self):
         # ARRANGE
