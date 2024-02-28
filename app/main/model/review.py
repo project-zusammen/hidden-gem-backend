@@ -1,7 +1,7 @@
 import uuid
 import logging
 import datetime
-from sqlalchemy import or_
+from sqlalchemy import and_, or_
 from .. import db
 from ..util.helper import convert_to_local_time
 from .user import User 
@@ -73,21 +73,27 @@ class Review(db.Model):
         db.session.commit()
 
     def get_all_reviews(self, page, count, region_id, category_id, tag_id):
+        if tag_id:
+            tag_db_id = tag_model.get_tag_db_id(tag_id)
+        if category_id:
+            category_db_id = category_model.get_category_id(category_id)
+        if region_id:
+            region_db_id = region_model.get_region_by_id(region_id)
         try:
-            reviews = self.query.filter_by(visible=True).filter(or_(self.region_id == region_id, self.category_id == category_id, self.tag_id == tag_id)).order_by(self.created_at.desc()).paginate(page=page, per_page=count, max_per_page=20, error_out=False)
-            # offset = (page - 1) * count
-            # query = self.query.filter(Review.visible == True)
-            # if tag_id:
-            #     tag_db_id = tag_model.get_tag_db_id(tag_id)
-            #     query = query.filter(Review.tag_id == tag_db_id)
-            # if category_id:
-            #     category_db_id = category_model.get_category_id(category_id)
-            #     query = query.filter(Review.category_id == category_db_id)
-            # if region_id:
-            #     region_db_id = region_model.get_region_by_id(region_id)
-            #     query = query.filter(Review.region_id == region_db_id)
-
-            # reviews = query.limit(count).offset(offset).all()
+            reviews = (
+                Review.query.filter(
+                    and_(
+                        Review.visible == True,
+                        or_(
+                            Review.region_id == region_db_id,
+                            Review.category_id == category_db_id,
+                            Review.tag_id == tag_db_id,
+                        ),
+                    )
+                )
+                .order_by(Review.created_at.desc())
+                .paginate(page=page, per_page=count, max_per_page=20, error_out=False)
+            )
             return [review.serialize() for review in reviews]
         except Exception as e:
             logging.exception("An error occurred while creating a report: %s", str(e))
@@ -107,14 +113,29 @@ class Review(db.Model):
 
     def create_review(self, data):
         region_model = Region()
-        region_id = data.get("region_id")
+        region_public_id = data.get("region_id")
+        region_id = region_model.get_region_by_id(region_public_id)
+        
+        user_model = User()
+        user_id = user_model.get_user_id(data.get("user_id"))
+
+        category_model = Category()
+        category_public_id = data.get("category_id")
+        category_id = category_model.get_category_id(category_public_id)
+
+        tag_model = Tag()
+        tag_public_id = data.get("tag_id")
+        tag_id = tag_model.get_tag_db_id(tag_public_id)
 
         review = Review(
             public_id = str(uuid.uuid4()),
             title = data.get("title"),
             content = data.get("content"),
             location = data.get("location"),
-            region_id = region_model.get_region_by_id(region_id),
+            region_id = region_id,
+            user_id = user_id,
+            category_id = category_id,
+            tag_id = tag_id,
             created_at = datetime.datetime.utcnow(),
             updated_at = datetime.datetime.utcnow(),
             upvotes = 0,

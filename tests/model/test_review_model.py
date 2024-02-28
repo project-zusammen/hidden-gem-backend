@@ -88,6 +88,8 @@ class TestReview(unittest.TestCase):
         self.assertEqual(created_review["user_id"], retrieved_review["user_id"])
         self.assertEqual(created_review["region_id"], retrieved_review["region_id"])
         self.assertEqual(created_review["category_id"], retrieved_review["category_id"])
+        self.assertEqual(created_review["tag_id"], retrieved_review["tag_id"])
+        self.assertTrue(retrieved_review["visible"])
     
     def test_get_all_reviews(self):
         # ARRANGE
@@ -105,6 +107,11 @@ class TestReview(unittest.TestCase):
         self.assertEqual(review["title"], retrieved_reviews[0]["title"])
         self.assertEqual(review["content"], retrieved_reviews[0]["content"])
         self.assertEqual(review["location"], retrieved_reviews[0]["location"])
+        self.assertEqual(review["user_id"], retrieved_reviews[0]["user_id"])
+        self.assertEqual(review["region_id"], retrieved_reviews[0]["region_id"])
+        self.assertEqual(review["category_id"], retrieved_reviews[0]["category_id"])
+        self.assertEqual(review["tag_id"], retrieved_reviews[0]["tag_id"])
+        self.assertTrue(retrieved_reviews[0]["visible"])
 
     def test_update_review(self):
         # ARRANGE
