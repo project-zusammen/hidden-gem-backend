@@ -21,3 +21,9 @@ class Image(db.Model):
     def get_images_by_review_id(self, review_id):
         image_urls = self.query.filter_by(review_id=review_id).all()
         return [url.serialize() for url in image_urls]
+    
+    def delete_images_by_review_id(self, review_id):
+        images = self.query.filter_by(review_id=review_id).all()
+        for image in images:
+            db.session.delete(image)
+        db.session.commit()
