@@ -39,12 +39,14 @@ class TestReviewService(TestCase):
                 "title": "Test Review 1",
                 "content": "Content 1",
                 "location": "Location 1",
+                "image_urls": ["url1", "url2"],
             },
             {
                 "public_id": public_id_2,
                 "title": "Test Review 2",
                 "content": "Content 2",
                 "location": "Location 2",
+                "image_urls": ["url3", "url4"],
             },
         ]
         mock_get_all_reviews.return_value = data
@@ -66,6 +68,7 @@ class TestReviewService(TestCase):
             self.assertEqual(result[i]["title"], data[i]["title"])
             self.assertEqual(result[i]["content"], data[i]["content"])
             self.assertEqual(result[i]["location"], data[i]["location"])
+            self.assertEqual(result[i]["image_urls"], data[i]["image_urls"])
 
     @patch("app.main.model.review.Review.get_review_by_id")
     def test_get_a_review(self, mock_get_review_by_id):
@@ -76,6 +79,7 @@ class TestReviewService(TestCase):
             "title": "Test Review",
             "content": "This is a content review",
             "location": "Test Location",
+            "image_urls": ["url1", "url2"],
         }
         mock_get_review_by_id.return_value = data
 
@@ -91,6 +95,7 @@ class TestReviewService(TestCase):
         self.assertEqual(result["title"], data["title"])
         self.assertEqual(result["content"], data["content"])
         self.assertEqual(result["location"], data["location"])
+        self.assertEqual(result["image_urls"], data["image_urls"])
 
     @patch("app.main.model.review.Review.create_review")
     def test_create_review(self, mock_create_review):
@@ -101,6 +106,7 @@ class TestReviewService(TestCase):
             "title": "Test Review",
             "content": "This is a content review",
             "location": "Test Location",
+            "image_urls": ["url1", "url2"],
         }
         mock_create_review.return_value = data
 
@@ -115,6 +121,7 @@ class TestReviewService(TestCase):
         self.assertEqual(result["title"], data["title"])
         self.assertEqual(result["content"], data["content"])
         self.assertEqual(result["location"], data["location"])
+        self.assertEqual(result["image_urls"], data["image_urls"])
 
     @patch("app.main.model.review.Review.update_review")
     def test_update_review(self, mock_update_review):
@@ -124,6 +131,7 @@ class TestReviewService(TestCase):
             "title": "Test Review updated",
             "content": "This is a content review updated",
             "location": "Test Location updated",
+            "image_urls": ["url1_updated", "url2_updated"],
         }
         data["public_id"] = public_id
         mock_update_review.return_value = data
@@ -139,6 +147,7 @@ class TestReviewService(TestCase):
         self.assertEqual(result["title"], data["title"])
         self.assertEqual(result["content"], data["content"])
         self.assertEqual(result["location"], data["location"])
+        self.assertEqual(result["image_urls"], data["image_urls"])
 
     @patch("app.main.model.review.Review.upvote_review")
     def test_upvote_review(self, mock_upvote_review):
