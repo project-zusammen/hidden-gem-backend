@@ -33,9 +33,9 @@ class Category(db.Model):
 
     def create_category(self, category_name):
         try:
-            # check_category = self.query.filter_by(name=category_name).first()
-            # if check_category:
-            #     return check_category.serialize()
+            check_category = self.query.filter_by(name=category_name).first()
+            if check_category:
+                return check_category.serialize()
             
             self.public_id = str(uuid.uuid4())
             self.name = category_name
