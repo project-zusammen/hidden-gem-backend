@@ -67,25 +67,24 @@ class Review(db.Model):
         return None
 
     def create_review(self, data):
-        self.public_id = str(uuid.uuid4())
-        self.title = data.get("title")
-        self.content = data.get("content")
-        self.location = data.get("location")
-        if not self.title or not self.content:
-            return None
-        
-        region_id = data.get("region_id")
         region_model = Region()
-        self.region_id = region_model.get_region_by_id(region_id)
+        region_id = data.get("region_id")
 
-        self.created_at = datetime.datetime.utcnow()
-        self.updated_at = datetime.datetime.utcnow()
-        self.upvotes = 0
-        self.downvotes = 0
-        self.visible = True
+        review = Review(
+            public_id = str(uuid.uuid4()),
+            title = data.get("title"),
+            content = data.get("content"),
+            location = data.get("location"),
+            region_id = region_model.get_region_by_id(region_id),
+            created_at = datetime.datetime.utcnow(),
+            updated_at = datetime.datetime.utcnow(),
+            upvotes = 0,
+            downvotes = 0,
+            visible = True,
+        )
 
-        self.save()
-        return self.serialize()
+        review.save()
+        return review.serialize()
 
     def update_review(self, public_id, data):
         review = self.query.filter_by(public_id=public_id, visible=True).first()
