@@ -1,8 +1,4 @@
-import uuid
-import datetime
 from .. import db
-from ..util.helper import convert_to_local_time
-from .region import Region
 
 
 class Image(db.Model):
