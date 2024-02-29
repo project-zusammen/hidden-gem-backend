@@ -25,6 +25,10 @@ class Category(db.Model):
             "updated_at": updated_at.isoformat() if self.updated_at else None,
         }
     
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+    
     def create_category(self, category_name):
         try:
             category = Category(
