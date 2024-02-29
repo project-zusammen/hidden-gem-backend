@@ -75,11 +75,11 @@ class UserStatus(Resource):
     @ns.expect(_userStatus, validate=True)
     @token_required
     def put(self, decoded_token, public_id):
+        """Update user status"""
         role = decoded_token["role"]
         if role != "admin":
             return error_handler("Access denied")
 
-        """Update user status"""
         updated_user = update_user_status(public_id, ns.payload)
         return updated_user
 
