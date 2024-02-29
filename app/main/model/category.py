@@ -25,17 +25,16 @@ class Category(db.Model):
             "updated_at": updated_at.isoformat() if self.updated_at else None,
         }
     
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-
     def create_category(self, category_name):
         try:
-            self.public_id = str(uuid.uuid4())
-            self.name = category_name
-            self.created_at = datetime.datetime.utcnow()
-            self.updated_at = datetime.datetime.utcnow()
-            self.save()
-            return self.serialize()
+            category = Category(
+                public_id = str(uuid.uuid4()),
+                name = category_name,
+                created_at = datetime.datetime.utcnow(),
+                updated_at = datetime.datetime.utcnow(),
+            )
+
+            category.save()
+            return category.serialize()
         except Exception as e:
             raise e
