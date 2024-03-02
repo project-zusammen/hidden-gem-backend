@@ -48,7 +48,7 @@ class Category(db.Model):
             return category.serialize()
         except Exception as e:
             raise e
-    
+
     def get_category_id(self, public_id):
         category = self.query.filter_by(public_id=public_id).first()
         if not category:
