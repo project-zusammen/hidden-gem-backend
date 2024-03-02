@@ -28,19 +28,22 @@ class Category(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
-
+    
     def create_category(self, category_name):
         try:
             category = self.query.filter_by(name=category_name).first()
             if category:
                 return category.serialize()
             
-            self.public_id = str(uuid.uuid4())
-            self.name = category_name
-            self.created_at = datetime.datetime.utcnow()
-            self.updated_at = datetime.datetime.utcnow()
-            self.save()
-            return self.serialize()
+            category = Category(
+                public_id = str(uuid.uuid4()),
+                name = category_name,
+                created_at = datetime.datetime.utcnow(),
+                updated_at = datetime.datetime.utcnow(),
+            )
+
+            category.save()
+            return category.serialize()
         except Exception as e:
             raise e
     
