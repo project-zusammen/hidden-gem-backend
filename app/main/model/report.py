@@ -55,31 +55,33 @@ class Report(db.Model):
 
     def create_report(self, data):
         try:
-            self.public_id = str(uuid.uuid4())
-            self.user_id = data.get("user_id")
-            self.type = data.get("type")
-            self.status = "received"
+            report_type = data.get("type")
             item_id = data.get("item_id")
-
-            if self.type == "comment":
+            if report_type == "comment":
                 comment_model = Comment()
                 comment_id = comment_model.get_comment_db_id(item_id)
-                self.item_id = comment_id
+                item_id = comment_id
             else:
                 review_model = Review()
                 review_id = review_model.get_review_db_id(item_id)
-                self.item_id = review_id
+                item_id = review_id
 
-            self.reason = data.get("reason")
-            self.created_at = datetime.datetime.utcnow()
-            self.updated_at = datetime.datetime.utcnow()
+            report = Report(
+                public_id = str(uuid.uuid4()),
+                user_id = data.get("user_id"),
+                type = report_type,
+                status = "received",
+                item_id = item_id,
+                reason = data.get("reason"),
+                created_at = datetime.datetime.utcnow(),
+                updated_at = datetime.datetime.utcnow(),
+            )
 
-            self.save()
-            return self.serialize()
+            report.save()
+            return report.serialize()
         except Exception as e:
-            logging.exception("An error occurred while creating a report: %s", str(e))
-            return None
-
+            raise e
+    
     def get_all_reports(self):
         try:
             reports = self.query.all()
@@ -87,7 +89,7 @@ class Report(db.Model):
         except Exception as e:
             raise e
 
-    def get_report_by_id(self, public_id, user_id, role):
+    def get_report_by_id(self, public_id, role, user_id=None):
         try:
             report = self.query.filter_by(public_id=public_id).first()
             if not report:
