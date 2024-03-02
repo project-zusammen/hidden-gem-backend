@@ -68,9 +68,9 @@ class TestComment(unittest.TestCase):
     def test_create_comment(self):
         # ARRANGE
         comment_model = Comment()
-        new_comment = comment_model.create_comment(comment_data)
 
         # ACT
+        new_comment = comment_model.create_comment(comment_data)
 
         # ASSERT
         self.assertIsNotNone(new_comment)

@@ -86,6 +86,18 @@ def setup_data():
     )
     reporter_2.save()
 
+    commenter = User(
+        username= "test_commenter",
+        email= "test_commenter@gmail.com",
+        password= "test_commenter_password",
+        role = "user",
+        status = "active",
+        created_at = datetime.datetime.utcnow(),
+        updated_at = datetime.datetime.utcnow(),
+    )
+    commenter.save()
+
+
 review_data = {
     "title": "Test Review",
     "content": "This is a test review.",
