@@ -37,7 +37,6 @@ admin_data = {
 
 report_data = {
     "public_id": str(uuid.uuid4()),
-    "public_id": str(uuid.uuid4()),
     "user_id": user_data["public_id"],
     "type": "review",
     "item_id": str(uuid.uuid4()),
