@@ -36,3 +36,23 @@ class TestCategoryEndpoints(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_response["data"], res)
         mock_create_category.assert_called_once_with(category_data['name'])
+    
+    @patch("app.main.controller.category_controller.get_all_categories")
+    def test_get_all_categories(self, mock_get_all_categories):
+        # ARRANGE
+        expected_response = {
+            "status": "success",
+            "message": "Successfully get.",
+            "data": [category_data],
+        }
+        mock_get_all_categories.return_value = expected_response
+
+        # ACT
+        with self.app.test_client() as client:
+            response = client.get("/api/category")
+            res = response.get_json()["data"]
+
+        # ASSERT
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_response["data"], res)
+        mock_get_all_categories.assert_called_once()

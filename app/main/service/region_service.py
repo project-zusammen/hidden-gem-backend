@@ -11,7 +11,7 @@ def get_all_region():
             return {"status": "success", "message": "No regions found"}, 409
         response_object = {
             "status": "success",
-            "message": "Successfully retrieved users.",
+            "message": "Successfully retrieved regions.",
             "data": regions,
         }
         return response_object, 200
