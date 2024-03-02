@@ -97,64 +97,6 @@ report_data = {
     "status": "received",
 }
 
-def register_user():
-    global user_id, user_role
-    user_data = {
-        "username": "test_users",
-        "email": "test_users@gmail.com",
-        "password": "test_password",
-    }
-    user_model = User()
-    user = user_model.register_user(user_data)
-    user_id = user_model.get_user_id(user["public_id"])
-    user_role = user_model.get_user_role(user["public_id"])
-
-def register_admin():
-    global admin_id, admin_role
-    user_data = {
-        "username": "test_admins",
-        "email": "test_admins@gmail.com",
-        "password": "test_admin_password",
-    }
-    user_model = User()
-    admin = user_model.register_admin(user_data)
-    admin_id = user_model.get_user_id(admin["public_id"])
-    admin_role = user_model.get_user_role(admin["public_id"])
-
-def register_reviewer():
-    global reviewer_id
-    user_data = {
-        "username": "test_reviewer",
-        "email": "test_reviewer@gmail.com",
-        "password": "test_reviewer_password",
-    }
-    user_model = User()
-    user = user_model.register_user(user_data)
-    reviewer_id = user["public_id"]
-
-def register_reporter():
-    global reporter_id, user_id, user_role
-    user_data = {
-        "username": "test_reporter",
-        "email": "test_reporter@gmail.com",
-        "password": "test_reporter_password",
-    }
-    user_model = User()
-    user = user_model.register_user(user_data)
-    user_id = user_model.get_user_id(user["public_id"])
-    user_role = user_model.get_user_role(user["public_id"])
-    reporter_id = user["public_id"]
-
-def register_commenter():
-    global commenter_id
-    user_data = {
-        "username": "test_commenter",
-        "email": "test_commenter@gmail.com",
-        "password": "test_commenter_password",
-    }
-    user_model = User()
-    user = user_model.register_user(user_data)
-    commenter_id = user["public_id"]
 
 class TestReport(unittest.TestCase):
     def setUp(self):
