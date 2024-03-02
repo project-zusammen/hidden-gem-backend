@@ -51,10 +51,10 @@ class Report(Resource):
     @token_required
     @ns.expect(_status)
     def put(self, decoded_token, public_id):
+        """Update report status"""
         role = decoded_token["role"]
         if role != "admin":
             return error_handler("Access denied")
 
-        """Update report status"""
         status = ns.payload.get("status")
         return update_report(public_id, status)
