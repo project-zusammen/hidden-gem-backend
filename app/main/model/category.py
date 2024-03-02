@@ -60,3 +60,12 @@ class Category(db.Model):
         if not category:
             return None
         return category.public_id
+    
+    def get_all_categories(self):
+        try:
+            categories = self.query.all()
+            return [category.serialize() for category in categories]
+
+        except Exception as e:
+            raise e
+
