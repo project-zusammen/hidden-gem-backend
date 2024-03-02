@@ -1,4 +1,5 @@
 import unittest
+import datetime
 from app.main import create_app
 from app.extensions import db
 from app.main.model.bookmark import Bookmark
@@ -6,13 +7,41 @@ from app.main.model.user import User
 from app.main.model.review import Review
 from app.main.model.region import Region
 
+def create_review_and_user():
+    global review, user
+    
+    region = Region(
+        public_id = "region_id",
+        city = "Test Region",
+        created_at = datetime.datetime.utcnow(),
+        updated_at = datetime.datetime.utcnow(),
+    )
+    region.save()
 
-review_data = {
-    "title": "Test Review",
-    "content": "This is a test review.",
-    "location": "Test Location",
-}
-user_data = {"username": "aqiz", "email": "aqiz@gmail.com", "password": "Aqiz123!"}
+    review = Review(
+        public_id = "review_id",
+        title = "Test Review",
+        content = "This is a test review.",
+        location = "Test Location",
+        region_id = region.id,
+        created_at = datetime.datetime.utcnow(),
+        updated_at = datetime.datetime.utcnow(),
+        upvotes = 0,
+        downvotes = 0,
+        visible = True,
+    )
+    review.save()
+
+    user = User(
+        username = "test_user",
+        email = "test_user@gmail.com",
+        password = "test_user_password",
+        role = "user",
+        status = "active",
+        created_at = datetime.datetime.utcnow(),
+        updated_at = datetime.datetime.utcnow(),
+    )
+    user.save()
 
 
 class TestBookmark(unittest.TestCase):
@@ -21,6 +50,7 @@ class TestBookmark(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
+        create_review_and_user()
 
     def tearDown(self):
         db.session.remove()
@@ -29,41 +59,21 @@ class TestBookmark(unittest.TestCase):
 
     def test_create_bookmark(self):
         # ARRANGE
-        region_model = Region()
-        created_region = region_model.create_region("Test Region")
-        review_data["region_id"] = created_region["public_id"]
-
-        review_model = Review()
-        created_review = review_model.create_review(review_data)
-        review_id = review_model.get_review_id_by_public_id(created_review["public_id"])
-        data = {"review_id": created_review["public_id"]}
-        user_model = User()
-        new_user = user_model.register_user(user_data)
         bookmark_model = Bookmark()
-
-        new_bookmark = bookmark_model.create_bookmark(data, 1)
+        new_bookmark = bookmark_model.create_bookmark(review.public_id, user.id)
 
         # ASSERT
         self.assertIsNotNone(new_bookmark)
-        self.assertEqual(new_bookmark["user_id"], new_user["public_id"])
-        self.assertEqual(new_bookmark["review_id"], created_review["public_id"])
+        self.assertEqual(new_bookmark["user_id"], user.public_id)
+        self.assertEqual(new_bookmark["review_id"], review.public_id)
 
     def test_get_bookmark_by_userid(self):
         # ARRANGE
-        region_model = Region()
-        created_region = region_model.create_region("Test Region")
-        review_data["region_id"] = created_region["public_id"]
-
-        review_model = Review()
-        created_review = review_model.create_review(review_data)
-        user_model = User()
-        new_user = user_model.register_user(user_data)
-        bookmark_data = {"review_id": created_review["public_id"]}
         bookmark_model = Bookmark()
-        new_bookmark = bookmark_model.create_bookmark(bookmark_data, 1)
+        new_bookmark = bookmark_model.create_bookmark(review.public_id, user.id)
 
         # ACT
-        retrieved_bookmark = bookmark_model.get_bookmark_by_userid(1)
+        retrieved_bookmark = bookmark_model.get_bookmark_by_userid(user.id)
 
         # ASSERT
         self.assertIsNotNone(retrieved_bookmark)
@@ -74,21 +84,12 @@ class TestBookmark(unittest.TestCase):
 
     def test_delete_bookmark(self):
         # ARRANGE
-        region_model = Region()
-        created_region = region_model.create_region("Test Region")
-        review_data["region_id"] = created_region["public_id"]
-
-        review_model = Review()
-        created_review = review_model.create_review(review_data)
-        user_model = User()
-        new_user = user_model.register_user(user_data)
-        bookmark_data = {"review_id": created_review["public_id"]}
         bookmark_model = Bookmark()
-        new_bookmark = bookmark_model.create_bookmark(bookmark_data, 1)
+        new_bookmark = bookmark_model.create_bookmark(review.public_id, user.id)
 
         # ACT
-        deleted_bookmark = bookmark_model.delete_bookmark(new_bookmark["public_id"], 1)
+        deleted_bookmark = bookmark_model.delete_bookmark(new_bookmark["public_id"], user.id)
 
         # ASSERT
         self.assertIsNotNone(deleted_bookmark)
-        self.assertEqual(deleted_bookmark, True)
+        self.assertTrue(deleted_bookmark)

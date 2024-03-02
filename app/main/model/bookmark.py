@@ -41,15 +41,13 @@ class Bookmark(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def create_bookmark(self, data, user_id):
+    def create_bookmark(self, review_id, user_id):
+        review_db_id = review_instance.get_review_db_id(review_id)
         try:
-            review_id = review_instance.get_review_id_by_public_id(
-                data.get("review_id")
-            )
             bookmark = Bookmark(
                 public_id = str(uuid.uuid4()),
                 user_id = user_id,
-                review_id = review_id,
+                review_id = review_db_id,
                 created_at = datetime.datetime.utcnow(),
                 updated_at = datetime.datetime.utcnow(),
             )
