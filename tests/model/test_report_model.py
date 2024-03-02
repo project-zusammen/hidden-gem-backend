@@ -32,6 +32,7 @@ def setup_data():
 
     review = Review(
         public_id = "review_id",
+        user_id = reviewer.id,
         title = "Test Review",
         content = "This is a test review.",
         location = "Test Location",
@@ -85,18 +86,6 @@ def setup_data():
         updated_at = datetime.datetime.utcnow(),
     )
     reporter_2.save()
-
-    commenter = User(
-        username= "test_commenter",
-        email= "test_commenter@gmail.com",
-        password= "test_commenter_password",
-        role = "user",
-        status = "active",
-        created_at = datetime.datetime.utcnow(),
-        updated_at = datetime.datetime.utcnow(),
-    )
-    commenter.save()
-
 
 review_data = {
     "title": "Test Review",
