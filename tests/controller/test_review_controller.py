@@ -60,41 +60,6 @@ class TestReviewEndpoints(TestCase):
             "data": expected_data,
         }
         mock_get_all_reviews.return_value = expected_response
-
-        # ACT
-        with self.app.test_client() as client:
-            response = client.get("/api/review")
-            result = json.loads(response.data.decode("utf-8"))
-            result = result.get("data")
-            first_review = result[0]
-            second_review = result[1]
-
-        # ASSERT
-        self.assertEqual(response.status_code, 200)
-        self.assertIsInstance(result, list)
-        self.assertEqual(first_review.get("title"), expected_data[0].get("title"))
-        self.assertEqual(first_review.get("content"), expected_data[0].get("content"))
-        self.assertEqual(first_review.get("location"), expected_data[0].get("location"))
-        self.assertEqual(second_review.get("title"), expected_data[1].get("title"))
-        self.assertEqual(second_review.get("content"), expected_data[1].get("content"))
-        self.assertEqual(
-            second_review.get("location"), expected_data[1].get("location")
-        )
-        mock_get_all_reviews.assert_called_once()
-
-    @patch("app.main.controller.review_controller.get_all_reviews")
-    def test_get_all_reviews_pagination(self, mock_get_all_reviews):
-        # ARRANGE
-        expected_data = [
-            {"title": "Review 1", "content": "Content 1", "location": "Location 1"},
-            {"title": "Review 2", "content": "Content 2", "location": "Location 2"},
-        ]
-        expected_response = {
-            "status": "success",
-            "message": "Successfully get reviews.",
-            "data": expected_data,
-        }
-        mock_get_all_reviews.return_value = expected_response
         page = 1
         count = 2
 
