@@ -54,9 +54,9 @@ class Report(db.Model):
 
     def create_report(self, data):
         try:
-            type = data.get("type")
+            report_type = data.get("type")
             item_id = data.get("item_id")
-            if type == "comment":
+            if report_type == "comment":
                 comment_model = Comment()
                 comment_id = comment_model.get_comment_db_id(item_id)
                 item_id = comment_id
@@ -68,7 +68,7 @@ class Report(db.Model):
             report = Report(
                 public_id = str(uuid.uuid4()),
                 user_id = data.get("user_id"),
-                type = type,
+                type = report_type,
                 status = "received",
                 item_id = item_id,
                 reason = data.get("reason"),
@@ -88,7 +88,7 @@ class Report(db.Model):
         except Exception as e:
             raise e
 
-    def get_report_by_id(self, public_id, user_id, role):
+    def get_report_by_id(self, public_id, role, user_id=None):
         try:
             report = self.query.filter_by(public_id=public_id).first()
             if not report:
