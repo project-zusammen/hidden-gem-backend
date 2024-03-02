@@ -31,6 +31,10 @@ class Category(db.Model):
     
     def create_category(self, category_name):
         try:
+            category = self.query.filter_by(name=category_name).first()
+            if category:
+                return category.serialize()
+            
             category = Category(
                 public_id = str(uuid.uuid4()),
                 name = category_name,
@@ -42,3 +46,12 @@ class Category(db.Model):
             return category.serialize()
         except Exception as e:
             raise e
+    
+    def get_all_categories(self):
+        try:
+            categories = self.query.all()
+            return [category.serialize() for category in categories]
+
+        except Exception as e:
+            raise e
+
