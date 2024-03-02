@@ -26,7 +26,7 @@ class ReviewList(Resource):
     @ns.param("tag_id", "Retrieve data based on the specified tag")
     @ns.param("category_id", "Retrieve data based on the specified category")
     @ns.param("region_id", "Retrieve data based on the specified region")
-    @ns.cache.cached(timeout = 300)
+    # @ns.cache.cached(timeout = 300)
     def get(self):
         """List all reviews"""
         page = request.args.get("page", default=1, type=int)
