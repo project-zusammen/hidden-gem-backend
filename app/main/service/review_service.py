@@ -5,8 +5,9 @@ review_model = Review()
 tag_model = Tag()
 
 
-def create_review(data):
+def create_review(data, user_id):
     try:
+        data["user_id"] = user_id
         review = review_model.create_review(data)
         response_object = {
             "status": "success",

@@ -116,9 +116,6 @@ class Review(db.Model):
         region_public_id = data.get("region_id")
         region_id = region_model.get_region_by_id(region_public_id)
         
-        user_model = User()
-        user_id = user_model.get_user_id(data.get("user_id"))
-
         category_model = Category()
         category_public_id = data.get("category_id")
         category_id = category_model.get_category_id(category_public_id)
@@ -133,7 +130,7 @@ class Review(db.Model):
             content = data.get("content"),
             location = data.get("location"),
             region_id = region_id,
-            user_id = user_id,
+            user_id = data.get("user_id"),
             category_id = category_id,
             tag_id = tag_id,
             created_at = datetime.datetime.utcnow(),

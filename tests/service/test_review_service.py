@@ -115,7 +115,7 @@ class TestReviewService(TestCase):
         mock_create_review.return_value = data
 
         # Act
-        response, status_code = create_review(data)
+        response, status_code = create_review(data, 1)
         result = response["data"]
 
         # Assert

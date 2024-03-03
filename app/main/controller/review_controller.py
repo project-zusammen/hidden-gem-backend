@@ -1,5 +1,6 @@
-from ..util.dto import ReviewDto
 from flask import request
+from ..util.dto import ReviewDto
+from ..util.token_verify import token_required
 
 review_dto = ReviewDto()
 _review = review_dto.review
@@ -37,9 +38,12 @@ class ReviewList(Resource):
         return get_all_reviews(page, count, tag_id, category_id, region_id)
 
     @ns.expect(_review, validate=True)
-    def post(self):
+    @ns.doc(security="bearer")
+    @token_required
+    def post(self, decoded_token):
         """Creates a new Review"""
-        return create_review(ns.payload)
+        user_id = decoded_token["id"]
+        return create_review(ns.payload, user_id)
 
 
 @ns.route("/review/<public_id>")
