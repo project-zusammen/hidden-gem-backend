@@ -8,7 +8,6 @@ from .user import User
 import logging
 
 
-
 class Report(db.Model):
     __tablename__ = "report"
 
@@ -16,7 +15,6 @@ class Report(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     public_id = db.Column(db.String(100), unique=True, nullable=False)
     type = db.Column(db.String(100), nullable=False)
-    item_id = db.Column(db.Integer, db.ForeignKey("review.id"), nullable=False)
     item_id = db.Column(db.Integer, db.ForeignKey("review.id"), nullable=False)
     reason = db.Column(db.String(255), nullable=False)
     status = db.Column(db.String(100), nullable=False, default="received")
@@ -29,7 +27,6 @@ class Report(db.Model):
     def serialize(self):
         created_at = convert_to_local_time(self.created_at)
         updated_at = convert_to_local_time(self.updated_at)
-
 
         if self.type == "comment":
             comment_model = Comment()
@@ -70,24 +67,20 @@ class Report(db.Model):
                 item_id = review_id
 
             report = Report(
-                public_id = str(uuid.uuid4()),
-                user_id = data.get("user_id"),
-                type = report_type,
-                status = "received",
-                item_id = item_id,
-                reason = data.get("reason"),
-                created_at = datetime.datetime.utcnow(),
-                updated_at = datetime.datetime.utcnow(),
+                public_id=str(uuid.uuid4()),
+                user_id=data.get("user_id"),
+                type=report_type,
+                status="received",
+                item_id=item_id,
+                reason=data.get("reason"),
+                created_at=datetime.datetime.utcnow(),
+                updated_at=datetime.datetime.utcnow(),
             )
 
             report.save()
             return report.serialize()
         except Exception as e:
             raise e
-    
-    def get_all_reports(self):
-            logging.exception("An error occurred while creating a report: %s", str(e))
-            return None
 
     def get_all_reports(self, page, count):
         try:

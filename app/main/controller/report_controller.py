@@ -38,7 +38,6 @@ class ReportList(Resource):
 
         page = request.args.get("page", default=1, type=int)
         count = request.args.get("count", default=20, type=int)
-        """List all reports"""
         return get_all_reports(page, count)
 
 
