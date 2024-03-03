@@ -128,7 +128,7 @@ class TestReport(unittest.TestCase):
         self.assertEqual(created_report["item_id"], report_data["item_id"])
         self.assertEqual(created_report["reason"], report_data["reason"])
         self.assertEqual(created_report["status"], report_data["status"])
-    
+
     def test_create_and_get_report_on_comment(self):
         # ARRANGE
         report_model = Report()
@@ -236,6 +236,25 @@ class TestReport(unittest.TestCase):
             )
 
         self.assertTrue("Access Denied" in str(context.exception))
+
+    def test_update_report(self):
+        # ARRANGE
+        report_model = Report()
+        report_data["type"] = "review"
+        report_data["item_id"] = review.public_id
+        report_data["user_id"] = reporter.id
+
+        report = report_model.create_report(report_data)
+
+        # ACT
+        updated_report = report_model.update_report(
+            public_id=report["public_id"], status="accepted"
+        )
+
+        # ASSERT
+        self.assertIsNotNone(updated_report)
+        self.assertEqual(updated_report["status"], "accepted")
+
 
 if __name__ == "__main__":
     unittest.main()
