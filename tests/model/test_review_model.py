@@ -43,7 +43,8 @@ def register_user():
     global user_id
     user_model = User()
     user = user_model.register_user(user_data)
-    user_id = user["public_id"]
+    user_public_id = user["public_id"]
+    user_id = user_model.get_user_id(user_public_id)
 
 def create_tag():
     global tag_id
