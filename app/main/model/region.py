@@ -33,12 +33,15 @@ class Region(db.Model):
 
     def create_region(self, region_name):
         try:
-            self.public_id = str(uuid.uuid4())
-            self.city = region_name
-            self.created_at = datetime.datetime.utcnow()
-            self.updated_at = datetime.datetime.utcnow()
-            self.save()
-            return self.serialize()
+            region = Region(
+                public_id = str(uuid.uuid4()),
+                city = region_name,
+                created_at = datetime.datetime.utcnow(),
+                updated_at = datetime.datetime.utcnow(),
+            )
+
+            region.save()
+            return region.serialize()
         except Exception as e:
             raise e
 
