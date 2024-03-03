@@ -25,15 +25,7 @@ admin_data = {
     "status": "active",
 }
 
-report_data_single = {
-    "public_id": str(uuid.uuid4()),
-    "user_id": user_data["public_id"],
-    "type": "review",
-    "item_id": str(uuid.uuid4()),
-    "reason": "Test Reason",
-}
-
-report_data_multiple = [
+report_data = [
     {
         "public_id": str(uuid.uuid4()),
         "user_id": user_data["public_id"],
@@ -69,7 +61,7 @@ class TestReportEndpoints(TestCase):
         expected_response = {
             "status": "success",
             "message": "Successfully created.",
-            "data": report_data_single,
+            "data": report_data[0],
         }
         mock_create_report.return_value = expected_response
 
@@ -78,9 +70,7 @@ class TestReportEndpoints(TestCase):
 
         # ACT
         with self.app.test_client() as client:
-            response = client.post(
-                "/api/report", json=report_data_single, headers=headers
-            )
+            response = client.post("/api/report", json=report_data[0], headers=headers)
             res = response.get_json()
             res = res.get("data")
 
@@ -100,7 +90,7 @@ class TestReportEndpoints(TestCase):
 
         # ACT
         with self.app.test_client() as client:
-            response = client.post("/api/report", json=report_data_single)
+            response = client.post("/api/report", json=report_data[0])
             res = response.get_json()
 
         # ASSERT
@@ -186,7 +176,7 @@ class TestReportEndpoints(TestCase):
     @patch("app.main.controller.report_controller.get_all_reports")
     def test_get_all_reports(self, mock_get_all_reports):
         # ARRANGE
-        expected_data = report_data_multiple
+        expected_data = report_data
         expected_response = {
             "status": "success",
             "message": "Successfully retrieved reports.",
@@ -217,7 +207,7 @@ class TestReportEndpoints(TestCase):
     @patch("app.main.controller.report_controller.get_a_report")
     def test_get_a_report(self, mock_get_an_report):
         # ARRANGE
-        expected_data = report_data_single
+        expected_data = report_data[0]
         expected_response = {
             "status": "success",
             "message": "Successfully retrieved report.",
@@ -231,7 +221,7 @@ class TestReportEndpoints(TestCase):
         # ACT
         with self.app.test_client() as client:
             response = client.get(
-                f"/api/report/{report_data_single['public_id']}", headers=headers
+                f"/api/report/{report_data[0]['public_id']}", headers=headers
             )
             res = json.loads(response.data.decode("utf-8"))
             res = res.get("data")
