@@ -32,6 +32,7 @@ def setup_data():
 
     review = Review(
         public_id = "review_id",
+        user_id = reviewer.id,
         title = "Test Review",
         content = "This is a test review.",
         location = "Test Location",
@@ -96,33 +97,6 @@ report_data = {
     "reason": "Test Reason",
     "status": "received",
 }
-
-
-
-def register_user():
-    global user_id, user_role
-    global user_id, user_role
-    user_data = {
-        "username": "test_users",
-        "email": "test_users@gmail.com",
-        "password": "test_password",
-    }
-    user_model = User()
-    user = user_model.register_user(user_data)
-    user_id = user_model.get_user_id(user["public_id"])
-    user_role = user_model.get_user_role(user["public_id"])
-
-def register_admin():
-    global admin_id, admin_role
-    user_data = {
-        "username": "test_admins",
-        "email": "test_admins@gmail.com",
-        "password": "test_admin_password",
-    }
-    user_model = User()
-    admin = user_model.register_admin(user_data)
-    admin_id = user_model.get_user_id(admin["public_id"])
-    admin_role = user_model.get_user_role(admin["public_id"])
 
 
 
