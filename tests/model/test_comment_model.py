@@ -1,4 +1,4 @@
-import uuid
+import datetime
 import unittest
 from app.main import create_app
 from app.extensions import db
@@ -11,45 +11,54 @@ from app.main.model.tag import Tag
 comment_data = {"content": "new comment"}
 tag_data = {"tag": "new tag"}
 
-def create_region(region_name="Test Region"):
-    region_model = Region()
-    region = region_model.create_region(region_name)
-    region_id = region["public_id"]
-    return region_id
+def setup_data():
+    global review, commenter
 
-def create_tag():
-    tag_model = Tag()
-    tag = tag_model.create_tag(tag_data)
-    tag_id = tag["public_id"]
-    return tag_id
+    region = Region(
+        public_id = "region_id",
+        city = "Test Region City",
+        created_at = datetime.datetime.utcnow(),
+        updated_at = datetime.datetime.utcnow(),
+    )
+    region.save()
 
-def create_user():
-    user_model = User()
-    user_data = {
-        "username": "test_user",
-        "email": "test_user@gmail.com",
-        "password": "test_password"
-    }
-    user = user_model.register_user(user_data)
-    return user["public_id"]
+    reviewer = User(
+        username = "test_reviewer",
+        email = "test_reviewer@gmail.com",
+        password = "test_reviewer_password",
+        role = "user",
+        status = "active",
+        created_at = datetime.datetime.utcnow(),
+        updated_at = datetime.datetime.utcnow(),
+    )
+    reviewer.save()
 
-def create_review():
-    global review_id
-    region_id = create_region()
-    user_id = create_user()
-    tag_id = create_tag()
-    review_data = {
-        "title": "Test Review",
-        "content": "This is a test review.",
-        "location": "Test Location",
-        "region_id": region_id,
-        "user_id": user_id,
-        "tag_id": tag_id,
-    }
+    review = Review(
+        public_id = "review_id",
+        user_id = reviewer.id,
+        title = "Test Review",
+        content = "This is a test review.",
+        location = "Test Location",
+        region_id = region.id,
+        created_at = datetime.datetime.utcnow(),
+        updated_at = datetime.datetime.utcnow(),
+        upvotes = 0,
+        downvotes = 0,
+        visible = True,
+    )
+    review.save()
 
-    review_model = Review()
-    review = review_model.create_review(review_data)
-    review_id = review["public_id"]
+    commenter = User(
+        username = "test_commenter",
+        email = "test_commenter@gmail.com",
+        password = "test_commenter_password",
+        role = "user",
+        status = "active",
+        created_at = datetime.datetime.utcnow(),
+        updated_at = datetime.datetime.utcnow(),
+    )
+    commenter.save()
+
 
 class TestComment(unittest.TestCase):
     def setUp(self):
@@ -57,8 +66,8 @@ class TestComment(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
-        create_review()
-        comment_data["review_id"] = review_id
+        setup_data()
+        comment_data["review_id"] = review.public_id
 
     def tearDown(self):
         db.session.remove()
@@ -75,11 +84,23 @@ class TestComment(unittest.TestCase):
         # ASSERT
         self.assertIsNotNone(new_comment)
         self.assertEqual(new_comment["content"], comment_data["content"])
+        self.assertEqual(new_comment["review_id"], review.public_id)
+        self.assertEqual(new_comment["upvotes"], 0)
+        self.assertEqual(new_comment["downvotes"], 0)
+        self.assertTrue(new_comment["visible"])
 
     def test_get_all_comments(self):
         # ARRANGE
         comment_model = Comment()
         comment_model.create_comment(comment_data)
+
+        comment_data_1 = comment_data.copy()
+        comment_data_1["content"] = "another comment"
+        comment_model.create_comment(comment_data_1)
+
+        comment_data_2 = comment_data.copy()
+        comment_data_2["content"] = "yet another comment"
+        comment_model.create_comment(comment_data_2)
 
         # ACT
         retrieved_comments = comment_model.get_all_comments()
@@ -87,6 +108,8 @@ class TestComment(unittest.TestCase):
         # ASSERT
         self.assertIsNotNone(retrieved_comments)
         self.assertEqual(comment_data["content"], retrieved_comments[0]["content"])
+        self.assertEqual(comment_data_1["content"], retrieved_comments[1]["content"])
+        self.assertEqual(comment_data_2["content"], retrieved_comments[2]["content"])
 
     def test_get_comment_by_id(self):
         # ARRANGE
