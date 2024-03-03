@@ -49,14 +49,10 @@ class User(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def get_all_users(self, page):
+    def get_all_users(self, page, count):
         try:
-            limit = 50
-            if page is not None:
-                offset = (page - 1) * limit
-                users = self.query.limit(limit).offset(offset).all()
-            else:
-                users = self.query.all()
+            offset = (page - 1) * count
+            users = self.query.limit(count).offset(offset).all()
             return [user.serialize() for user in users]
         except Exception as e:
             raise e
@@ -122,23 +118,6 @@ class User(db.Model):
         except Exception as e:
             raise e
     
-    def get_user_public_id(self, id):
-        try:
-            user = self.query.filter_by(id=id).first()
-            if user:
-                return user.public_id
-            return None
-        except Exception as e:
-            raise e
-
-    def get_user_id(self, public_id):
-        try:
-            user = self.query.filter_by(public_id=public_id).first()
-            if user:
-                return user.id
-        except Exception as e:
-            raise e
-
     def get_user_public_id(self, id):
         try:
             user = self.query.filter_by(id=id).first()
@@ -226,13 +205,13 @@ class User(db.Model):
         try:
             user = self.query.filter_by(email=data.get("email")).first()
             if not user:
-                raise Exception("User not found. Invalid ID")
+                raise Exception("Invalid email or password. Please try again")
 
             user_data = user.serialize_entire_data()
             if check_password_hash(user_data["password"], data.get("password")):
                 return create_token(user_data)
             else:
-                raise Exception("Incorrect password. Please try again")
+                raise Exception("Invalid email or password. Please try again")
 
         except Exception as e:
             raise e

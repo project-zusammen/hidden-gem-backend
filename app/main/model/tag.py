@@ -1,5 +1,6 @@
 from .. import db
-
+import uuid
+import datetime
 from ..util.helper import convert_to_local_time
 
 
@@ -29,3 +30,33 @@ class Tag(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def create_tag(self, data):
+        try:
+            self.public_id = str(uuid.uuid4())
+            self.name = data.get('name')
+            self.created_at = datetime.datetime.utcnow()
+            self.updated_at = datetime.datetime.utcnow()
+
+            self.save()
+            return self.serialize()
+        except Exception as e:
+            raise e
+    
+    def get_tag_db_id(self, public_id):
+        try:
+            tag = self.query.filter_by(public_id=public_id).first()
+            if tag:
+                return tag.id
+            return None
+        except Exception as e:
+            raise e
+        
+    def get_tag_public_id(self, id):
+        try:
+            tag = self.query.filter_by(id=id).first()
+            if tag:
+                return tag.public_id
+            return None
+        except Exception as e:
+            raise e
+        

@@ -68,7 +68,6 @@ class RegionDto:
         {"city": fields.String(required=True, description="city name for region")},
     )
 
-
 class AppealDto:
     appeal = api.model(
         "appeal",
@@ -100,6 +99,14 @@ class ReportDto:
     )
     status = api.model("status", {"status": fields.String(description="status")})
 
+
+class TagDto:
+    tag = api.model(
+        "tag",
+        {
+            "name": fields.String(required=True, description="tag name"),
+        },
+    )
 
 class CategoryDto:
     category = api.model(

@@ -1,7 +1,12 @@
+import os
+import uuid
 import json
 from unittest import TestCase
 from unittest.mock import patch
 from app import create_app
+from app.main.util.helper import create_token
+
+os.environ["DEBUG"] = "True"
 
 review_data = {
     "title": "Test Review",
@@ -11,6 +16,16 @@ review_data = {
 }
 
 error_message = "Input payload validation failed"
+
+user_data = {
+    "id": 1,
+    "public_id": str(uuid.uuid4()),
+    "username": "test_user",
+    "email": "@gmail.com",
+    "password": "test_password",
+    "role": "user",
+    "status": "active",
+}
 
 class TestReviewEndpoints(TestCase):
     def setUp(self):
@@ -31,9 +46,12 @@ class TestReviewEndpoints(TestCase):
         }
         mock_create_review.return_value = expected_response
 
+        token = create_token(user_data)
+        headers = {"X-API-KEY": token}
+
         # ACT
         with self.app.test_client() as client:
-            response = client.post("/api/review", json=review_data)
+            response = client.post("/api/review", json=review_data, headers=headers)
             res = response.get_json()
             res = res.get("data")
 
@@ -57,10 +75,12 @@ class TestReviewEndpoints(TestCase):
             "data": expected_data,
         }
         mock_get_all_reviews.return_value = expected_response
+        page = 1
+        count = 2
 
         # ACT
         with self.app.test_client() as client:
-            response = client.get("/api/review")
+            response = client.get(f"/api/review?page={page}&count={count}")
             result = json.loads(response.data.decode("utf-8"))
             result = result.get("data")
             first_review = result[0]
