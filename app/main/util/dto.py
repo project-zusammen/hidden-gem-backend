@@ -77,7 +77,16 @@ class AppealDto:
             "report_id": fields.String(required=True, description="report Identifier"),
         },
     )
-    status = api.model("status", {"status": fields.Boolean(description="status")})
+    status = api.model("status", {"status": fields.String(description="status")})
+
+
+class BookmarkDto:
+    bookmark = api.model(
+        "bookmark",
+        {
+            "review_id": fields.String(required=True, description="review id"),
+        },
+    )
 
 
 class ReportDto:
@@ -88,4 +97,12 @@ class ReportDto:
             "item_id": fields.String(required=True, description="report item_id"),
             "reason": fields.String(required=True, description="report reason"),
         },
+    )
+    status = api.model("status", {"status": fields.String(description="status")})
+
+
+class CategoryDto:
+    category = api.model(
+        "category",
+        {"name": fields.String(required=True, description="name for category")},
     )

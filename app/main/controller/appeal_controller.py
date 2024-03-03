@@ -25,6 +25,7 @@ class AppealList(Resource):
     @ns.doc(security="bearer")
     @token_required
     def get(self, decoded_token):
+        """List all appeals"""
         role = decoded_token["role"]
         if role != "admin":
             return error_handler("Access denied")
@@ -49,19 +50,19 @@ class Appeal(Resource):
     @ns.doc(security="bearer")
     @token_required
     def get(self, decoded_token, public_id):
+        """Get a appeal by its identifier"""
         user_id = decoded_token["id"]
         role = decoded_token["role"]
-        """Get a appeal by its identifier"""
         return get_an_appeal(public_id, user_id, role)
 
     @ns.doc(security="bearer")
     @token_required
     @ns.expect(_status)
     def put(self, decoded_token, public_id):
+        """Update appeal status"""
         role = decoded_token["role"]
         if role != "admin":
             return error_handler("Access denied")
 
-        """Update appeal status"""
         status = ns.payload.get("status")
         return update_appeal(public_id, status)

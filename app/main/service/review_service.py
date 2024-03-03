@@ -85,7 +85,7 @@ def get_all_reviews():
         }
         return response_object, 200
     except Exception as e:
-        print(f"Error in get_all_reviews: {str(e)}")
+        log.error(f"Error in get_all_reviews: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
 
 

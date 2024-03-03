@@ -49,29 +49,19 @@ class Comment(db.Model):
         try:
             review_model = Review()
             review_id = review_model.get_review_db_id(data.get("review_id"))
-            if not review_id:
-                raise Exception("Review not found")
+            comment = Comment(
+                review_id = review_id,
+                public_id = str(uuid.uuid4()),
+                content = data.get("content"),
+                created_at = datetime.datetime.utcnow(),
+                updated_at = datetime.datetime.utcnow(),
+                upvotes = 0,
+                downvotes = 0,
+                visible = True,
+            )
 
-            self.review_id = review_id
-            self.public_id = str(uuid.uuid4())
-            self.content = data.get("content")
-
-            if not self.content:
-                raise Exception("Comment content is required")
-
-            self.created_at = datetime.datetime.utcnow()
-            self.updated_at = datetime.datetime.utcnow()
-            self.upvotes = 0
-            self.downvotes = 0
-            self.visible = True
-            self.created_at = datetime.datetime.utcnow()
-            self.updated_at = datetime.datetime.utcnow()
-            self.upvotes = 0
-            self.downvotes = 0
-            self.visible = True
-
-            self.save()
-            return self.serialize()
+            comment.save()
+            return comment.serialize()
         except Exception as e:
             raise e
 

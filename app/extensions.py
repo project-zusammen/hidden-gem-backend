@@ -3,6 +3,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_restx import Api, Namespace
+from flask_caching import Cache
+from app.settings import redis_cache_config
 
 import pymysql
 
@@ -16,3 +18,5 @@ api = Api()
 migrate = Migrate()
 debug_toolbar = DebugToolbarExtension()
 ns = Namespace("api", authorizations=authorizations)
+cache = Cache(config=redis_cache_config)
+ns.cache = cache
