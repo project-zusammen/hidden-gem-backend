@@ -18,5 +18,8 @@ EXPOSE 5000
 # Set the FLASK_RUN_HOST environment variable to 0.0.0.0 to allow external access
 ENV FLASK_RUN_HOST=0.0.0.0
 
-# Run the flask app
-CMD ["flask", "run"]
+# Make the entrypoint script executable
+RUN chmod +x entrypoint.sh
+
+# Set the entrypoint script as the entrypoint for the container
+ENTRYPOINT ["./entrypoint.sh"]
