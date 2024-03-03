@@ -100,11 +100,12 @@ class TestUserEndpoints(TestCase):
         mock_get_all_users.return_value = expected_response
         token = create_token(expected_data[0])
         page = 1
+        count = 2
 
         # ACT
         with self.app.test_client() as client:
             response = client.get(
-                f"/api/user?page={page}", headers={"X-API-KEY": token}
+                f"/api/user?page={page}&count={count}", headers={"X-API-KEY": token}
             )
             result = response.get_json()["data"]
             first_user = result[0]

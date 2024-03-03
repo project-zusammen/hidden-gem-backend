@@ -18,8 +18,20 @@ def create_review_and_user():
     )
     region.save()
 
+    user = User(
+        username = "test_user",
+        email = "test_user@gmail.com",
+        password = "test_user_password",
+        role = "user",
+        status = "active",
+        created_at = datetime.datetime.utcnow(),
+        updated_at = datetime.datetime.utcnow(),
+    )
+    user.save()
+
     review = Review(
         public_id = "review_id",
+        user_id = user.id,
         title = "Test Review",
         content = "This is a test review.",
         location = "Test Location",
@@ -31,17 +43,6 @@ def create_review_and_user():
         visible = True,
     )
     review.save()
-
-    user = User(
-        username = "test_user",
-        email = "test_user@gmail.com",
-        password = "test_user_password",
-        role = "user",
-        status = "active",
-        created_at = datetime.datetime.utcnow(),
-        updated_at = datetime.datetime.utcnow(),
-    )
-    user.save()
 
 
 class TestBookmark(unittest.TestCase):
@@ -93,3 +94,6 @@ class TestBookmark(unittest.TestCase):
         # ASSERT
         self.assertIsNotNone(deleted_bookmark)
         self.assertTrue(deleted_bookmark)
+
+if __name__ == "__main__":
+    unittest.main()

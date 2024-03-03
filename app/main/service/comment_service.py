@@ -21,7 +21,7 @@ def get_all_comments(page, count):
         }
         return response_object, 200
     except Exception as e:
-        print(f"Error in get_all_comments: {str(e)}")
+        log.error(f"Error in get_all_comments: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
 
 

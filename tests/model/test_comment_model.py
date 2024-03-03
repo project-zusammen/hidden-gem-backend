@@ -1,4 +1,4 @@
-import uuid
+import datetime
 import unittest
 from app.main import create_app
 from app.extensions import db
@@ -6,55 +6,59 @@ from app.main.model.comment import Comment
 from app.main.model.review import Review
 from app.main.model.region import Region
 from app.main.model.user import User
+from app.main.model.tag import Tag
 
 comment_data = {"content": "new comment"}
+tag_data = {"tag": "new tag"}
 
+def setup_data():
+    global review, commenter
 
-def register_user():
-    global user_id, user_role
-    user_data = {
-        "username": "test_user",
-        "email": "test_user@gmail.com",
-        "password": "test_password",
-    }
-    user_model = User()
-    user = user_model.register_user(user_data)
-    user_id = user_model.get_user_id(user["public_id"])
-    user_role = user_model.get_user_role(user["role"])
+    region = Region(
+        public_id = "region_id",
+        city = "Test Region City",
+        created_at = datetime.datetime.utcnow(),
+        updated_at = datetime.datetime.utcnow(),
+    )
+    region.save()
 
+    reviewer = User(
+        username = "test_reviewer",
+        email = "test_reviewer@gmail.com",
+        password = "test_reviewer_password",
+        role = "user",
+        status = "active",
+        created_at = datetime.datetime.utcnow(),
+        updated_at = datetime.datetime.utcnow(),
+    )
+    reviewer.save()
 
-def register_admin():
-    global admin_id, admin_role
-    user_data = {
-        "username": "test_admin",
-        "email": "test_admin@gmail.com",
-        "password": "test_admin_password",
-    }
-    user_model = User()
-    admin = user_model.register_admin(user_data)
-    admin_id = user_model.get_user_id(admin["public_id"])
-    admin_role = user_model.get_user_role(admin["public_id"])
+    review = Review(
+        public_id = "review_id",
+        user_id = reviewer.id,
+        title = "Test Review",
+        content = "This is a test review.",
+        location = "Test Location",
+        region_id = region.id,
+        created_at = datetime.datetime.utcnow(),
+        updated_at = datetime.datetime.utcnow(),
+        upvotes = 0,
+        downvotes = 0,
+        visible = True,
+    )
+    review.save()
 
+    commenter = User(
+        username = "test_commenter",
+        email = "test_commenter@gmail.com",
+        password = "test_commenter_password",
+        role = "user",
+        status = "active",
+        created_at = datetime.datetime.utcnow(),
+        updated_at = datetime.datetime.utcnow(),
+    )
+    commenter.save()
 
-def create_region(region_name="Test Region"):
-    region_model = Region()
-    region = region_model.create_region(region_name)
-    region_id = region["public_id"]
-    return region_id
-
-
-def create_review():
-    global review_id
-    region_id = create_region()
-    review_data = {
-        "title": "Test Review",
-        "content": "This is a test review.",
-        "location": "Test Location",
-        "region_id": region_id,
-    }
-    review_model = Review()
-    review = review_model.create_review(review_data)
-    review_id = review["public_id"]
 
 
 class TestComment(unittest.TestCase):
@@ -63,10 +67,8 @@ class TestComment(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
-        create_review()
-        comment_data["review_id"] = review_id
-        register_user()
-        register_admin()
+        setup_data()
+        comment_data["review_id"] = review.public_id
 
     def tearDown(self):
         db.session.remove()
@@ -76,20 +78,30 @@ class TestComment(unittest.TestCase):
     def test_create_comment(self):
         # ARRANGE
         comment_model = Comment()
-        new_comment = comment_model.create_comment(comment_data)
 
         # ACT
+        new_comment = comment_model.create_comment(comment_data)
 
         # ASSERT
         self.assertIsNotNone(new_comment)
         self.assertEqual(new_comment["content"], comment_data["content"])
+        self.assertEqual(new_comment["review_id"], review.public_id)
+        self.assertEqual(new_comment["upvotes"], 0)
+        self.assertEqual(new_comment["downvotes"], 0)
+        self.assertTrue(new_comment["visible"])
 
     def test_get_all_comments(self):
         # ARRANGE
         comment_model = Comment()
         comment_model.create_comment(comment_data)
-        page = 1
-        count = 2
+
+        comment_data_1 = comment_data.copy()
+        comment_data_1["content"] = "another comment"
+        comment_model.create_comment(comment_data_1)
+
+        comment_data_2 = comment_data.copy()
+        comment_data_2["content"] = "yet another comment"
+        comment_model.create_comment(comment_data_2)
 
         # ACT
         retrieved_comments = comment_model.get_all_comments(page, count)
@@ -97,7 +109,8 @@ class TestComment(unittest.TestCase):
         # ASSERT
         self.assertIsNotNone(retrieved_comments)
         self.assertEqual(comment_data["content"], retrieved_comments[0]["content"])
-        self.assertEqual(comment_data["review_id"], retrieved_comments[0]["review_id"])
+        self.assertEqual(comment_data_1["content"], retrieved_comments[1]["content"])
+        self.assertEqual(comment_data_2["content"], retrieved_comments[2]["content"])
 
     def test_get_comment_by_id(self):
         # ARRANGE
