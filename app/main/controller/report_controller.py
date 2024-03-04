@@ -60,6 +60,6 @@ class Report(Resource):
         role = decoded_token["role"]
         if role != "admin":
             return error_handler("Access denied")
-
-        status = ns.payload["status"]
+    
+        status = ns.payload.get("status")
         return update_report(public_id, status)

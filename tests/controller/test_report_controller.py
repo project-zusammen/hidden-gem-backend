@@ -247,7 +247,7 @@ class TestReportEndpoints(TestCase):
         expected_response = {
             "status": "success",
             "message": "Successfully updated.",
-            "data": report_data,
+            "data": report_data[0],
         }
         mock_update_report.return_value = expected_response
 
@@ -257,7 +257,7 @@ class TestReportEndpoints(TestCase):
         # ACT
         with self.app.test_client() as client:
             response = client.put(
-                f"/api/report/{public_id}", json=report_data, headers=headers
+                f"/api/report/{public_id}", json=report_data[0], headers=headers
             )
             res = response.get_json()
             res = res.get("data")
