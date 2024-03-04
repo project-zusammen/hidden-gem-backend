@@ -23,64 +23,84 @@ This backend application serves API for the hiddenGem web where user can find re
 
 1. Clone the repository:
 
-    ```bash
-    git clone https://github.com/your-username/your-repo.git
-    ```
+   ```bash
+   git clone https://github.com/your-username/your-repo.git
+   ```
 
 2. Create virtual environment:
-    ```bash
-    python -m venv venv
-    ```
+
+   ```bash
+   python -m venv venv
+   ```
 
 3. Activate virtual environment:
-    ```bash
-    source venv/bin/activate
-    ```
+
+   ```bash
+   source venv/bin/activate
+   ```
 
 4. Install dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
+
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 5. Copy .env-template file and rename it to .env, contact your administrator to get the credentials
 
 6. Run the application:
-    ```bash
-    flask run
-    ```
+
+   ```bash
+   flask run
+   ```
 
 7. Run the tests:
-    ```bash
-    flask test
-    ```
-    or 
-    ```bash
-    pytest
-    ```
-    Run a specific test file:
-    ```bash
-    pytest -k path-to-test-file
-    ```
-    Run a specific test file while seeing the print statement:
-    ```bash
-    pytest -k path-to-test-file -s
-    ```
+
+   ```bash
+   flask test
+   ```
+
+   or
+
+   ```bash
+   pytest
+   ```
+
+   Run a specific test file:
+
+   ```bash
+   pytest -k path-to-test-file
+   ```
+
+   Run a specific test file while seeing the print statement:
+
+   ```bash
+   pytest -k path-to-test-file -s
+   ```
 
 8. DB related:
-    ```bash
-    flask db init
-    flask db migrate
-    flask db upgrade
-    ```
+
+   ```bash
+   flask db init
+   flask db migrate
+   flask db upgrade
+   ```
 
 9. Format the python file:
-    ```bash
-    black path-to-file
-    ```
 
-    or in a directory consisting the files:
-    ```bash
-    black .
+   ```bash
+   black path-to-file
+   ```
+
+   or in a directory consisting the files:
+
+   ```bash
+   black .
+   ```
+
+10. Run production server:
+
+    ```
+    uwsgi --http :5001 --wsgi-file run.py --callable app
     ```
 
 ## Configuration
@@ -107,5 +127,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Link to API contract
 
 - https://docs.google.com/document/d/1YdXuNUR40BospbRPdcEWINZyOrAX-VK4dAUCGTUa6FA/edit?usp=sharing
-
-
