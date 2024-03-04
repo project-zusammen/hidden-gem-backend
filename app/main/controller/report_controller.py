@@ -61,5 +61,5 @@ class Report(Resource):
         if role != "admin":
             return error_handler("Access denied")
 
-        status = ns.payload.get("status")
+        status = ns.payload["status"]
         return update_report(public_id, status)

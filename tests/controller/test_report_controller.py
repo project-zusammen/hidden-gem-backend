@@ -25,16 +25,6 @@ admin_data = {
     "status": "active",
 }
 
-admin_data = {
-    "id": 1,
-    "public_id": str(uuid.uuid4()),
-    "username": "test_user",
-    "email": "@gmail.com",
-    "password": "test_password",
-    "role": "admin",
-    "status": "active",
-}
-
 report_data = [
     {
         "public_id": str(uuid.uuid4()),
@@ -94,7 +84,6 @@ class TestReportEndpoints(TestCase):
         self.assertEqual(expected_response["data"]["reason"], res.get("reason"))
         mock_create_report.assert_called_once()
 
-
     def test_craete_report_missing_token(self):
         # ARRANGE
         expected_response = {
@@ -109,7 +98,6 @@ class TestReportEndpoints(TestCase):
         # ASSERT
         self.assertEqual(response.status_code, 401)
         self.assertEqual(expected_response["message"], res["message"])
-
 
     @patch("app.main.controller.report_controller.create_report")
     def test_create_report_missing_type(self, mock_create_report):
@@ -255,7 +243,7 @@ class TestReportEndpoints(TestCase):
     @patch("app.main.controller.report_controller.update_report")
     def test_update_report(self, mock_update_report):
         # ARRANGE
-        report_data["status"] = "accepted"
+        report_data[0]["status"] = "accepted"
         expected_response = {
             "status": "success",
             "message": "Successfully updated.",
