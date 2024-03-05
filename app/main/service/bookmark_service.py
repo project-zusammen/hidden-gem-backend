@@ -7,7 +7,8 @@ bookmark_model = Bookmark()
 
 def create_bookmark(data, user_id):
     try:
-        bookmark = bookmark_model.create_bookmark(data, user_id)
+        review_id = data.get("review_id")
+        bookmark = bookmark_model.create_bookmark(review_id, user_id)
         response_object = {
             "status": "success",
             "message": "Successfully created.",

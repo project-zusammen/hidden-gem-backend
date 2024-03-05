@@ -2,11 +2,33 @@ import uuid
 from unittest import TestCase
 from unittest.mock import patch
 from app import create_app
-from app.main.service.report_service import create_report, get_all_reports, get_a_report
+from app.main.service.report_service import (
+    create_report,
+    get_all_reports,
+    get_a_report,
+    update_report,
+)
 
 
 def generate_fake_public_id():
     return str(uuid.uuid4())
+
+
+report_data_1 = {
+    "public_id": generate_fake_public_id(),
+    "user_id": generate_fake_public_id(),
+    "type": "review",
+    "item_id": generate_fake_public_id(),
+    "reason": "Test Reason 1",
+}
+
+report_data_2 = {
+    "public_id": generate_fake_public_id(),
+    "user_id": generate_fake_public_id(),
+    "type": "review",
+    "item_id": generate_fake_public_id(),
+    "reason": "Test Reason 2",
+}
 
 
 report_data_1 = {
@@ -108,3 +130,25 @@ class TestReviewService(TestCase):
         self.assertEqual(result["public_id"], data["public_id"])
         self.assertEqual(result["reason"], data["reason"])
         self.assertEqual(result["item_id"], data["item_id"])
+
+    @patch("app.main.model.report.Report.update_report")
+    def test_update_report(self, mock_update_report):
+        # ARRANGE
+        data = report_data_1
+        data["status"] = "accepted"
+        mock_update_report.return_value = data
+
+        # ACT
+        response, status_code = update_report(
+            public_id=generate_fake_public_id(), status="accepted"
+        )
+        result = response["data"]
+
+        # ASSERT
+        self.assertEqual(status_code, 201)
+        self.assertEqual(response["status"], "success")
+        self.assertEqual(response["message"], "Successfully update report.")
+        self.assertEqual(result["reason"], data["reason"])
+        self.assertEqual(result["status"], data["status"])
+
+        mock_update_report.assert_called_once()

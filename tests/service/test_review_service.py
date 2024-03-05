@@ -50,9 +50,16 @@ class TestReviewService(TestCase):
             },
         ]
         mock_get_all_reviews.return_value = data
-
+        page = 1
+        count = 50
+        tag_id = 0
+        region_id = 0
+        category_id = 0
+        
         # Act
-        response, status_code = get_all_reviews()
+        response, status_code = get_all_reviews(
+            page, count, region_id, category_id, tag_id
+        )
         result = response["data"]
 
         # Assert
@@ -82,7 +89,6 @@ class TestReviewService(TestCase):
             "image_urls": ["url1", "url2"],
         }
         mock_get_review_by_id.return_value = data
-
         # Act
         response, status_code = get_a_review(public_id)
         result = response["data"]
@@ -98,20 +104,24 @@ class TestReviewService(TestCase):
         self.assertEqual(result["image_urls"], data["image_urls"])
 
     @patch("app.main.model.review.Review.create_review")
-    def test_create_review(self, mock_create_review):
+    def test_create_review(
+        self,
+        mock_create_review,
+    ):
         # Arrange
         public_id = generate_fake_public_id()
         data = {
+            "id": 1,
             "public_id": public_id,
             "title": "Test Review",
-            "content": "This is a content review",
+            "content": "This is a review #tag1",
             "location": "Test Location",
             "image_urls": ["url1", "url2"],
         }
         mock_create_review.return_value = data
 
         # Act
-        response, status_code = create_review(data)
+        response, status_code = create_review(data, 1)
         result = response["data"]
 
         # Assert
@@ -122,6 +132,9 @@ class TestReviewService(TestCase):
         self.assertEqual(result["content"], data["content"])
         self.assertEqual(result["location"], data["location"])
         self.assertEqual(result["image_urls"], data["image_urls"])
+
+        # Check interactions with mock methods
+        mock_create_review.assert_called_once_with(data)
 
     @patch("app.main.model.review.Review.update_review")
     def test_update_review(self, mock_update_review):

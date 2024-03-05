@@ -27,29 +27,33 @@ class Bookmark(db.Model):
         created_at = convert_to_local_time(self.created_at)
         updated_at = convert_to_local_time(self.updated_at)
         user_public_id = user_instance.get_user_public_id_by_id(self.user_id)
+        review_model = Review()
+        review_public_id = review_model.get_review_public_id(self.review_id)
         return {
             "public_id": self.public_id,
             "user_id": user_public_id,
-            "review_id": self.review_id,
+            "review_id": review_public_id,
             "created_at": created_at.isoformat() if self.created_at else None,
             "updated_at": updated_at.isoformat() if self.updated_at else None,
         }
+    
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
 
-    def create_bookmark(self, data, user_id):
+    def create_bookmark(self, review_id, user_id):
+        review_db_id = review_instance.get_review_db_id(review_id)
         try:
-            review_id = review_instance.get_review_id_by_public_id(
-                data.get("review_id")
+            bookmark = Bookmark(
+                public_id = str(uuid.uuid4()),
+                user_id = user_id,
+                review_id = review_db_id,
+                created_at = datetime.datetime.utcnow(),
+                updated_at = datetime.datetime.utcnow(),
             )
-            self.public_id = str(uuid.uuid4())
-            self.user_id = user_id
-            self.review_id = review_id
-            self.created_at = datetime.datetime.utcnow()
-            self.updated_at = datetime.datetime.utcnow()
 
-            db.session.add(self)
-            db.session.commit()
-            return self.serialize()
-
+            bookmark.save()
+            return bookmark.serialize()
         except Exception as e:
             raise e
 
