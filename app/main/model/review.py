@@ -6,6 +6,7 @@ from .. import db
 from ..util.helper import convert_to_local_time
 from .user import User 
 from .region import Region
+from .image import Image
 from .category import Category
 from .tag import Tag
 
@@ -52,6 +53,8 @@ class Review(db.Model):
         category_public_id = category_model.get_public_id(self.category_id)
         tag_public_id = tag_model.get_tag_public_id(self.tag_id)
 
+        image_urls = Image().get_images_by_review_id(self.id)
+
         return {
             "public_id": self.public_id,
             "user_id": user_public_id,
@@ -66,6 +69,7 @@ class Review(db.Model):
             "upvotes": self.upvotes,
             "downvotes": self.downvotes,
             "visible": self.visible,
+            "image_urls": image_urls,
         }
 
     def save(self):
@@ -94,7 +98,7 @@ class Review(db.Model):
                 .order_by(Review.created_at.desc())
                 .paginate(page=page, per_page=count, max_per_page=20, error_out=False)
             )
-            return [review.serialize() for review in reviews]
+            return [review.serialize() for review in reviews.items]
         except Exception as e:
             logging.exception("An error occurred while creating a report: %s", str(e))
             return None
@@ -141,6 +145,9 @@ class Review(db.Model):
         )
 
         review.save()
+
+        self.handle_image_urls(data.get("image_urls"), review.id)
+
         return review.serialize()
 
     def update_review(self, public_id, data):
@@ -158,6 +165,9 @@ class Review(db.Model):
             review.location = data.get("location")
             review.updated_at = datetime.datetime.utcnow()
             review.save()
+
+            self.handle_image_urls(data.get("image_urls"), review.id)
+            
             return review.serialize()
 
     def delete_review(self, public_id):
@@ -206,3 +216,10 @@ class Review(db.Model):
         if review:
             return review.id
         return None
+    
+    def handle_image_urls(self, image_urls, review_id):
+        if image_urls:
+            Image().delete_images_by_review_id(review_id)
+            for url in image_urls:
+                image = Image(url=url, review_id=review_id)
+                image.save()
