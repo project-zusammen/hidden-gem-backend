@@ -10,7 +10,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
 
-    environment: Production
+    environment: Test
 
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
