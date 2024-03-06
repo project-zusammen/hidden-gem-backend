@@ -72,7 +72,7 @@ class Comment(db.Model):
                 .order_by(Comment.created_at.desc())
                 .paginate(page=page, per_page=count, max_per_page=100, error_out=False)
             )
-            return [comment.serialize() for comment in comments]
+            return [comment.serialize() for comment in comments.items]
         except Exception as e:
             raise e
 

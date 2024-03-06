@@ -87,7 +87,7 @@ class Report(db.Model):
             reports = self.query.order_by(Report.created_at.desc()).paginate(
                 page=page, per_page=count, max_per_page=100, error_out=False
             )
-            return [report.serialize() for report in reports]
+            return [report.serialize() for report in reports.items]
         except Exception as e:
             raise e
 

@@ -94,7 +94,7 @@ class Review(db.Model):
                 .order_by(Review.created_at.desc())
                 .paginate(page=page, per_page=count, max_per_page=20, error_out=False)
             )
-            return [review.serialize() for review in reviews]
+            return [review.serialize() for review in reviews.items]
         except Exception as e:
             logging.exception("An error occurred while creating a report: %s", str(e))
             return None
