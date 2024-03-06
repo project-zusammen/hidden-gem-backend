@@ -11,6 +11,7 @@ review_data = {
     "title": "Test Review",
     "content": "This is a test review #review",
     "location": "Test Location",
+    "image_urls": ["https://test.com/image.jpg"],
 }
 
 user_data = {
