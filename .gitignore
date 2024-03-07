@@ -19,4 +19,4 @@ build/
 
 migrations/__pycache__/
 migrations/versions/*
-!migrations/versions/
+!migrations/versions/.gitkeep
