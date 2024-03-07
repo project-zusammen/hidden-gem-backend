@@ -5,8 +5,21 @@ zusammen39/
 
 *.pyc
 *.pyo
-__pycache__/
+**/__pycache__/
 .env
+
+.git
+.gitignore
+erd-hidden-gem.png
+.github
+**/*.pyc
+ca.pem
+
+Dockerfile
+docker-compose.yml
+
+LICENSE
+README.md
 
 .vscode/
 .idea/
