@@ -23,3 +23,5 @@ build/
 *.egg-info/
 
 migrations/__pycache__/
+migrations/versions/*
+!migrations/versions/.gitkeep
