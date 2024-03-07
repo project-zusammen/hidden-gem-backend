@@ -31,7 +31,7 @@ jobs:
             -e DB_USER=${{ secrets.DB_USER }} \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
             -e TEST_DB_USER=${{ secrets.TEST_DB_USER }} \
-            -e TEST_DB_PASSWORD= ${{ secrets.TEST_DB_PASSWORD }} \
+            -e TEST_DB_PASSWORD=${{ secrets.TEST_DB_PASSWORD }} \
             -e DEBUG=${{ secrets.DEBUG }} \
             -e DB_PORT=${{ secrets.DB_PORT }} \
             -e DB_NAME=${{ secrets.DB_NAME }} \
@@ -40,4 +40,4 @@ jobs:
             -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
             -e REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} \
             --name hidden_gem_container \
-            hidden_gem_images:latest
+            hidden_gem_images
