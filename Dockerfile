@@ -1,7 +1,11 @@
 FROM python:3.11.8-alpine3.19
 
-# Set the working directory inside the container to /app
+RUN mkdir /app
+
+# set working directory /app
 WORKDIR /app
+
+COPY ./ /app
 
 # Copy requirements.txt from the host to /app/requirements.txt in the container
 COPY ./requirements.txt /app/requirements.txt
