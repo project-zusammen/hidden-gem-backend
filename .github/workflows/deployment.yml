@@ -20,7 +20,7 @@ jobs:
           script: |
             sudo chmod 777 /var/run/docker.sock
             cd /home/aqzaqz/project/hidden-gem-backend
-            git pull origin main
+            git pull origin fix/deployment-to-vps
             docker stop hidden_gem_container
             docker rm  hidden_gem_container
             docker rmi hidden_gem_images:latest
