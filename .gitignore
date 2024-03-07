@@ -18,3 +18,5 @@ build/
 .env
 
 migrations/__pycache__/
+migrations/versions/*
+!migrations/versions/
