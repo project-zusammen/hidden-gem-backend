@@ -19,9 +19,9 @@ EXPOSE 5000
 ENV FLASK_RUN_HOST=0.0.0.0
 
 # Make the entrypoint script executable
-# RUN chmod +x entrypoint.sh
+RUN chmod +x entrypoint.sh
 
 # Set the entrypoint script as the entrypoint for the container
-# ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
 
-CMD ["flask", "run"]
+# CMD ["flask", "run"]
