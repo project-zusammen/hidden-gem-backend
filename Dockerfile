@@ -22,6 +22,6 @@ ENV FLASK_RUN_HOST=0.0.0.0
 RUN chmod +x entrypoint.sh
 
 # Set the entrypoint script as the entrypoint for the container
-# ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
 
-CMD ["flask", "run"]
+# CMD ["flask", "run"]
