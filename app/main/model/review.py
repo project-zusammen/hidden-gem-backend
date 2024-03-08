@@ -77,27 +77,20 @@ class Review(db.Model):
         db.session.commit()
 
     def get_all_reviews(self, page, count, region_id, category_id, tag_id):
-        if tag_id:
-            tag_db_id = tag_model.get_tag_db_id(tag_id)
-        if category_id:
-            category_db_id = category_model.get_category_id(category_id)
-        if region_id:
-            region_db_id = region_model.get_region_by_id(region_id)
         try:
-            reviews = (
-                Review.query.filter(
-                    and_(
-                        Review.visible == True,
-                        or_(
-                            Review.region_id == region_db_id,
-                            Review.category_id == category_db_id,
-                            Review.tag_id == tag_db_id,
-                        ),
-                    )
-                )
-                .order_by(Review.created_at.desc())
-                .paginate(page=page, per_page=count, max_per_page=20, error_out=False)
-            )
+            offset = (page - 1) * count
+            query = self.query.filter(Review.visible == True)
+            if tag_id:
+                tag_db_id = tag_model.get_tag_db_id(tag_id)
+                query = query.filter(Review.tag_id == tag_db_id)
+            if category_id:
+                category_db_id = category_model.get_category_id(category_id)
+                query = query.filter(Review.category_id == category_db_id)
+            if region_id:
+                region_db_id = region_model.get_region_by_id(region_id)
+                query = query.filter(Review.region_id == region_db_id)
+
+            reviews = query.limit(count).offset(offset).all()
             return [review.serialize() for review in reviews.items]
         except Exception as e:
             logging.exception("An error occurred while creating a report: %s", str(e))
