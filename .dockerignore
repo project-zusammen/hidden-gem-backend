@@ -5,7 +5,7 @@ zusammen39/
 
 *.pyc
 *.pyo
-**/__pycache__/
+**/__pycache__
 .env
 
 .git
@@ -34,6 +34,3 @@ htmlcov/
 dist/
 build/
 *.egg-info/
-
-migrations/__pycache__/
-migrations/versions/*
