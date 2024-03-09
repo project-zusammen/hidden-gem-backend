@@ -17,4 +17,4 @@ build/
 
 .env
 
-migrations/__pycache__/
+temp/
