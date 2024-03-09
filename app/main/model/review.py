@@ -77,13 +77,14 @@ class Review(db.Model):
         db.session.commit()
 
     def get_all_reviews(self, page, count, region_id, category_id, tag_id):
-        if tag_id:
-            tag_db_id = tag_model.get_tag_db_id(tag_id)
-        if category_id:
-            category_db_id = category_model.get_category_id(category_id)
-        if region_id:
-            region_db_id = region_model.get_region_by_id(region_id)
         try:
+            if tag_id:
+                tag_db_id = tag_model.get_tag_db_id(tag_id)
+            if category_id:
+                category_db_id = category_model.get_category_id(category_id)
+            if region_id:
+                region_db_id = region_model.get_region_by_id(region_id)
+
             reviews = (
                 Review.query.filter(
                     and_(
@@ -96,11 +97,11 @@ class Review(db.Model):
                     )
                 )
                 .order_by(Review.created_at.desc())
-                .paginate(page=page, per_page=count, max_per_page=20, error_out=False)
-            )
+                    .paginate(page=page, per_page=count, max_per_page=20, error_out=False)
+                )
             return [review.serialize() for review in reviews.items]
         except Exception as e:
-            logging.exception("An error occurred while creating a report: %s", str(e))
+            logging.exception("An error occurred in getting all reviews: %s", str(e))
             return None
 
     def get_review_by_id(self, public_id):

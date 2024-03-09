@@ -20,9 +20,9 @@ migrate = Migrate()
 debug_toolbar = DebugToolbarExtension()
 ns = Namespace("api", authorizations=authorizations)
 
-if os.environ["DEBUG"].lower() == "true":
-    cache = Cache(config={"CACHE_TYPE": "null"})
-else:
-    cache = Cache(config=redis_cache_config)
+# if os.environ["DEBUG"].lower() == "true":
+#     cache = Cache(config={"CACHE_TYPE": "null"})
+# else:
+cache = Cache(config=redis_cache_config)
 
 ns.cache = cache

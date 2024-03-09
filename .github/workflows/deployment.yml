@@ -10,55 +10,34 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
 
-    environment: Test
-
-    env:
-      DB_HOST: ${{ secrets.DB_HOST }}
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      TEST_DB_USER: ${{ secrets.TEST_DB_USER }}
-      TEST_DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
-      DB_PORT: ${{ secrets.DB_PORT }}
-      DB_NAME: ${{ secrets.DB_NAME }}
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      DEBUG: ${{ secrets.DEBUG }}
-
-      REDIS_HOST: ${{ secrets.REDIS_HOST }}
-      REDIS_PORT: ${{ secrets.REDIS_PORT }}
-      REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-
-      SERVER_HOST: ${{ secrets.SERVER_HOST }}
-      SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
-      SERVER_KEY: ${{ secrets.SERVER_KEY }}
-
     steps:
       - name: Connect to server using SSH
         uses: appleboy/ssh-action@master
         with:
-          host: ${SERVER_HOST}
-          username: ${SERVER_USERNAME}
-          key: ${SERVER_KEY}
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_KEY }}
           script: |
             sudo chmod 777 /var/run/docker.sock
             cd /home/aqzaqz/project/hidden-gem-backend
-            git pull origin main
+            git pull origin fix/deployment-to-vps
             docker stop hidden_gem_container
             docker rm  hidden_gem_container
             docker rmi hidden_gem_images:latest
-            docker build -t hidden_gem_images:latest .
+            docker build --no-cache -t hidden_gem_images:latest .
             docker run -d \
             -p 5000:5000 \
-            -e DB_HOST=${DB_HOST} \
-            -e DB_USER=${DB_USER} \
-            -e DB_PASSWORD=${DB_PASSWORD} \
-            -e TEST_DB_USER=${TEST_DB_USER} \
-            -e TEST_DB_PASSWORD= ${TEST_DB_PASSWORD} \
-            -e DEBUG=${DEBUG} \
-            -e DB_PORT=${DB_PORT} \
-            -e DB_NAME=${DB_NAME} \
-            -e SECRET_KEY=${SECRET_KEY} \
-            -e REDIS_HOST=${REDIS_HOST} \
-            -e REDIS_PORT=${REDIS_PORT} \
-            -e REDIS_PASSWORD=${REDIS_PASSWORD} \
+            -e DB_HOST=${{ secrets.DB_HOST }} \
+            -e DB_USER=${{ secrets.DB_USER }} \
+            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e TEST_DB_USER=${{ secrets.TEST_DB_USER }} \
+            -e TEST_DB_PASSWORD=${{ secrets.TEST_DB_PASSWORD }} \
+            -e DEBUG=${{ secrets.DEBUG }} \
+            -e DB_PORT=${{ secrets.DB_PORT }} \
+            -e DB_NAME=${{ secrets.DB_NAME }} \
+            -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
+            -e REDIS_HOST=${{ secrets.REDIS_HOST }} \
+            -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
+            -e REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} \
             --name hidden_gem_container \
-            hidden_gem_images:latest
+            hidden_gem_images
