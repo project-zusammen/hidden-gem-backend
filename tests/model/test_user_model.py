@@ -117,7 +117,7 @@ class TestUser(unittest.TestCase):
         user = user_model.register_user(user_data)
         user_id = 1
         user = user_model.get_user_by_id(user["public_id"], user_id)
-        payload = {
+        token_payload = {
             "id": user_id,
             "public_id": user["public_id"],
             "username": user["username"],
@@ -127,12 +127,14 @@ class TestUser(unittest.TestCase):
             "status": user["status"],
         }
 
+        token = create_token(token_payload)
+
         # ACT
-        result = user_model.user_auth(payload)
+        result = user_model.user_auth(token_payload)
 
         # ASSERT
         self.assertIsNotNone(result)
-        self.assertIsInstance(result, str)
+        self.assertEqual(result, token)
 
     def test_check_user_authorization(self):
         # ARRANGE

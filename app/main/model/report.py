@@ -7,6 +7,7 @@ from .comment import Comment
 from .user import User
 import logging
 
+
 class Report(db.Model):
     __tablename__ = "report"
 
@@ -14,7 +15,7 @@ class Report(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     public_id = db.Column(db.String(100), unique=True, nullable=False)
     type = db.Column(db.String(100), nullable=False)
-    item_id = db.Column(db.Integer, db.ForeignKey('review.id'), nullable=False)
+    item_id = db.Column(db.Integer, db.ForeignKey("review.id"), nullable=False)
     reason = db.Column(db.String(255), nullable=False)
     status = db.Column(db.String(100), nullable=False, default="received")
     created_at = db.Column(db.DateTime, nullable=False)
@@ -26,7 +27,7 @@ class Report(db.Model):
     def serialize(self):
         created_at = convert_to_local_time(self.created_at)
         updated_at = convert_to_local_time(self.updated_at)
-        
+
         if self.type == "comment":
             comment_model = Comment()
             item_id = comment_model.get_comment_public_id(self.item_id)
@@ -54,30 +55,32 @@ class Report(db.Model):
 
     def create_report(self, data):
         try:
-            self.public_id = str(uuid.uuid4())
-            self.user_id = data.get("user_id")
-            self.type = data.get("type")
-            self.status = "received"
+            report_type = data.get("type")
             item_id = data.get("item_id")
-
-            if self.type == "comment":
+            if report_type == "comment":
                 comment_model = Comment()
                 comment_id = comment_model.get_comment_db_id(item_id)
-                self.item_id = comment_id
+                item_id = comment_id
             else:
                 review_model = Review()
                 review_id = review_model.get_review_db_id(item_id)
-                self.item_id = review_id
-            
-            self.reason = data.get("reason")
-            self.created_at = datetime.datetime.utcnow()
-            self.updated_at = datetime.datetime.utcnow()
+                item_id = review_id
 
-            self.save()
-            return self.serialize()
+            report = Report(
+                public_id = str(uuid.uuid4()),
+                user_id = data.get("user_id"),
+                type = report_type,
+                status = "received",
+                item_id = item_id,
+                reason = data.get("reason"),
+                created_at = datetime.datetime.utcnow(),
+                updated_at = datetime.datetime.utcnow(),
+            )
+
+            report.save()
+            return report.serialize()
         except Exception as e:
-            logging.exception("An error occurred while creating a report: %s", str(e))
-            return None
+            raise e
     
     def get_all_reports(self):
         try:
@@ -86,13 +89,25 @@ class Report(db.Model):
         except Exception as e:
             raise e
 
-    def get_report_by_id(self, public_id, user_id, role):
+    def get_report_by_id(self, public_id, role, user_id=None):
         try:
             report = self.query.filter_by(public_id=public_id).first()
             if not report:
                 return None
             if role != "admin" and report.user_id != user_id:
                 raise Exception("Access Denied")
+            return report.serialize()
+        except Exception as e:
+            raise e
+
+    def update_report(self, public_id, status):
+        try:
+            report = self.query.filter_by(public_id=public_id).first()
+            if not report:
+                return None
+            report.updated_at = datetime.datetime.utcnow()
+            report.status = status
+            report.save()
             return report.serialize()
         except Exception as e:
             raise e

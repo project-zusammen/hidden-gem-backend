@@ -32,13 +32,19 @@ class Region(db.Model):
         db.session.commit()
 
     def create_region(self, region_name):
+        check_region = self.query.filter_by(city=region_name).first()
+        if check_region:
+            return check_region.serialize()
         try:
-            self.public_id = str(uuid.uuid4())
-            self.city = region_name
-            self.created_at = datetime.datetime.utcnow()
-            self.updated_at = datetime.datetime.utcnow()
-            self.save()
-            return self.serialize()
+            region = Region(
+                public_id = str(uuid.uuid4()),
+                city = region_name,
+                created_at = datetime.datetime.utcnow(),
+                updated_at = datetime.datetime.utcnow(),
+            )
+
+            region.save()
+            return region.serialize()
         except Exception as e:
             raise e
 
