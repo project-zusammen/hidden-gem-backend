@@ -1,17 +1,17 @@
 from ..util.dto import BookmarkDto
-
-bookmark_dto = BookmarkDto()
-_bookmark = bookmark_dto.bookmark
-
-from flask_restx import Resource
+from flask_restx import Resource, Namespace
+from ...extensions import authorizations
 from ..service.bookmark_service import (
     create_bookmark,
     get_bookmark_by_userid,
     delete_bookmark,
 )
-from ...extensions import ns
 from ..util.token_verify import token_required
 
+bookmark_dto = BookmarkDto()
+_bookmark = bookmark_dto.bookmark
+
+ns = Namespace("bookmark", authorizations=authorizations)
 
 @ns.route("/bookmark")
 class CreateBookmark(Resource):
