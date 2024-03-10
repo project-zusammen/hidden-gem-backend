@@ -49,6 +49,9 @@ class Comment(db.Model):
         try:
             review_model = Review()
             review_id = review_model.get_review_db_id(data.get("review_id"))
+            if not review_id:
+                raise Exception("Review not found")
+
             comment = Comment(
                 review_id = review_id,
                 public_id = str(uuid.uuid4()),

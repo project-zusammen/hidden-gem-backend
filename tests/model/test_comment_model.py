@@ -61,6 +61,7 @@ def setup_data():
     commenter.save()
 
 
+
 class TestComment(unittest.TestCase):
     def setUp(self):
         self.app = create_app(config_object="app.test_settings")
