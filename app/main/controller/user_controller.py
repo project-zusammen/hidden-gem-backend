@@ -37,6 +37,10 @@ class UserList(Resource):
     @token_required
     def get(self, decoded_token):
         """List all users"""
+        user_role = decoded_token["role"]
+        if user_role != "admin":
+            return error_handler("Access denied")
+        
         page = request.args.get('page', default=1, type=int)
         count = request.args.get('count', default=50, type=int)
         return get_all_users(page, count)
