@@ -46,8 +46,11 @@ class TestReviewService(TestCase):
         data = [comment_1, comment_2]
         mock_get_all_comments.return_value = data
 
+        page = 1
+        count = 2
+
         # ACT
-        response, status_code = get_all_comments()
+        response, status_code = get_all_comments(page, count)
         result = response["data"]
 
         # ASSERT

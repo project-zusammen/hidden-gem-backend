@@ -4,9 +4,9 @@ from app.main.model.comment import Comment
 comment_model = Comment()
 
 
-def get_all_comments():
+def get_all_comments(page, count):
     try:
-        comments = comment_model.get_all_comments()
+        comments = comment_model.get_all_comments(page, count)
         if not comments:
             return {
                 "status": "success",
@@ -21,7 +21,7 @@ def get_all_comments():
         }
         return response_object, 200
     except Exception as e:
-        print(f"Error in get_all_comments: {str(e)}")
+        log.error(f"Error in get_all_comments: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
 
 

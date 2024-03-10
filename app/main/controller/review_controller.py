@@ -1,6 +1,15 @@
 from flask_restx import Resource, Namespace
 from ...extensions import authorizations
 from ..util.dto import ReviewDto
+from flask import request
+from ..util.dto import ReviewDto
+from ..util.token_verify import token_required
+
+review_dto = ReviewDto()
+_review = review_dto.review
+_upvote = review_dto.upvote
+_visible = review_dto.visible
+
 from ..service.review_service import (
     create_review,
     get_all_reviews,
@@ -21,14 +30,27 @@ _visible = review_dto.visible
 
 @ns.route("/")
 class ReviewList(Resource):
+    @ns.param("page", "Page of data you want to retrieve")
+    @ns.param("count", "How many items you want to include in each page")
+    @ns.param("tag_id", "Retrieve data based on the specified tag")
+    @ns.param("category_id", "Retrieve data based on the specified category")
+    @ns.param("region_id", "Retrieve data based on the specified region")
     def get(self):
         """List all reviews"""
-        return get_all_reviews()
+        page = request.args.get("page", default=1, type=int)
+        count = request.args.get("count", default=50, type=int)
+        tag_id = request.args.get("tag_id", default="", type=str)
+        category_id = request.args.get("category_id", default="", type=str)
+        region_id = request.args.get("region_id", default="", type=str)
+        return get_all_reviews(page, count, tag_id, category_id, region_id)
 
     @ns.expect(_review, validate=True)
-    def post(self):
+    @ns.doc(security="bearer")
+    @token_required
+    def post(self, decoded_token):
         """Creates a new Review"""
-        return create_review(ns.payload)
+        user_id = decoded_token["id"]
+        return create_review(ns.payload, user_id)
 
 
 @ns.route("/<public_id>")

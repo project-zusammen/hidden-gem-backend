@@ -4,6 +4,7 @@ from .. import db
 from ..util.helper import convert_to_local_time
 from .review import Review
 
+
 class Comment(db.Model):
     __tablename__ = "comment"
 
@@ -50,34 +51,31 @@ class Comment(db.Model):
             review_id = review_model.get_review_db_id(data.get("review_id"))
             if not review_id:
                 raise Exception("Review not found")
-            
-            self.review_id = review_id
-            self.public_id = str(uuid.uuid4())
-            self.content = data.get("content")
 
-            if not self.content:
-                raise Exception("Comment content is required")
+            comment = Comment(
+                review_id = review_id,
+                public_id = str(uuid.uuid4()),
+                content = data.get("content"),
+                created_at = datetime.datetime.utcnow(),
+                updated_at = datetime.datetime.utcnow(),
+                upvotes = 0,
+                downvotes = 0,
+                visible = True,
+            )
 
-            self.created_at = datetime.datetime.utcnow()
-            self.updated_at = datetime.datetime.utcnow()
-            self.upvotes = 0
-            self.downvotes = 0
-            self.visible = True
-            self.created_at = datetime.datetime.utcnow()
-            self.updated_at = datetime.datetime.utcnow()
-            self.upvotes = 0
-            self.downvotes = 0
-            self.visible = True
-
-            self.save()
-            return self.serialize()
+            comment.save()
+            return comment.serialize()
         except Exception as e:
             raise e
 
-    def get_all_comments(self):
+    def get_all_comments(self, page, count):
         try:
-            comments = self.query.filter_by(visible=True).all()
-            return [comment.serialize() for comment in comments]
+            comments = (
+                self.query.filter_by(visible=True)
+                .order_by(Comment.created_at.desc())
+                .paginate(page=page, per_page=count, max_per_page=100, error_out=False)
+            )
+            return [comment.serialize() for comment in comments.items]
         except Exception as e:
             raise e
 

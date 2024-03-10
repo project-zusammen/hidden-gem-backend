@@ -31,15 +31,15 @@ class UserSignUp(Resource):
 
 @ns.route("/")
 class UserList(Resource):
-    @ns.doc(
-        security="bearer",
-        params={"page": {"description": "Page number", "type": "integer"}},
-    )
+    @ns.param("page", "Page of data you want to retrieve")
+    @ns.param("count", "How many items you want to include in each page")
+    @ns.doc(security="bearer")
     @token_required
     def get(self, decoded_token):
         """List all users"""
-        page = request.args.get("page", default=None, type=int)
-        return get_all_users(page)
+        page = request.args.get('page', default=1, type=int)
+        count = request.args.get('count', default=50, type=int)
+        return get_all_users(page, count)
 
 
 @ns.route("/<public_id>")
@@ -77,11 +77,11 @@ class UserStatus(Resource):
     @ns.expect(_userStatus, validate=True)
     @token_required
     def put(self, decoded_token, public_id):
+        """Update user status"""
         role = decoded_token["role"]
         if role != "admin":
             return error_handler("Access denied")
 
-        """Update user status"""
         updated_user = update_user_status(public_id, ns.payload)
         return updated_user
 

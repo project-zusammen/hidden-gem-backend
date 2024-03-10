@@ -1,11 +1,13 @@
 import logging as log
 from app.main.model.review import Review
-
+from app.main.model.tag import Tag
 review_model = Review()
+tag_model = Tag()
 
 
-def create_review(data):
+def create_review(data, user_id):
     try:
+        data["user_id"] = user_id
         review = review_model.create_review(data)
         response_object = {
             "status": "success",
@@ -72,9 +74,11 @@ def update_visibility(public_id, visible=True):
         return {"status": "error", "message": "Internal Server Error"}, 500
 
 
-def get_all_reviews():
+def get_all_reviews(page, count,  category_id, region_id, tag_id):
     try:
-        reviews = review_model.get_all_reviews()
+        reviews = review_model.get_all_reviews(
+            page, count,  category_id, region_id, tag_id
+        )
         if not reviews:
             return {"status": "success", "message": "No reviews found", "data": []}, 200
 
@@ -85,7 +89,7 @@ def get_all_reviews():
         }
         return response_object, 200
     except Exception as e:
-        print(f"Error in get_all_reviews: {str(e)}")
+        log.error(f"Error in get_all_reviews: {str(e)}")
         return {"status": "error", "message": "Internal Server Error"}, 500
 
 

@@ -44,26 +44,26 @@ class Appeal(db.Model):
 
     def create_appeal(self, data):
         try:
-            self.public_id = str(uuid.uuid4())
-            self.user_id = data.get("user_id")
+            appeal = Appeal(
+                public_id = str(uuid.uuid4()),
+                user_id = data.get("user_id"),
+                reason = data.get("reason"),
+                created_at = datetime.datetime.utcnow(),
+                updated_at = datetime.datetime.utcnow(),
+                status = "received",
+            )
 
-            self.reason = data.get("reason")
-            if not self.reason:
-                raise Exception("Appeal explanation is required")
-
-            self.created_at = datetime.datetime.utcnow()
-            self.updated_at = datetime.datetime.utcnow()
-            self.status = "received"
-
-            self.save()
-            return self.serialize()
+            appeal.save()
+            return appeal.serialize()
         except Exception as e:
             raise e
 
-    def get_all_appeals(self):
+    def get_all_appeals(self, page, count):
         try:
-            appeals = self.query.all()
-            return [appeal.serialize() for appeal in appeals]
+            appeals = self.query.order_by(Appeal.created_at.desc()).paginate(
+                page=page, per_page=count, max_per_page=100, error_out=False
+            )
+            return [appeal.serialize() for appeal in appeals.items]
         except Exception as e:
             raise e
 

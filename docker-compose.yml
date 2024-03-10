@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      TEST_DB_USER: ${TEST_DB_USER}
+      TEST_DB_PASSWORD: ${TEST_DB_PASSWORD}
+      DEBUG: ${DEBUG}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      SECRET_KEY: ${SECRET_KEY}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    depends_on:
+      - db
+      - redis
+    container_name: hidden_gem_container
+  
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    container_name: redis_cache
+    volumes:
+      - ./redis_data:/data

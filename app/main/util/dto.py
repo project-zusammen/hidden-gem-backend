@@ -15,6 +15,7 @@ class ReviewDto:
             "location": fields.String(description="review location"),
             "category_id": fields.String(description="category Identifier"),
             "region_id": fields.String(required=True, description="region Identifier"),
+            "image_urls": fields.List(fields.String, description="review image urls"),
         },
     )
     upvote = api.model("upvote", {"upvote": fields.Boolean(description="upvote")})
@@ -68,7 +69,6 @@ class RegionDto:
         {"city": fields.String(required=True, description="city name for region")},
     )
 
-
 class AppealDto:
     appeal = api.model(
         "appeal",
@@ -77,7 +77,16 @@ class AppealDto:
             "report_id": fields.String(required=True, description="report Identifier"),
         },
     )
-    status = api.model("status", {"status": fields.Boolean(description="status")})
+    status = api.model("status", {"status": fields.String(description="status")})
+
+
+class BookmarkDto:
+    bookmark = api.model(
+        "bookmark",
+        {
+            "review_id": fields.String(required=True, description="review id"),
+        },
+    )
 
 
 class ReportDto:
@@ -88,4 +97,20 @@ class ReportDto:
             "item_id": fields.String(required=True, description="report item_id"),
             "reason": fields.String(required=True, description="report reason"),
         },
+    )
+    status = api.model("status", {"status": fields.String(description="status")})
+
+
+class TagDto:
+    tag = api.model(
+        "tag",
+        {
+            "name": fields.String(required=True, description="tag name"),
+        },
+    )
+
+class CategoryDto:
+    category = api.model(
+        "category",
+        {"name": fields.String(required=True, description="name for category")},
     )

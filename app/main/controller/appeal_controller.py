@@ -3,6 +3,8 @@ from ...extensions import authorizations
 from ..util.dto import AppealDto
 from ..util.token_verify import token_required
 from ..util.helper import error_handler
+from flask import request
+
 from ..service.appeal_service import (
     create_appeal,
     get_all_appeals,
@@ -19,6 +21,8 @@ _status = appeal_dto.status
 
 @ns.route("/")
 class AppealList(Resource):
+    @ns.param("page", "Which page number you want to query?")
+    @ns.param("count", "How many items you want to include in each page?")
     @ns.doc(security="bearer")
     @token_required
     def get(self, decoded_token):
@@ -26,7 +30,10 @@ class AppealList(Resource):
         role = decoded_token["role"]
         if role != "admin":
             return error_handler("Access denied")
-        return get_all_appeals()
+
+        page = request.args.get("page", default=1, type=int)
+        count = request.args.get("count", default=20, type=int)
+        return get_all_appeals(page, count)
 
     @ns.doc(security="bearer")
     @token_required

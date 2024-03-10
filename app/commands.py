@@ -17,7 +17,7 @@ TEST_PATH = os.path.join(PROJECT_ROOT, "tests")
     is_flag=True,
     help="Show coverage report",
 )
-def test(coverage):
+def test(coverage=False):
     """Run the tests."""
     import pytest
 
