@@ -58,10 +58,12 @@ class Appeal(db.Model):
         except Exception as e:
             raise e
 
-    def get_all_appeals(self):
+    def get_all_appeals(self, page, count):
         try:
-            appeals = self.query.all()
-            return [appeal.serialize() for appeal in appeals]
+            appeals = self.query.order_by(Appeal.created_at.desc()).paginate(
+                page=page, per_page=count, max_per_page=100, error_out=False
+            )
+            return [appeal.serialize() for appeal in appeals.items]
         except Exception as e:
             raise e
 

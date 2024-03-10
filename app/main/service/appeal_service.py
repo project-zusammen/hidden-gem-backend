@@ -4,9 +4,9 @@ from app.main.model.appeal import Appeal
 appeal_model = Appeal()
 
 
-def get_all_appeals():
+def get_all_appeals(page, count):
     try:
-        appeals = appeal_model.get_all_appeals()
+        appeals = appeal_model.get_all_appeals(page, count)
         if not appeals:
             return {
                 "status": "success",

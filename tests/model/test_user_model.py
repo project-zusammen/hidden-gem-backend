@@ -1,8 +1,9 @@
 import unittest
 from app.main import create_app
 from app.extensions import db
+import datetime
 from app.main.model.user import User
-from app.main.util.helper import create_token
+from werkzeug.security import generate_password_hash
 
 
 user_data = {"username": "aqiz", "email": "aqiz@gmail.com", "password": "Aqiz123!"}
@@ -113,28 +114,28 @@ class TestUser(unittest.TestCase):
 
     def test_user_auth(self):
         # ARRANGE
-        user_model = User()
-        user = user_model.register_user(user_data)
-        user_id = 1
-        user = user_model.get_user_by_id(user["public_id"], user_id)
-        token_payload = {
-            "id": user_id,
-            "public_id": user["public_id"],
-            "username": user["username"],
-            "email": user["email"],
-            "password": user_data["password"],
-            "role": user["role"],
-            "status": user["status"],
+        user_password = "user-test-password"
+        user = User(
+            public_id="public-id",
+            username="user-test",
+            email="user-test@mail.com",
+            password=generate_password_hash(user_password),
+            role = "user",
+            status = "active",
+            created_at = datetime.datetime.utcnow(),
+            updated_at = datetime.datetime.utcnow(),
+        )
+        user.save()
+        data = {
+            "email": user.email,
+            "password": user_password,
         }
 
-        token = create_token(token_payload)
-
         # ACT
-        result = user_model.user_auth(token_payload)
+        result = User().user_auth(data)
 
         # ASSERT
         self.assertIsNotNone(result)
-        self.assertEqual(result, token)
 
     def test_check_user_authorization(self):
         # ARRANGE

@@ -11,51 +11,52 @@ from app.main.model.tag import Tag
 comment_data = {"content": "new comment"}
 tag_data = {"tag": "new tag"}
 
+
 def setup_data():
     global review, commenter
 
     region = Region(
-        public_id = "region_id",
-        city = "Test Region City",
-        created_at = datetime.datetime.utcnow(),
-        updated_at = datetime.datetime.utcnow(),
+        public_id="region_id",
+        city="Test Region City",
+        created_at=datetime.datetime.utcnow(),
+        updated_at=datetime.datetime.utcnow(),
     )
     region.save()
 
     reviewer = User(
-        username = "test_reviewer",
-        email = "test_reviewer@gmail.com",
-        password = "test_reviewer_password",
-        role = "user",
-        status = "active",
-        created_at = datetime.datetime.utcnow(),
-        updated_at = datetime.datetime.utcnow(),
+        username="test_reviewer",
+        email="test_reviewer@gmail.com",
+        password="test_reviewer_password",
+        role="user",
+        status="active",
+        created_at=datetime.datetime.utcnow(),
+        updated_at=datetime.datetime.utcnow(),
     )
     reviewer.save()
 
     review = Review(
-        public_id = "review_id",
-        user_id = reviewer.id,
-        title = "Test Review",
-        content = "This is a test review.",
-        location = "Test Location",
-        region_id = region.id,
-        created_at = datetime.datetime.utcnow(),
-        updated_at = datetime.datetime.utcnow(),
-        upvotes = 0,
-        downvotes = 0,
-        visible = True,
+        public_id="review_id",
+        user_id=reviewer.id,
+        title="Test Review",
+        content="This is a test review.",
+        location="Test Location",
+        region_id=region.id,
+        created_at=datetime.datetime.utcnow(),
+        updated_at=datetime.datetime.utcnow(),
+        upvotes=0,
+        downvotes=0,
+        visible=True,
     )
     review.save()
 
     commenter = User(
-        username = "test_commenter",
-        email = "test_commenter@gmail.com",
-        password = "test_commenter_password",
-        role = "user",
-        status = "active",
-        created_at = datetime.datetime.utcnow(),
-        updated_at = datetime.datetime.utcnow(),
+        username="test_commenter",
+        email="test_commenter@gmail.com",
+        password="test_commenter_password",
+        role="user",
+        status="active",
+        created_at=datetime.datetime.utcnow(),
+        updated_at=datetime.datetime.utcnow(),
     )
     commenter.save()
 
@@ -103,14 +104,17 @@ class TestComment(unittest.TestCase):
         comment_data_2["content"] = "yet another comment"
         comment_model.create_comment(comment_data_2)
 
+        page = 1
+        count = 3
+
         # ACT
         retrieved_comments = comment_model.get_all_comments(page, count)
 
         # ASSERT
         self.assertIsNotNone(retrieved_comments)
-        self.assertEqual(comment_data["content"], retrieved_comments[0]["content"])
+        self.assertEqual(comment_data["content"], retrieved_comments[2]["content"])
         self.assertEqual(comment_data_1["content"], retrieved_comments[1]["content"])
-        self.assertEqual(comment_data_2["content"], retrieved_comments[2]["content"])
+        self.assertEqual(comment_data_2["content"], retrieved_comments[0]["content"])
 
     def test_get_comment_by_id(self):
         # ARRANGE
