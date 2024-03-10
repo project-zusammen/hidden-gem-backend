@@ -32,13 +32,14 @@ class Tag(db.Model):
 
     def create_tag(self, data):
         try:
-            self.public_id = str(uuid.uuid4())
-            self.name = data.get('name')
-            self.created_at = datetime.datetime.utcnow()
-            self.updated_at = datetime.datetime.utcnow()
-
-            self.save()
-            return self.serialize()
+            tag = Tag(
+                public_id=str(uuid.uuid4()),
+                name=data.get('name'),
+                created_at=datetime.datetime.utcnow(),
+                updated_at=datetime.datetime.utcnow(),
+            )
+            tag.save()
+            return tag.serialize()
         except Exception as e:
             raise e
     
