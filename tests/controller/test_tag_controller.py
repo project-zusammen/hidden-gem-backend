@@ -53,3 +53,24 @@ class TestTagEndpoints(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_response["data"]["name"], res.get("name"))
         mock_create_tag.assert_called_once()
+
+    @patch("app.main.controller.tag_controller.get_all_tags")
+    def test_get_all_tags(self, mock_get_all_tags):
+        # ARRANGE
+        expected_response = {
+            "status": "success",
+            "message": "Successfully retrieved.",
+            "data": [tag_data],
+        }
+        mock_get_all_tags.return_value = expected_response
+
+        # ACT
+        with self.app.test_client() as client:
+            response = client.get("/api/tag")
+            res = response.get_json()
+            res = res.get("data")
+
+        # ASSERT
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_response["data"], res)
+        mock_get_all_tags.assert_called_once()
