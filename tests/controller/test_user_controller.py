@@ -4,8 +4,17 @@ from unittest.mock import patch
 from app import create_app
 from app.main.util.helper import create_token
 
-user_data = {"username": "aqiz", "email": "aqiz@gmail.com", "password": "Aqiz123!"}
+user_email = "user_email@gmail.com"
+user_data = {"username": "aqiz", "email": user_email, "password": "Aqiz123!"}
 
+admin_data = {
+    "id": 2,
+    "public_id": "public-id-admin",
+    "username": "user_admin",
+    "email": "user_admin@mail.com",
+    "role": "admin",
+    "status": "active",
+}
 
 class TestUserEndpoints(TestCase):
     def setUp(self):
@@ -44,7 +53,7 @@ class TestUserEndpoints(TestCase):
                 "id": 1,
                 "public_id": "c47560e6-619f-4867-8ea7-213709aea349",
                 "username": "aqiz",
-                "email": "aqiz@gmail.com",
+                "email": user_email,
                 "created_at": "2024-01-03T11:21:23",
                 "updated_at": "2024-01-03T11:21:23",
                 "role": "user",
@@ -57,8 +66,10 @@ class TestUserEndpoints(TestCase):
             "data": expected_data,
         }
 
+        
+
         mock_get_all_users.return_value = expected_response
-        token = create_token(expected_data[0])
+        token = create_token(admin_data)
 
         # ACT
         with self.app.test_client() as client:
@@ -84,7 +95,7 @@ class TestUserEndpoints(TestCase):
                 "id": 1,
                 "public_id": "c47560e6-619f-4867-8ea7-213709aea349",
                 "username": "aqiz",
-                "email": "aqiz@gmail.com",
+                "email": user_email,
                 "created_at": "2024-01-03T11:21:23",
                 "updated_at": "2024-01-03T11:21:23",
                 "role": "user",
@@ -98,7 +109,7 @@ class TestUserEndpoints(TestCase):
         }
 
         mock_get_all_users.return_value = expected_response
-        token = create_token(expected_data[0])
+        token = create_token(admin_data)
         page = 1
         count = 2
 
@@ -120,6 +131,36 @@ class TestUserEndpoints(TestCase):
         self.assertEqual(first_user.get("public_id"), expected_data[0].get("public_id"))
         mock_get_all_users.assert_called_once()
 
+    @patch("app.main.controller.user_controller.get_all_users")
+    def test_get_all_users_no_access(self, mock_get_all_users):
+        # ARRANGE
+        expected_response = {
+            "status": "error",
+            "message": "Access denied: You are not authorized for this operation",
+        }
+
+        mock_get_all_users.return_value = expected_response
+        user_data_for_token = user_data.copy()
+        user_data_for_token["role"] = "user"
+        user_data_for_token["public_id"] = "public-id-user"
+        user_data_for_token["id"] = 3
+        user_data_for_token["status"] = "active"
+        user_data_for_token["username"] = "user_user"
+        del user_data_for_token["password"]
+
+        token = create_token(user_data_for_token)
+
+        # ACT
+        with self.app.test_client() as client:
+            response = client.get("/api/user", headers={"X-API-KEY": token})
+            result = response.get_json()
+
+        # ASSERT
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(result.get("status"), expected_response.get("status"))
+        self.assertEqual(result.get("message"), expected_response.get("message"))
+        mock_get_all_users.assert_not_called()
+
     @patch("app.main.controller.user_controller.get_a_user")
     def test_get_a_user(self, mock_get_a_user):
         # ARRANGE
@@ -129,7 +170,7 @@ class TestUserEndpoints(TestCase):
                 "id": 1,
                 "public_id": "c47560e6-619f-4867-8ea7-213709aea349",
                 "username": "aqiz",
-                "email": "aqiz@gmail.com",
+                "email": user_email,
                 "created_at": "2024-01-03T11:21:23",
                 "updated_at": "2024-01-03T11:21:23",
                 "role": "user",
@@ -167,7 +208,7 @@ class TestUserEndpoints(TestCase):
             "id": 1,
             "public_id": "c47560e6-619f-4867-8ea7-213709aea349",
             "username": "aqiz",
-            "email": "aqiz@gmail.com",
+            "email": user_email,
             "role": "user",
             "status": "active",
         }
@@ -199,7 +240,7 @@ class TestUserEndpoints(TestCase):
             "id": 1,
             "public_id": "c47560e6-619f-4867-8ea7-213709aea349",
             "username": "aqiz",
-            "email": "aqiz@gmail.com",
+            "email": user_email,
             "role": "user",
             "status": "active",
         }
@@ -230,7 +271,7 @@ class TestUserEndpoints(TestCase):
             "id": 1,
             "public_id": "c47560e6-619f-4867-8ea7-213709aea349",
             "username": "aqiz",
-            "email": "aqiz@gmail.com",
+            "email": user_email,
             "created_at": "2024-01-03T11:21:23",
             "updated_at": "2024-01-03T11:21:23",
             "role": "admin",
@@ -270,7 +311,7 @@ class TestUserEndpoints(TestCase):
             "id": 1,
             "public_id": "c47560e6-619f-4867-8ea7-213709aea349",
             "username": "aqiz",
-            "email": "aqiz@gmail.com",
+            "email": user_email,
             "password": "password",
             "role": "admin",
             "status": "active",
