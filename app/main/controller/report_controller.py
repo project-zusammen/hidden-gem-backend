@@ -43,7 +43,7 @@ class ReportList(Resource):
         return get_all_reports(page, count)
 
 
-@ns.route("/report/<public_id>")
+@ns.route("/<public_id>")
 @ns.param("public_id", "The report identifier")
 class Report(Resource):
     @ns.doc(security="bearer")

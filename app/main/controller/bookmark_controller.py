@@ -13,7 +13,7 @@ _bookmark = bookmark_dto.bookmark
 
 ns = Namespace("bookmark", authorizations=authorizations)
 
-@ns.route("/bookmark")
+@ns.route("")
 class CreateBookmark(Resource):
     @ns.doc(security="bearer")
     @token_required
@@ -31,7 +31,7 @@ class CreateBookmark(Resource):
         return get_bookmark_by_userid(user_id)
 
 
-@ns.route("/bookmark/<public_id>")
+@ns.route("/<public_id>")
 @ns.param("public_id", "The bookmark identifier")
 class DeleteBookmark(Resource):
     @ns.doc(security="bearer")
