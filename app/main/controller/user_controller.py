@@ -29,7 +29,7 @@ class UserSignUp(Resource):
         return register_user(ns.payload)
 
 
-@ns.route("/")
+@ns.route("")
 class UserList(Resource):
     @ns.param("page", "Page of data you want to retrieve")
     @ns.param("count", "How many items you want to include in each page")

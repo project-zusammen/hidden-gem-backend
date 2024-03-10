@@ -28,7 +28,7 @@ _upvote = review_dto.upvote
 _visible = review_dto.visible
 
 
-@ns.route("/")
+@ns.route("")
 class ReviewList(Resource):
     @ns.param("page", "Page of data you want to retrieve")
     @ns.param("count", "How many items you want to include in each page")

@@ -18,7 +18,7 @@ _report = report_dto.report
 _status = report_dto.status
 
 
-@ns.route("/")
+@ns.route("")
 class ReportList(Resource):
     @ns.expect(_report, validate=True)
     @ns.doc(security="bearer")

@@ -10,7 +10,7 @@ _category = category_dto.category
 
 ns = Namespace("category")
 
-@ns.route("/")
+@ns.route("")
 class CategoryList(Resource):
     @ns.expect(_category, validate=True)
     def post(self):

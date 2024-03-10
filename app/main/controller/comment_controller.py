@@ -29,7 +29,7 @@ _upvote = comment_dto.upvote
 _visible = comment_dto.visible
 
 
-@ns.route("/")
+@ns.route("")
 class CommentList(Resource):
     @ns.param("page", "Which page number you want to query?")
     @ns.param("count", "How many items you want to include in each page?")

@@ -59,4 +59,11 @@ class Tag(db.Model):
             return None
         except Exception as e:
             raise e
+    
+    def get_all_tags(self):
+        try:
+            tags = self.query.all()
+            return [tag.serialize() for tag in tags]
+        except Exception as e:
+            raise e
         

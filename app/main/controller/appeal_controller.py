@@ -19,7 +19,7 @@ _appeal = appeal_dto.appeal
 _status = appeal_dto.status
 
 
-@ns.route("/")
+@ns.route("")
 class AppealList(Resource):
     @ns.param("page", "Which page number you want to query?")
     @ns.param("count", "How many items you want to include in each page?")

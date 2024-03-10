@@ -13,7 +13,7 @@ region_dto = RegionDto()
 _region = region_dto.region
 
 
-@ns.route("/")
+@ns.route("")
 class RegionList(Resource):
     def get(self):
         """List all regions"""
