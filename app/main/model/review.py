@@ -76,27 +76,28 @@ class Review(db.Model):
 
     def get_all_reviews(self, page, count, region_id, category_id, tag_id):
         try:
+            base_filter = [Review.visible == True]
+
             if tag_id:
                 tag_db_id = tag_model.get_tag_db_id(tag_id)
+                base_filter.append(Review.tag_id == tag_db_id)
+
             if category_id:
                 category_db_id = category_model.get_category_id(category_id)
+                base_filter.append(Review.category_id == category_db_id)
+
             if region_id:
                 region_db_id = region_model.get_region_by_id(region_id)
+                base_filter.append(Review.region_id == region_db_id)
+
+            filter_condition = or_(*base_filter)
 
             reviews = (
-                Review.query.filter(
-                    and_(
-                        Review.visible == True,
-                        or_(
-                            Review.region_id == region_db_id,
-                            Review.category_id == category_db_id,
-                            Review.tag_id == tag_db_id,
-                        ),
-                    )
-                )
+                Review.query.filter(filter_condition)
                 .order_by(Review.created_at.desc())
-                    .paginate(page=page, per_page=count, max_per_page=20, error_out=False)
-                )
+                .paginate(page=page, per_page=count, max_per_page=20, error_out=False)
+            )
+            
             return [review.serialize() for review in reviews.items]
         except Exception as e:
             logging.exception("An error occurred in getting all reviews: %s", str(e))
