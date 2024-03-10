@@ -9,6 +9,7 @@ from ..service.report_service import (
 )
 from ..util.token_verify import token_required
 from ..util.helper import error_handler
+from flask import request
 
 report_dto = ReportDto()
 _report = report_dto.report
@@ -25,6 +26,8 @@ class ReportList(Resource):
         user_id = decoded_token["id"]
         return create_report(ns.payload, user_id)
 
+    @ns.param("page", "Which page number you want to query?")
+    @ns.param("count", "How many items you want to include in each page?")
     @ns.doc(security="bearer")
     @token_required
     def get(self, decoded_token):
@@ -33,7 +36,9 @@ class ReportList(Resource):
         if role != "admin":
             return error_handler("Access denied")
 
-        return get_all_reports()
+        page = request.args.get("page", default=1, type=int)
+        count = request.args.get("count", default=20, type=int)
+        return get_all_reports(page, count)
 
 
 @ns.route("/report/<public_id>")
@@ -55,6 +60,6 @@ class Report(Resource):
         role = decoded_token["role"]
         if role != "admin":
             return error_handler("Access denied")
-
+    
         status = ns.payload.get("status")
         return update_report(public_id, status)

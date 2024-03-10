@@ -72,9 +72,11 @@ class TestAppeal(unittest.TestCase):
         appeal_model = Appeal()
         appeal_data["user_id"] = user_id
         appeal_model.create_appeal(appeal_data)
+        page = 1
+        count = 2
 
         # ACT
-        all_appeals = appeal_model.get_all_appeals()
+        all_appeals = appeal_model.get_all_appeals(page, count)
 
         # ASSERT
         self.assertIsNotNone(all_appeals)

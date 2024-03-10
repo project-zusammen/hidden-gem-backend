@@ -4,9 +4,9 @@ from app.main.model.comment import Comment
 comment_model = Comment()
 
 
-def get_all_comments():
+def get_all_comments(page, count):
     try:
-        comments = comment_model.get_all_comments()
+        comments = comment_model.get_all_comments(page, count)
         if not comments:
             return {
                 "status": "success",

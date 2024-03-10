@@ -67,25 +67,27 @@ class Report(db.Model):
                 item_id = review_id
 
             report = Report(
-                public_id = str(uuid.uuid4()),
-                user_id = data.get("user_id"),
-                type = report_type,
-                status = "received",
-                item_id = item_id,
-                reason = data.get("reason"),
-                created_at = datetime.datetime.utcnow(),
-                updated_at = datetime.datetime.utcnow(),
+                public_id=str(uuid.uuid4()),
+                user_id=data.get("user_id"),
+                type=report_type,
+                status="received",
+                item_id=item_id,
+                reason=data.get("reason"),
+                created_at=datetime.datetime.utcnow(),
+                updated_at=datetime.datetime.utcnow(),
             )
 
             report.save()
             return report.serialize()
         except Exception as e:
             raise e
-    
-    def get_all_reports(self):
+
+    def get_all_reports(self, page, count):
         try:
-            reports = self.query.all()
-            return [report.serialize() for report in reports]
+            reports = self.query.order_by(Report.created_at.desc()).paginate(
+                page=page, per_page=count, max_per_page=100, error_out=False
+            )
+            return [report.serialize() for report in reports.items]
         except Exception as e:
             raise e
 

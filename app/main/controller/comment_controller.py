@@ -1,4 +1,7 @@
 from ..util.dto import CommentDto
+from ..util.token_verify import token_required
+from ..util.helper import error_handler
+from flask import request
 
 comment_dto = CommentDto()
 _comment = comment_dto.comment
@@ -20,9 +23,13 @@ from ...extensions import ns
 
 @ns.route("/comment")
 class CommentList(Resource):
+    @ns.param("page", "Which page number you want to query?")
+    @ns.param("count", "How many items you want to include in each page?")
     def get(self):
         """List all comment"""
-        return get_all_comments()
+        page = request.args.get("page", default=1, type=int)
+        count = request.args.get("count", default=20, type=int)
+        return get_all_comments(page, count)
 
     @ns.expect(_comment, validate=True)
     def post(self):
@@ -64,9 +71,15 @@ class CommentUpvote(Resource):
 @ns.route("/comment/<public_id>/status")
 @ns.param("public_id", "The Comment Identifier")
 class CommentVisible(Resource):
+    @ns.doc(security="bearer")
+    @token_required
     @ns.expect(_visible)
-    def put(self, public_id):
+    def put(self, decoded_token, public_id):
         """Update visibility status"""
+        role = decoded_token["role"]
+        if role != "admin":
+            return error_handler("Access denied")
+
         visible = ns.payload.get("visible")
         updated_visibility = update_visibility(public_id, visible)
         return updated_visibility

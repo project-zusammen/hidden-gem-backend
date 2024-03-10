@@ -8,84 +8,86 @@ from app.main.model.region import Region
 from app.main.model.user import User
 from app.main.model.comment import Comment
 
+
 def setup_data():
     global reviewer, review, reporter, admin, comment, reporter_2
 
     region = Region(
-        public_id = "region_id",
-        city = "Test Region City",
-        created_at = datetime.datetime.utcnow(),
-        updated_at = datetime.datetime.utcnow(),
+        public_id="region_id",
+        city="Test Region City",
+        created_at=datetime.datetime.utcnow(),
+        updated_at=datetime.datetime.utcnow(),
     )
     region.save()
 
     reviewer = User(
-        username = "test_reviewer",
-        email = "test_reviewer@gmail.com",
-        password = "test_reviewer_password",
-        role = "user",
-        status = "active",
-        created_at = datetime.datetime.utcnow(),
-        updated_at = datetime.datetime.utcnow(),
+        username="test_reviewer",
+        email="test_reviewer@gmail.com",
+        password="test_reviewer_password",
+        role="user",
+        status="active",
+        created_at=datetime.datetime.utcnow(),
+        updated_at=datetime.datetime.utcnow(),
     )
     reviewer.save()
 
     review = Review(
-        public_id = "review_id",
-        user_id = reviewer.id,
-        title = "Test Review",
-        content = "This is a test review.",
-        location = "Test Location",
-        region_id = region.id,
-        created_at = datetime.datetime.utcnow(),
-        updated_at = datetime.datetime.utcnow(),
-        upvotes = 0,
-        downvotes = 0,
-        visible = True,
+        public_id="review_id",
+        user_id=reviewer.id,
+        title="Test Review",
+        content="This is a test review.",
+        location="Test Location",
+        region_id=region.id,
+        created_at=datetime.datetime.utcnow(),
+        updated_at=datetime.datetime.utcnow(),
+        upvotes=0,
+        downvotes=0,
+        visible=True,
     )
     review.save()
 
     reporter = User(
-        username = "test_reporter",
-        email = "test_reporter@gmail.com",
-        password = "test_reporter_password",
-        role = "user",
-        status = "active",
-        created_at = datetime.datetime.utcnow(),
-        updated_at = datetime.datetime.utcnow(),
+        username="test_reporter",
+        email="test_reporter@gmail.com",
+        password="test_reporter_password",
+        role="user",
+        status="active",
+        created_at=datetime.datetime.utcnow(),
+        updated_at=datetime.datetime.utcnow(),
     )
     reporter.save()
 
     admin = User(
-        username = "test_admin",
-        email = "test_admin@gmail.com",
-        password = "test_admin_password",
-        role = "admin",
-        status = "active",
-        created_at = datetime.datetime.utcnow(),
-        updated_at = datetime.datetime.utcnow(),
+        username="test_admin",
+        email="test_admin@gmail.com",
+        password="test_admin_password",
+        role="admin",
+        status="active",
+        created_at=datetime.datetime.utcnow(),
+        updated_at=datetime.datetime.utcnow(),
     )
     admin.save()
-    
+
     comment = Comment(
-        public_id = "comment_id",
-        content = "This is a test comment.",
-        review_id = review.id,
-        created_at = datetime.datetime.utcnow(),
-        updated_at = datetime.datetime.utcnow(),
+        public_id="comment_id",
+        content="This is a test comment.",
+        review_id=review.id,
+        created_at=datetime.datetime.utcnow(),
+        updated_at=datetime.datetime.utcnow(),
     )
     comment.save()
 
     reporter_2 = User(
-        username = "test_reporter_2",
-        email = "test_reporter_2@gmail.com",
-        password = "test_reporter_2_password",
-        role = "user",
-        status = "active",
-        created_at = datetime.datetime.utcnow(),
-        updated_at = datetime.datetime.utcnow(),
+        username="test_reporter_2",
+        email="test_reporter_2@gmail.com",
+        password="test_reporter_2_password",
+        role="user",
+        status="active",
+        created_at=datetime.datetime.utcnow(),
+        updated_at=datetime.datetime.utcnow(),
     )
     reporter_2.save()
+
 
 review_data = {
     "title": "Test Review",
@@ -106,7 +108,7 @@ class TestReport(unittest.TestCase):
         self.app_context.push()
         db.create_all()
         setup_data()
-    
+
     def tearDown(self):
         db.session.remove()
         db.drop_all()
@@ -135,7 +137,7 @@ class TestReport(unittest.TestCase):
         report_data["type"] = "comment"
         report_data["item_id"] = comment.public_id
         report_data["user_id"] = reporter.id
-        
+
         # ACT
         created_report = report_model.create_report(report_data)
 
@@ -160,21 +162,24 @@ class TestReport(unittest.TestCase):
         report_data_2["item_id"] = comment.public_id
         report_data_2["user_id"] = reporter.id
         report_model.create_report(report_data_2)
-        
+
+        page = 1
+        count = 3
+
         # ACT
-        all_reports = report_model.get_all_reports()
+        all_reports = report_model.get_all_reports(page, count)
 
         # ASSERT
         self.assertIsNotNone(all_reports)
         self.assertEqual(len(all_reports), 2)
-        self.assertEqual(all_reports[0]["type"], report_data_1["type"])
-        self.assertEqual(all_reports[0]["item_id"], report_data_1["item_id"])
-        self.assertEqual(all_reports[0]["reason"], report_data_1["reason"])
-        self.assertEqual(all_reports[0]["status"], report_data_1["status"])
-        self.assertEqual(all_reports[1]["type"], report_data_2["type"])
-        self.assertEqual(all_reports[1]["item_id"], report_data_2["item_id"])
-        self.assertEqual(all_reports[1]["reason"], report_data_2["reason"])
-        self.assertEqual(all_reports[1]["status"], report_data_2["status"])
+        self.assertEqual(all_reports[1]["type"], report_data_1["type"])
+        self.assertEqual(all_reports[1]["item_id"], report_data_1["item_id"])
+        self.assertEqual(all_reports[1]["reason"], report_data_1["reason"])
+        self.assertEqual(all_reports[1]["status"], report_data_1["status"])
+        self.assertEqual(all_reports[0]["type"], report_data_2["type"])
+        self.assertEqual(all_reports[0]["item_id"], report_data_2["item_id"])
+        self.assertEqual(all_reports[0]["reason"], report_data_2["reason"])
+        self.assertEqual(all_reports[0]["status"], report_data_2["status"])
 
     def test_get_report_by_id_role_admin(self):
         # ARRANGE
@@ -209,7 +214,9 @@ class TestReport(unittest.TestCase):
 
         # ACT
         retrieved_report = report_model.get_report_by_id(
-            public_id=created_report["public_id"], user_id=reporter.id, role=reporter.role
+            public_id=created_report["public_id"],
+            user_id=reporter.id,
+            role=reporter.role,
         )
 
         # ASSERT
@@ -232,7 +239,9 @@ class TestReport(unittest.TestCase):
         # ASSERT
         with self.assertRaises(Exception) as context:
             report_model.get_report_by_id(
-                public_id=report["public_id"], user_id=reporter_2.id, role=reporter_2.role
+                public_id=report["public_id"],
+                user_id=reporter_2.id,
+                role=reporter_2.role,
             )
 
         self.assertTrue("Access Denied" in str(context.exception))

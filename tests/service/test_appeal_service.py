@@ -62,8 +62,11 @@ class TestAppealService(TestCase):
         data = [appeal_1, appeal_2]
         mock_get_all_appeals.return_value = data
 
+        page = 1
+        count = 2
+
         # ACT
-        response, status_code = get_all_appeals()
+        response, status_code = get_all_appeals(page, count)
         result = response["data"]
 
         # ASSERT
