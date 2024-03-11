@@ -1,9 +1,6 @@
+from flask_restx import Resource, Namespace
+from ...extensions import authorizations
 from ..util.dto import RegionDto
-
-region_dto = RegionDto()
-_region = region_dto.region
-
-from flask_restx import Resource
 from ..service.region_service import (
     get_all_region,
     create_region,
@@ -11,10 +8,12 @@ from ..service.region_service import (
     delete_region,
 )
 
-from ...extensions import ns
+ns = Namespace("region", authorizations=authorizations)
+region_dto = RegionDto()
+_region = region_dto.region
 
 
-@ns.route("/region")
+@ns.route("")
 class RegionList(Resource):
     def get(self):
         """List all regions"""
@@ -27,7 +26,7 @@ class RegionList(Resource):
         return create_region(ns.payload.get("city"))
 
 
-@ns.route("/region/<public_id>")
+@ns.route("/<public_id>")
 @ns.param("public_id", "The region identifier")
 class RegionUpdate(Resource):
     @ns.expect(_region, validate=True)

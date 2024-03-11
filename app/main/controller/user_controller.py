@@ -1,7 +1,8 @@
+from flask_restx import Resource, Namespace
+from flask import request
+from ...extensions import authorizations
 from ..util.dto import UserDto
 from ..util.helper import error_handler
-from flask import request
-from flask_restx import Resource
 from ..service.user_service import (
     register_user,
     get_all_users,
@@ -11,15 +12,16 @@ from ..service.user_service import (
     delete_user,
     user_auth,
 )
-from ...extensions import ns
 from ..util.token_verify import token_required
+
+ns = Namespace("user", authorizations=authorizations)
 
 user_dto = UserDto()
 _user = user_dto.user
 _login = user_dto.login
 _userStatus = user_dto.status
 
-@ns.route("/user/signup")
+@ns.route("/signup")
 class UserSignUp(Resource):
     @ns.expect(_user, validate=True)
     def post(self):
@@ -27,7 +29,7 @@ class UserSignUp(Resource):
         return register_user(ns.payload)
 
 
-@ns.route("/user")
+@ns.route("")
 class UserList(Resource):
     @ns.param("page", "Page of data you want to retrieve")
     @ns.param("count", "How many items you want to include in each page")
@@ -35,12 +37,16 @@ class UserList(Resource):
     @token_required
     def get(self, decoded_token):
         """List all users"""
+        user_role = decoded_token["role"]
+        if user_role != "admin":
+            return error_handler("Access denied")
+        
         page = request.args.get('page', default=1, type=int)
         count = request.args.get('count', default=50, type=int)
         return get_all_users(page, count)
 
 
-@ns.route("/user/<public_id>")
+@ns.route("/<public_id>")
 @ns.param("public_id", "The user identifier")
 class User(Resource):
     @ns.doc(security="bearer")
@@ -68,7 +74,7 @@ class User(Resource):
 
 
 ## work in progress, need authentication for this endpoint
-@ns.route("/user/<public_id>/status")
+@ns.route("/<public_id>/status")
 @ns.param("public_id", "The user identifier")
 class UserStatus(Resource):
     @ns.doc(security="bearer")
@@ -84,7 +90,7 @@ class UserStatus(Resource):
         return updated_user
 
 
-@ns.route("/user/login")
+@ns.route("/login")
 class UserLogin(Resource):
     @ns.expect(_login, validate=True)
     def post(self):

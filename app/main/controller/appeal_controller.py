@@ -1,24 +1,25 @@
+from flask_restx import Resource, Namespace
+from ...extensions import authorizations
 from ..util.dto import AppealDto
 from ..util.token_verify import token_required
 from ..util.helper import error_handler
 from flask import request
 
-from flask_restx import Resource
 from ..service.appeal_service import (
     create_appeal,
     get_all_appeals,
     get_an_appeal,
     update_appeal,
 )
-from ...extensions import ns
 
+ns = Namespace("appeal", authorizations=authorizations)
 
 appeal_dto = AppealDto()
 _appeal = appeal_dto.appeal
 _status = appeal_dto.status
 
 
-@ns.route("/appeal")
+@ns.route("")
 class AppealList(Resource):
     @ns.param("page", "Which page number you want to query?")
     @ns.param("count", "How many items you want to include in each page?")
@@ -43,7 +44,7 @@ class AppealList(Resource):
         return create_appeal(ns.payload, user_id)
 
 
-@ns.route("/appeal/<public_id>")
+@ns.route("/<public_id>")
 @ns.param("public_id", "The appeal identifier")
 class Appeal(Resource):
     @ns.doc(security="bearer")

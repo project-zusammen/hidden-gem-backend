@@ -1,5 +1,6 @@
 import uuid
 import unittest
+import datetime
 from app.main import create_app
 from app.extensions import db
 from app.main.model.tag import Tag
@@ -10,15 +11,19 @@ tag_data = {"name": "This is a test tag"}
 
 def register_user():
     global user_id, user_role
-    user_data = {
-        "username": "test_user",
-        "email": "test_user@gmail.com",
-        "password": "test_password",
-    }
-    user_model = User()
-    user = user_model.register_user(user_data)
-    user_id = user_model.get_user_id(user["public_id"])
-    user_role = user_model.get_user_id(user["role"])
+    user = User(
+        public_id=str(uuid.uuid4()),
+        username="test_user",
+        email="test_user@mail.com",
+        password="test_password",
+        role="user",
+        status="active",
+        created_at=datetime.datetime.utcnow(),
+        updated_at=datetime.datetime.utcnow(),
+    )
+    user.save()
+    user_id = user.public_id
+    user_role = user.role
 
 
 class TestTag(unittest.TestCase):
@@ -44,6 +49,19 @@ class TestTag(unittest.TestCase):
         # ASSERT
         self.assertIsNotNone(new_tag)
         self.assertEqual(new_tag["name"], tag_data["name"])
+    
+    def test_get_all_tags(self):
+        # ARRANGE
+        tag_model = Tag()
+        tag_model.create_tag(tag_data)
+
+        # ACT
+        tags = tag_model.get_all_tags()
+
+        # ASSERT
+        self.assertIsNotNone(tags)
+        self.assertEqual(len(tags), 1)
+        self.assertEqual(tags[0]["name"], tag_data["name"])
 
 if __name__ == "__main__":
     unittest.main()
