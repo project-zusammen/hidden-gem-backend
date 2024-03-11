@@ -2,6 +2,7 @@ import logging
 import sys
 
 from flask import Flask
+from flask_cors import CORS
 from app import commands
 from app.extensions import (
     bcrypt,
@@ -33,6 +34,7 @@ def create_app(config_object="app.settings"):
     """
     app = Flask(__name__.split(".")[0])
     app.config.from_object(config_object)
+    CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
     register_extensions(app)
     register_errorhandlers(app)
     register_commands(app)
