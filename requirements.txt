@@ -25,6 +25,7 @@ flake8-isort==6.1.1
 Flask==2.3.3
 Flask-Bcrypt==1.0.1
 Flask-Caching==2.1.0
+Flask-Cors==4.0.0
 Flask-DebugToolbar==0.14.1
 Flask-Login==0.6.3
 Flask-Migrate==4.0.5
@@ -87,4 +88,3 @@ yarl==1.9.4
 zipp==3.17.0
 zope.event==5.0
 zope.interface==6.1
-# uwsgi==2.0.24
