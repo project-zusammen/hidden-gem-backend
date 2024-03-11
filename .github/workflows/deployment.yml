@@ -24,7 +24,7 @@ jobs:
             docker stop hidden_gem_container
             docker rm  hidden_gem_container
             docker rmi hidden_gem_images:latest
-            docker build -t hidden_gem_images:latest .
+            docker build --no-cache -t hidden_gem_images:latest .
             docker run -d \
             -p 5000:5000 \
             -e DB_HOST=${{ secrets.DB_HOST }} \
