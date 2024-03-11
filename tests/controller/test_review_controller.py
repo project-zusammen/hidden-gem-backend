@@ -13,6 +13,7 @@ review_data = {
     "content": "This is a test review.",
     "location": "Test Location",
     "region_id": "test-region-id",
+    "image_urls": ["test-image-url-1", "test-image-url-2"],
 }
 
 error_message = "Input payload validation failed"
@@ -60,6 +61,10 @@ class TestReviewEndpoints(TestCase):
         self.assertEqual(expected_response["data"]["title"], res.get("title"))
         self.assertEqual(expected_response["data"]["content"], res.get("content"))
         self.assertEqual(expected_response["data"]["location"], res.get("location"))
+        self.assertEqual(expected_response["data"]["region_id"], res.get("region_id"))
+        self.assertEqual(
+            expected_response["data"]["image_urls"], res.get("image_urls")
+        )
         mock_create_review.assert_called_once()
 
     @patch("app.main.controller.review_controller.get_all_reviews")

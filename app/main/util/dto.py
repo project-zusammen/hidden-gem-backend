@@ -15,6 +15,7 @@ class ReviewDto:
             "location": fields.String(description="review location"),
             "category_id": fields.String(description="category Identifier"),
             "region_id": fields.String(required=True, description="region Identifier"),
+            "image_urls": fields.List(fields.String, description="review image urls"),
         },
     )
     upvote = api.model("upvote", {"upvote": fields.Boolean(description="upvote")})
