@@ -7,7 +7,7 @@ WORKDIR /app
 COPY ./requirements.txt /app/requirements.txt
 
 # Install Python dependencies listed in requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
+RUN pip install -r /app/requirements.txt
 
 # Copy the current directory from the host to /app in the container
 COPY . /app
@@ -23,5 +23,3 @@ RUN chmod +x entrypoint.sh
 
 # Set the entrypoint script as the entrypoint for the container
 ENTRYPOINT ["./entrypoint.sh"]
-
-# CMD ["flask", "run"]

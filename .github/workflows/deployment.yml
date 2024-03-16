@@ -20,11 +20,11 @@ jobs:
           script: |
             sudo chmod 777 /var/run/docker.sock
             cd /home/aqzaqz/project/hidden-gem-backend
-            git pull origin fix/deployment-to-vps
+            git pull origin feat/flask_cors
             docker stop hidden_gem_container
             docker rm  hidden_gem_container
             docker rmi hidden_gem_images:latest
-            docker build -t hidden_gem_images:latest .
+            docker build --no-cache -t hidden_gem_images:latest .
             docker run -d \
             -p 5000:5000 \
             -e DB_HOST=${{ secrets.DB_HOST }} \
